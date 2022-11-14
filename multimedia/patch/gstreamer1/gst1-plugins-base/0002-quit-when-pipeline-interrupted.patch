@@ -1,0 +1,106 @@
+diff -Naur a/tools/gst-play.c b/tools/gst-play.c
+--- a/tools/gst-play.c	2020-10-26 19:10:32.459882500 +0800
++++ b/tools/gst-play.c	2022-04-07 14:13:15.126395339 +0800
+@@ -19,7 +19,6 @@
+  * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+  * Boston, MA 02110-1301, USA.
+  */
+-
+ #ifdef HAVE_CONFIG_H
+ #include "config.h"
+ #endif
+@@ -40,6 +39,9 @@
+ #include <glib/gprintf.h>
+
+ #include "gst-play-kb.h"
++#ifdef G_OS_UNIX
++#include <glib-unix.h>
++#endif
+
+ #define VOLUME_STEPS 20
+
+@@ -104,6 +106,31 @@
+   gdouble rate;
+ } GstPlay;
+ 
++#if defined(G_OS_UNIX)
++static guint signal_watch_intr_id;
++#endif
++
++#if defined(G_OS_UNIX)
++/* As the interrupt handler is dispatched from GMainContext as a GSourceFunc
++ * handler, we can react to this by posting a message. */
++static gboolean
++intr_handler (gpointer user_data)
++{
++  GstPlay *play =  (GstPlay *) user_data;
++  gst_print ("handling interrupt.\n");
++
++  /* post an application specific message */
++  gst_element_post_message (GST_ELEMENT (play->playbin),
++      gst_message_new_application (GST_OBJECT (play->playbin),
++          gst_structure_new ("GstLaunchInterrupt",
++              "message", G_TYPE_STRING, "Pipeline interrupted", NULL)));
++
++  /* remove signal handler */
++  signal_watch_intr_id = 0;
++  return G_SOURCE_REMOVE;
++}
++#endif /* G_OS_UNIX */
++
+ static gboolean quiet = FALSE;
+ static gboolean instant_rate_changes = FALSE;
+ 
+@@ -594,6 +621,24 @@
+       }
+       break;
+     }
++    case GST_MESSAGE_APPLICATION:{
++        const GstStructure *s;
++
++        s = gst_message_get_structure (msg);
++
++        if (gst_structure_has_name (s, "GstLaunchInterrupt")) {
++          /* this application message is posted when we caught an interrupt and
++           * we need to stop the pipeline. */
++
++            gst_print (_("Interrupt: GST_MESSAGE_APPLICATION ...\n"));
++            if (play->desired_state == GST_STATE_PLAYING){
++               gst_print (_("Interrupt: Stopping pipeline ...\n"));
++               g_main_loop_quit (play->loop);  
++            }
++
++        }
++        break;
++      }
+     default:
+       if (gst_is_missing_plugin_message (msg)) {
+         gchar *desc;
+@@ -1622,6 +1667,12 @@
+     }
+   }
+ 
++#ifdef G_OS_UNIX
++    gst_print("g_source_remove signal_watch_intr_id \n");
++    signal_watch_intr_id =
++        g_unix_signal_add (SIGINT, (GSourceFunc) intr_handler, play);
++#endif
++
+   /* play */
+   do_play (play);
+ 
+@@ -1632,6 +1683,14 @@
+   g_free (video_sink);
+ 
+   gst_print ("\n");
++
++#ifdef G_OS_UNIX
++    if (signal_watch_intr_id > 0){
++      gst_print("g_source_remove signal_watch_intr_id \n");
++      g_source_remove (signal_watch_intr_id);
++    }
++#endif
++
+   gst_deinit ();
+   return 0;
+ }

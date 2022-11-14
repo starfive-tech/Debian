@@ -1,0 +1,209 @@
+From 246a5308151416e99dbe53ad52d415abdfb6df29 Mon Sep 17 00:00:00 2001
+From: "arvin.zhu" <arvin.zhu@starfivetech.com>
+Date: Fri, 14 Oct 2022 16:50:55 +0800
+Subject: [PATCH] FFmpeg:omx: add scale option for omx
+
+add scale option for omx decoder
+
+Signed-off-by: arvin.zhu <arvin.zhu@starfivetech.com>
+---
+ libavcodec/omx.c    |  4 +-
+ libavcodec/omxdec.c | 92 +++++++++++++++++++++++++++------------------
+ 2 files changed, 58 insertions(+), 38 deletions(-)
+
+diff --git a/libavcodec/omx.c b/libavcodec/omx.c
+index 6976884..77012ce 100755
+--- a/libavcodec/omx.c
++++ b/libavcodec/omx.c
+@@ -1,6 +1,6 @@
+ /*
+- * OMX Video decoder
+- * Copyright (C) 2018-2022 Starfive Technology
++ * OMX Video encoder
++ * Copyright (C) 2011 Martin Storsjo
+  *
+  * This file is part of FFmpeg.
+  *
+diff --git a/libavcodec/omxdec.c b/libavcodec/omxdec.c
+index 0957605..87e5a1a 100755
+--- a/libavcodec/omxdec.c
++++ b/libavcodec/omxdec.c
+@@ -1,6 +1,6 @@
+ /*
+- * OMX Video encoder
+- * Copyright (C) 2011 Martin Storsjo
++ * OMX Video decoder
++ * Copyright (C) 2018-2022 Starfive Technology
+  *
+  * This file is part of FFmpeg.
+  *
+@@ -274,6 +274,9 @@ typedef struct OMXCodecContext {
+     uint8_t *output_buf;
+     int output_buf_size;
+ 
++    OMX_U32 scale_width;
++    OMX_U32 scale_height;
++
+     int input_zerocopy;
+     int profile;
+     char *pixel_format;     /**< Set by a private option. */
+@@ -481,7 +484,6 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+     //OMX_VIDEO_PARAM_BITRATETYPE vid_param_bitrate = { 0 };
+     OMX_ERRORTYPE err;
+     int i;
+-av_log(avctx, AV_LOG_VERBOSE, "OMX avctx pixel_format:%s\n", av_get_pix_fmt_name(avctx->pix_fmt));
+     s->version.s.nVersionMajor = 1;
+     s->version.s.nVersionMinor = 1;
+     s->version.s.nRevision     = 2;
+@@ -564,8 +566,6 @@ av_log(avctx, AV_LOG_VERBOSE, "OMX avctx pixel_format:%s\n", av_get_pix_fmt_name
+     out_port_params.eDomain    = OMX_PortDomainVideo;
+     out_port_params.format.video.pNativeRender = NULL;
+     out_port_params.format.video.bFlagErrorConcealment  = OMX_FALSE;
+-    out_port_params.format.video.nFrameWidth   = avctx->width;
+-    out_port_params.format.video.nFrameHeight  = avctx->height;
+     out_port_params.format.video.nStride       = 0;
+     out_port_params.format.video.nSliceHeight  = 0;
+     out_port_params.format.video.nBitrate      = avctx->bit_rate;
+@@ -576,41 +576,29 @@ av_log(avctx, AV_LOG_VERBOSE, "OMX avctx pixel_format:%s\n", av_get_pix_fmt_name
+         out_port_params.format.video.eCompressionFormat = OMX_VIDEO_CodingMPEG4;
+     else if (avctx->codec->id == AV_CODEC_ID_H264) {
+         out_port_params.format.video.eCompressionFormat = OMX_VIDEO_CodingAVC;
+-
+-        switch (av_get_pix_fmt(s->pixel_format)) {
+-        case AV_PIX_FMT_NV12:
+-            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV420SemiPlanar;
+-            break;
+-        case AV_PIX_FMT_NV21:
+-            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYVU420SemiPlanar;
+-            break;
+-        case AV_PIX_FMT_YUV420P:
+-            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV420Planar;
+-            break;
+-        default:
+-            return AVERROR_OPTION_NOT_FOUND;
+-        }
+     }
+     else if (avctx->codec->id == AV_CODEC_ID_HEVC) {
+         out_port_params.format.video.eCompressionFormat = OMX_VIDEO_CodingHEVC;
+-
+-        switch (av_get_pix_fmt(s->pixel_format)) {
+-        case AV_PIX_FMT_NV12:
+-            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV420SemiPlanar;
+-            break;
+-        case AV_PIX_FMT_NV21:
+-            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYVU420SemiPlanar;
+-            break;
+-        case AV_PIX_FMT_YUV420P:
+-            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV420Planar;
+-            break;
+-        default:
+-            return AVERROR_OPTION_NOT_FOUND;
+-        }
+     }
+     else if (avctx->codec->id == AV_CODEC_ID_MJPEG){
+         out_port_params.format.video.eCompressionFormat = OMX_VIDEO_CodingMJPEG;
+ 
++        /* Set Scale config setting*/
++        if (s->scale_width || s->scale_height) {
++            av_log(avctx, AV_LOG_TRACE, "mjpeg decoder: scaling width: %ld scaling height: %ld .\n", s->scale_width, s->scale_height);
++            OMX_CONFIG_SCALEFACTORTYPE ScaleConfig;
++            INIT_STRUCT(ScaleConfig);
++            ScaleConfig.nPortIndex = 1;
++            OMX_GetConfig(s->handle, OMX_IndexConfigCommonScale, &ScaleConfig);
++            /* in Q16 format */
++            ScaleConfig.xWidth = (1 << 16) >> (s->scale_width & 0x3);
++            ScaleConfig.xHeight = (1 << 16) >> (s->scale_height & 0x3);
++            OMX_SetConfig(s->handle, OMX_IndexConfigCommonScale, &ScaleConfig);
++        } else {
++            out_port_params.format.video.nFrameWidth   = avctx->width;
++            out_port_params.format.video.nFrameHeight  = avctx->height;
++        }
++
+         switch (av_get_pix_fmt(s->pixel_format)) {
+         case AV_PIX_FMT_NV12:
+             out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV420SemiPlanar;
+@@ -643,6 +631,35 @@ av_log(avctx, AV_LOG_VERBOSE, "OMX avctx pixel_format:%s\n", av_get_pix_fmt_name
+             return AVERROR_OPTION_NOT_FOUND;
+         }
+     }
++    if (avctx->codec->id == AV_CODEC_ID_H264 || avctx->codec->id == AV_CODEC_ID_HEVC) {
++        /* Set Scale config setting*/
++        if ((s->scale_width != 0) && ((s->scale_width < avctx->width/8) ||
++             (s->scale_width > avctx->width) || (s->scale_width % 8 != 0))) {
++            av_log(avctx, AV_LOG_ERROR, "scale_width: Invalid scale parameter\n");
++            return AVERROR_INVALIDDATA;
++        }
++        if ((s->scale_height != 0) && ((s->scale_height < avctx->height/8) ||
++             (s->scale_height > avctx->height) || (s->scale_height % 8 != 0))) {
++            av_log(avctx, AV_LOG_ERROR, "scale_height: Invalid scale parameter\n");
++            return AVERROR_INVALIDDATA;
++        }
++        out_port_params.format.video.nFrameWidth   = s->scale_width ? s->scale_width : avctx->width;
++        out_port_params.format.video.nFrameHeight  = s->scale_height ? s->scale_height : avctx->height;
++
++        switch (av_get_pix_fmt(s->pixel_format)) {
++        case AV_PIX_FMT_NV12:
++            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV420SemiPlanar;
++            break;
++        case AV_PIX_FMT_NV21:
++            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYVU420SemiPlanar;
++            break;
++        case AV_PIX_FMT_YUV420P:
++            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV420Planar;
++            break;
++        default:
++            return AVERROR_OPTION_NOT_FOUND;
++        }
++    }
+ 
+     err = OMX_SetParameter(s->handle, OMX_IndexParamPortDefinition, &out_port_params);
+     CHECK(err);
+@@ -650,10 +667,8 @@ av_log(avctx, AV_LOG_VERBOSE, "OMX avctx pixel_format:%s\n", av_get_pix_fmt_name
+     CHECK(err);
+     s->num_out_buffers = out_port_params.nBufferCountActual;
+ 
+-
+     err = OMX_SendCommand(s->handle, OMX_CommandStateSet, OMX_StateIdle, NULL);
+     CHECK(err);
+-
+     s->in_buffer_headers  = av_mallocz(sizeof(OMX_BUFFERHEADERTYPE*) * s->num_in_buffers);
+     s->free_in_buffers    = av_mallocz(sizeof(OMX_BUFFERHEADERTYPE*) * s->num_in_buffers);
+     s->out_buffer_headers = av_mallocz(sizeof(OMX_BUFFERHEADERTYPE*) * s->num_out_buffers);
+@@ -674,7 +689,6 @@ av_log(avctx, AV_LOG_VERBOSE, "OMX avctx pixel_format:%s\n", av_get_pix_fmt_name
+         err = OMX_AllocateBuffer(s->handle, &s->out_buffer_headers[i], s->out_port, s, out_port_params.nBufferSize);
+     CHECK(err);
+     s->num_out_buffers = i;
+-
+     if (wait_for_state(s, OMX_StateIdle) < 0) {
+         av_log(avctx, AV_LOG_ERROR, "Didn't get OMX_StateIdle\n");
+         return AVERROR_UNKNOWN;
+@@ -1022,6 +1036,8 @@ static const AVOption options[] = {
+     { "main",     "",                         0,               AV_OPT_TYPE_CONST, { .i64 = FF_PROFILE_H264_MAIN },     0, 0, VE, "profile" },
+     { "high",     "",                         0,               AV_OPT_TYPE_CONST, { .i64 = FF_PROFILE_H264_HIGH },     0, 0, VE, "profile" },
+     { "omx_pix_fmt", "Set the decoding pixel format for h264_omx decoder. The following formats are supported: yuv420p, nv12, nv21.", OFFSET(pixel_format), AV_OPT_TYPE_STRING, { .str = "yuv420p" }, 0, 0, VD },
++    { "scale_width", "Set the scaling width for omx (Only zoom out is support, ceil 8(width/8) and minimum 1/8)", OFFSET(scale_width), AV_OPT_TYPE_INT, { .i64 = 0 }, 0, INT_MAX, VD },
++    { "scale_height", "Set the scaling height for omx (Only zoom out is support, ceil 8(height/8) and minimum 1/8)", OFFSET(scale_height), AV_OPT_TYPE_INT, { .i64 = 0 }, 0, INT_MAX, VD },
+     { NULL }
+ };
+ 
+@@ -1030,6 +1046,8 @@ static const AVOption options_hevc[] = {
+     { "omx_libprefix", "OpenMAX library prefix", OFFSET(libprefix), AV_OPT_TYPE_STRING, { 0 }, 0, 0, VDE },
+     { "zerocopy", "Try to avoid copying input frames if possible", OFFSET(input_zerocopy), AV_OPT_TYPE_INT, { .i64 = CONFIG_OMX_RPI }, 0, 1, VE },
+     { "omx_pix_fmt", "Set the decoding pixel format for hevc_omx decoder. The following formats are supported: yuv420p, nv12, nv21.", OFFSET(pixel_format), AV_OPT_TYPE_STRING, { .str = "yuv420p" }, 0, 0, VD },
++    { "scale_width", "Set the scaling width for omx (Only zoom out is support, ceil 8(width/8) and minimum 1/8)", OFFSET(scale_width), AV_OPT_TYPE_INT, { .i64 = 0 }, 0, INT_MAX, VD },
++    { "scale_height", "Set the scaling height for omx (Only zoom out is support, ceil 8(height/8) and minimum 1/8)", OFFSET(scale_height), AV_OPT_TYPE_INT, { .i64 = 0 }, 0, INT_MAX, VD },
+     { NULL },
+ };
+ 
+@@ -1038,6 +1056,8 @@ static const AVOption options_mjpeg[] = {
+     { "omx_libprefix", "OpenMAX library prefix", OFFSET(libprefix), AV_OPT_TYPE_STRING, { 0 }, 0, 0, VDE },
+     { "zerocopy", "Try to avoid copying input frames if possible", OFFSET(input_zerocopy), AV_OPT_TYPE_INT, { .i64 = CONFIG_OMX_RPI }, 0, 1, VD },
+     { "omx_pix_fmt", "Set the decoding pixel format for mjpeg_omx decoder. The following formats are supported: yuv420p, nv12, nv21, nv16, yuv422p, yuyv422, yvyu422, uyvy422, yuv444p.", OFFSET(pixel_format), AV_OPT_TYPE_STRING, { .str = "yuv420p" }, 0, 0, VD },
++    { "scale_width", "Set the scaling width for omx (Only zoom out is support, Horizontal downscale: 0(none), 1(1/2), 2(1/4), 3(1/8)) and minimum 1/8)", OFFSET(scale_width), AV_OPT_TYPE_INT, { .i64 = 0 }, 0, 3, VD },
++    { "scale_height", "Set the scaling height for omx (Only zoom out is support, Vertical downscale: 0(none), 1(1/2), 2(1/4), 3(1/8)) and minimum 1/8)", OFFSET(scale_height), AV_OPT_TYPE_INT, { .i64 = 0 }, 0, 3, VD },
+     { NULL },
+ };
+ 
+-- 
+2.17.1
+

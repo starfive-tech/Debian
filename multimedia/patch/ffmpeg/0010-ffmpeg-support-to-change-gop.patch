@@ -1,0 +1,48 @@
+From 8b976d184eb1ded7a0635582a4e1b1c619852ed8 Mon Sep 17 00:00:00 2001
+From: "arvin.zhu" <arvin.zhu@starfivetech.com>
+Date: Thu, 22 Sep 2022 18:56:28 +0800
+Subject: [PATCH] ffmpeg: support to change gop
+
+support to change gop of hevc for omc encoder
+
+Signed-off-by: arvin.zhu <arvin.zhu@starfivetech.com>
+---
+ libavcodec/omx.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+ mode change 100644 => 100755 libavcodec/omx.c
+
+diff --git a/libavcodec/omx.c b/libavcodec/omx.c
+old mode 100644
+new mode 100755
+index 84b0835..1d121af
+--- a/libavcodec/omx.c
++++ b/libavcodec/omx.c
+@@ -28,6 +28,8 @@
+ #include <dlfcn.h>
+ #include <OMX_Core.h>
+ #include <OMX_Component.h>
++#include <OMX_IndexExt.h>
++#include <OMX_VideoExt.h>
+ #include <pthread.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+@@ -545,6 +547,16 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+         }
+         err = OMX_SetParameter(s->handle, OMX_IndexParamVideoAvc, &avc);
+         CHECK(err);
++    } else if (avctx->codec->id == AV_CODEC_ID_HEVC) {
++        OMX_VIDEO_PARAM_AVCTYPE hevc = { 0 };
++        INIT_STRUCT(hevc);
++        hevc.nPortIndex = s->out_port;
++        err = OMX_GetParameter(s->handle, OMX_IndexParamVideoHevc, &hevc);
++        CHECK(err);
++        hevc.nBFrames = 0;
++        hevc.nPFrames = avctx->gop_size;
++        err = OMX_SetParameter(s->handle, OMX_IndexParamVideoHevc, &hevc);
++        CHECK(err);
+     }
+ 
+     err = OMX_SendCommand(s->handle, OMX_CommandStateSet, OMX_StateIdle, NULL);
+-- 
+2.17.1
+

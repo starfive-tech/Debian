@@ -1,0 +1,222 @@
+From fff5724489cd0a503d206c6f513b1d8572247484 Mon Sep 17 00:00:00 2001
+From: "sw.multimedia" <se.multimedia@starfivetech.com>
+Date: Wed, 25 May 2022 21:28:23 +0800
+Subject: [PATCH] ffmpeg: add mjpeg decoder support and fix some bug
+
+Signed-off-by: sw.multimedia <se.multimedia@starfivetech.com>
+---
+ configure              |  1 +
+ libavcodec/allcodecs.c |  1 +
+ libavcodec/omx.c       | 25 +++++++++++++++++++++---
+ libavcodec/omxdec.c    | 44 +++++++++++++++++++++++++++++++++++++-----
+ libavformat/utils.c    |  7 +++++++
+ 5 files changed, 70 insertions(+), 8 deletions(-)
+
+diff --git a/configure b/configure
+index 80be074..ca465a1 100755
+--- a/configure
++++ b/configure
+@@ -3095,6 +3095,7 @@ h264_v4l2m2m_decoder_select="h264_mp4toannexb_bsf"
+ h264_v4l2m2m_encoder_deps="v4l2_m2m h264_v4l2_m2m"
+ hevc_omx_encoder_deps="omx"
+ hevc_omx_decoder_deps="omx"
++mjpeg_omx_decoder_deps="omx"
+ hevc_amf_encoder_deps="amf"
+ hevc_cuvid_decoder_deps="cuvid"
+ hevc_cuvid_decoder_select="hevc_mp4toannexb_bsf"
+diff --git a/libavcodec/allcodecs.c b/libavcodec/allcodecs.c
+index 0c7a18d..69627df 100644
+--- a/libavcodec/allcodecs.c
++++ b/libavcodec/allcodecs.c
+@@ -817,6 +817,7 @@ extern AVCodec ff_libkvazaar_encoder;
+ extern AVCodec ff_mjpeg_cuvid_decoder;
+ extern AVCodec ff_mjpeg_qsv_encoder;
+ extern AVCodec ff_mjpeg_qsv_decoder;
++extern AVCodec ff_mjpeg_omx_decoder;
+ extern AVCodec ff_mjpeg_vaapi_encoder;
+ extern AVCodec ff_mp3_mf_encoder;
+ extern AVCodec ff_mpeg1_cuvid_decoder;
+diff --git a/libavcodec/omx.c b/libavcodec/omx.c
+index 86e32a8..023db9c 100644
+--- a/libavcodec/omx.c
++++ b/libavcodec/omx.c
+@@ -42,6 +42,7 @@
+ 
+ #include "avcodec.h"
+ #include "h264.h"
++#include "hevc.h"
+ #include "internal.h"
+ #include "profiles.h"
+ 
+@@ -474,9 +475,11 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+     in_port_params.format.video.nFrameWidth  = avctx->width;
+     in_port_params.format.video.nFrameHeight = avctx->height;
+     if (avctx->framerate.den > 0 && avctx->framerate.num > 0)
+-        in_port_params.format.video.xFramerate = (1LL << 16) * avctx->framerate.num / avctx->framerate.den;
++        //in_port_params.format.video.xFramerate = (1LL << 16) * avctx->framerate.num / avctx->framerate.den;
++        in_port_params.format.video.xFramerate = avctx->framerate.num / avctx->framerate.den;
+     else
+-        in_port_params.format.video.xFramerate = (1LL << 16) * avctx->time_base.den / avctx->time_base.num;
++        //in_port_params.format.video.xFramerate = (1LL << 16) * avctx->time_base.den / avctx->time_base.num;
++        in_port_params.format.video.xFramerate = avctx->time_base.den / avctx->time_base.num;
+ 
+     err = OMX_SetParameter(s->handle, OMX_IndexParamPortDefinition, &in_port_params);
+     CHECK(err);
+@@ -721,7 +724,23 @@ static av_cold int omx_encode_init(AVCodecContext *avctx)
+                 }
+                 if (nals[H264_NAL_SPS] && nals[H264_NAL_PPS])
+                     break;
+-            } else {
++            } else if (avctx->codec->id == AV_CODEC_ID_HEVC) {
++                // For H.265, the extradata can be returned in two separate buffers
++                // (the videocore encoder on raspberry pi does this);
++                // therefore check that we have got both SPS and PPS before continuing.
++                int nals[128] = { 0 };
++                int i;
++                for (i = 0; i + 4 < avctx->extradata_size; i++) {
++                     if (!avctx->extradata[i + 0] &&
++                         !avctx->extradata[i + 1] &&
++                         !avctx->extradata[i + 2] &&
++                         avctx->extradata[i + 3] == 1) {
++                         nals[(avctx->extradata[i + 4] & 0x7E) >> 1]++;
++                     }
++                }
++                if (nals[HEVC_NAL_SPS] && nals[HEVC_NAL_PPS] && nals[HEVC_NAL_VPS])
++                    break;
++		} else {
+                 if (avctx->extradata_size > 0)
+                     break;
+             }
+diff --git a/libavcodec/omxdec.c b/libavcodec/omxdec.c
+index 8d00b86..32f39f3 100644
+--- a/libavcodec/omxdec.c
++++ b/libavcodec/omxdec.c
+@@ -106,6 +106,7 @@ static const struct {
+     { OMX_COLOR_FormatYUV420Planar,                           AV_PIX_FMT_YUV420P },
+     { OMX_COLOR_FormatYUV420SemiPlanar,                       AV_PIX_FMT_NV12    },
+     { OMX_COLOR_FormatYUV420PackedSemiPlanar,                 AV_PIX_FMT_NV21    },
++    { OMX_COLOR_FormatYUV444Interleaved,                      AV_PIX_FMT_YUV444P },
+     { 0 }
+ };
+ 
+@@ -366,6 +367,7 @@ static OMX_ERRORTYPE event_handler(OMX_HANDLETYPE component, OMX_PTR app_data, O
+ 				dec_out_height = out_port_params.format.video.nFrameHeight;
+ 				dec_pix_fmt = out_port_params.format.video.eColorFormat;
+ 	            
++                av_log(s->avctx, AV_LOG_VERBOSE, "w:%d, h:%d, fmt:%d\n", dec_out_width, dec_out_height, dec_pix_fmt); 
+ 	        } 
+ 	    }		
+         break;
+@@ -535,9 +537,11 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+     in_port_params.format.video.nFrameHeight = avctx->height;
+ 
+     if (avctx->framerate.den > 0 && avctx->framerate.num > 0)
+-        in_port_params.format.video.xFramerate = (1LL << 16) * avctx->framerate.num / avctx->framerate.den;
++        //in_port_params.format.video.xFramerate = (1LL << 16) * avctx->framerate.num / avctx->framerate.den;
++        in_port_params.format.video.xFramerate = avctx->framerate.num / avctx->framerate.den;
+     else
+-        in_port_params.format.video.xFramerate = (1LL << 16) * avctx->time_base.den / avctx->time_base.num;
++        //in_port_params.format.video.xFramerate = (1LL << 16) * avctx->time_base.den / avctx->time_base.num;
++        in_port_params.format.video.xFramerate = avctx->time_base.den / avctx->time_base.num;
+ 
+     err = OMX_SetParameter(s->handle, OMX_IndexParamPortDefinition, &in_port_params);
+     CHECK(err);
+@@ -567,6 +571,8 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+         out_port_params.format.video.eCompressionFormat = OMX_VIDEO_CodingAVC;
+     else if (avctx->codec->id == AV_CODEC_ID_HEVC)
+         out_port_params.format.video.eCompressionFormat = OMX_VIDEO_CodingHEVC;
++    else if (avctx->codec->id == AV_CODEC_ID_MJPEG)
++        out_port_params.format.video.eCompressionFormat = OMX_VIDEO_CodingMJPEG;
+ 
+     err = OMX_SetParameter(s->handle, OMX_IndexParamPortDefinition, &out_port_params);
+     CHECK(err);
+@@ -703,6 +709,9 @@ static av_cold int omx_decode_init(AVCodecContext *avctx)
+     case AV_CODEC_ID_HEVC:
+ 		role = "video_decoder.hevc";
+ 		break;
++    case AV_CODEC_ID_MJPEG:
++		role = "video_decoder.mjpeg";
++		break;
+     default:
+         return AVERROR(ENOSYS);
+     }
+@@ -852,11 +861,13 @@ static int omx_decode_frame(AVCodecContext *avctx, void *data,
+                             !pkt || had_partial);
+ 
+         if (!buffer) {
+-            /*eos is sent wait for vpu evnet_bufferflag to get all frames*/
+-+           if(s->eos_sent && !evnet_bufferflag){}
++            /*eos is sent wait for vpu evnet_bufferflag to get all frames
++			  mjpeg: sent a frame, then wait for a decoder frame 
++			*/
++            if((s->eos_sent && !evnet_bufferflag) || (avctx->codec_id == AV_CODEC_ID_MJPEG )) {
+ 				continue; 
+             }
+-				break;
++            break;
+         }
+ 		//if (!buffer)
+            // break;
+@@ -924,6 +935,7 @@ static av_cold int omx_decode_end(AVCodecContext *avctx)
+ #define OFFSET(x) offsetof(OMXCodecContext, x)
+ #define VDE AV_OPT_FLAG_VIDEO_PARAM | AV_OPT_FLAG_DECODING_PARAM | AV_OPT_FLAG_ENCODING_PARAM
+ #define VE  AV_OPT_FLAG_VIDEO_PARAM | AV_OPT_FLAG_ENCODING_PARAM
++#define VD  AV_OPT_FLAG_VIDEO_PARAM | AV_OPT_FLAG_DECODING_PARAM
+ static const AVOption options[] = {
+     { "omx_libname", "OpenMAX library name", OFFSET(libname), AV_OPT_TYPE_STRING, { 0 }, 0, 0, VDE },
+     { "omx_libprefix", "OpenMAX library prefix", OFFSET(libprefix), AV_OPT_TYPE_STRING, { 0 }, 0, 0, VDE },
+@@ -980,6 +992,7 @@ AVCodec ff_h264_omx_decoder = {
+     .capabilities     = AV_CODEC_CAP_DELAY,
+     .caps_internal    = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP,
+     .priv_class       = &omx_h264dec_class,
++    .bsfs             = "h264_mp4toannexb",
+ };
+ 
+ static const AVClass omx_hevcdec_class = {
+@@ -1001,4 +1014,25 @@ AVCodec ff_hevc_omx_decoder = {
+     .capabilities     = AV_CODEC_CAP_DELAY,
+     .caps_internal    = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP,
+     .priv_class       = &omx_hevcdec_class,
++    .bsfs             = "hevc_mp4toannexb",
++};
++
++static const AVClass omx_mjpegdec_class = {
++    .class_name = "mjpeg_omx",
++    .item_name  = av_default_item_name,
++    .version    = LIBAVUTIL_VERSION_INT,
++};
++AVCodec ff_mjpeg_omx_decoder = {
++    .name             = "mjpeg_omx",
++    .long_name        = NULL_IF_CONFIG_SMALL("OpenMAX IL mjpeg video decoder"),
++    .type             = AVMEDIA_TYPE_VIDEO,
++    .id               = AV_CODEC_ID_MJPEG,
++    .priv_data_size   = sizeof(OMXCodecContext),
++    .init             = omx_decode_init,
++    .decode           = omx_decode_frame,
++    .close            = omx_decode_end,
++	.capabilities	  = AV_CODEC_CAP_DR1,
++	.max_lowres 	  = 3,
++	.caps_internal	  = FF_CODEC_CAP_INIT_THREADSAFE,
++    .priv_class       = &omx_mjpegdec_class,
+ };
+diff --git a/libavformat/utils.c b/libavformat/utils.c
+index 262ff5f..4867810 100644
+--- a/libavformat/utils.c
++++ b/libavformat/utils.c
+@@ -219,6 +219,13 @@ static const AVCodec *find_probe_decoder(AVFormatContext *s, const AVStream *st,
+ 		return avcodec_find_decoder_by_name("hevc");
+ #endif
+ 
++#if CONFIG_MJPEG_DECODER
++		/* Other parts of the code assume this decoder to be used for mjpeg,
++		 * so force it if possible. */
++		if (codec_id == AV_CODEC_ID_MJPEG)
++			return avcodec_find_decoder_by_name("mjpeg");
++#endif
++
+     codec = find_decoder(s, st, codec_id);
+     if (!codec)
+         return NULL;
+-- 
+2.17.1
+

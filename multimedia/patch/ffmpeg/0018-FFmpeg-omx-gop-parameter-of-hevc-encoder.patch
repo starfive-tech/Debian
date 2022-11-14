@@ -1,0 +1,35 @@
+From 67b9e00e3abaa9179de91387bab9d00aa994d250 Mon Sep 17 00:00:00 2001
+From: "arvin.zhu" <arvin.zhu@starfivetech.com>
+Date: Wed, 2 Nov 2022 12:32:56 +0800
+Subject: [PATCH] FFmpeg:omx: gop parameter of hevc encoder
+
+repair gop parameter of hevc encoder not take effect
+
+Signed-off-by: arvin.zhu <arvin.zhu@starfivetech.com>
+---
+ libavcodec/omx.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/libavcodec/omx.c b/libavcodec/omx.c
+index 77012ce..d101fa4 100755
+--- a/libavcodec/omx.c
++++ b/libavcodec/omx.c
+@@ -561,13 +561,12 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+         err = OMX_SetParameter(s->handle, OMX_IndexParamVideoAvc, &avc);
+         CHECK(err);
+     } else if (avctx->codec->id == AV_CODEC_ID_HEVC) {
+-        OMX_VIDEO_PARAM_AVCTYPE hevc = { 0 };
++        OMX_VIDEO_PARAM_HEVCTYPE hevc = { 0 };
+         INIT_STRUCT(hevc);
+         hevc.nPortIndex = s->out_port;
+         err = OMX_GetParameter(s->handle, OMX_IndexParamVideoHevc, &hevc);
+         CHECK(err);
+-        hevc.nBFrames = 0;
+-        hevc.nPFrames = avctx->gop_size;
++        hevc.nKeyFrameInterval = avctx->gop_size;
+         err = OMX_SetParameter(s->handle, OMX_IndexParamVideoHevc, &hevc);
+         CHECK(err);
+     }
+-- 
+2.17.1
+

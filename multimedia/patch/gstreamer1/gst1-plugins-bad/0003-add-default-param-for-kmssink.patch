@@ -1,0 +1,25 @@
+Add default parameters for kmssink so that it can be used by other plug
+
+Signed-off-by: Leo Lu <leo.lu@starfivetech.com>
+
+diff -purN a/sys/kms/gstkmssink.c b/sys/kms/gstkmssink.c
+--- a/sys/kms/gstkmssink.c	2022-10-31 17:48:04.390225610 +0800
++++ b/sys/kms/gstkmssink.c	2022-10-31 17:45:50.462455826 +0800
+@@ -175,7 +175,7 @@ gst_kms_sink_video_overlay_init (GstVide
+ static int
+ kms_open (gchar ** driver)
+ {
+-  static const char *drivers[] = { "i915", "radeon", "nouveau", "vmwgfx",
++  static const char *drivers[] = { "starfive", "i915", "radeon", "nouveau", "vmwgfx",
+     "exynos", "amdgpu", "imx-drm", "rockchip", "atmel-hlcdc", "msm",
+     "xlnx", "vc4", "meson", "sun4i-drm", "mxsfb-drm",
+     "xilinx_drm",               /* DEPRECATED. Replaced by xlnx */
+@@ -2005,7 +2005,7 @@ gst_kms_sink_class_init (GstKMSSinkClass
+    */
+   g_properties[PROP_FORCE_MODESETTING] =
+       g_param_spec_boolean ("force-modesetting", "Force modesetting",
+-      "When enabled, the sink try to configure the display mode", FALSE,
++      "When enabled, the sink try to configure the display mode", TRUE,
+       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT);
+ 
+   /**

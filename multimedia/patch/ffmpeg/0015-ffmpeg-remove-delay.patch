@@ -1,0 +1,52 @@
+From 74c4c2a25bb185ede7162a39a2d43c75a6276573 Mon Sep 17 00:00:00 2001
+From: "arvin.zhu" <arvin.zhu@starfivetech.com>
+Date: Fri, 30 Sep 2022 12:01:06 +0800
+Subject: [PATCH] ffmpeg: remove delay
+
+remove delay for decoding in omx.c file
+
+Signed-off-by: arvin.zhu <arvin.zhu@starfivetech.com>
+---
+ libavcodec/omxdec.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/libavcodec/omxdec.c b/libavcodec/omxdec.c
+index 074ff4a..0957605 100755
+--- a/libavcodec/omxdec.c
++++ b/libavcodec/omxdec.c
+@@ -863,8 +863,8 @@ static int omx_decode_frame(AVCodecContext *avctx, void *data,
+     if (pkt->size) {
+ 
+         //VPU init and fill buffer slow, so empty buf sleep to send before get vpu fill buf.
+-        if(!s->first_get_outbuffer)
+-        av_usleep(100000);
++        // if(!s->first_get_outbuffer)
++        // av_usleep(100000);
+         buffer = get_buffer(&s->input_mutex, &s->input_cond,
+                             &s->num_free_in_buffers, s->free_in_buffers, 1);
+ 
+@@ -904,8 +904,8 @@ static int omx_decode_frame(AVCodecContext *avctx, void *data,
+         }
+     } else if (!s->eos_sent) {
+ 
+-        if(!s->first_get_outbuffer)
+-        av_usleep(1000000);
++        // if(!s->first_get_outbuffer)
++        // av_usleep(1000000);
+         buffer = get_buffer(&s->input_mutex, &s->input_cond,
+                             &s->num_free_in_buffers, s->free_in_buffers, 1);
+ 
+@@ -946,8 +946,8 @@ static int omx_decode_frame(AVCodecContext *avctx, void *data,
+         }
+         //if (!buffer)
+            // break;
+-        if(!s->first_get_outbuffer)
+-            s->first_get_outbuffer = 1;
++        // if(!s->first_get_outbuffer)
++        //     s->first_get_outbuffer = 1;
+ 
+         if(!buffer->nFilledLen){
+             av_log(avctx, AV_LOG_ERROR, "buffer->nFilledLen %d\n",(int)buffer->nFilledLen);
+-- 
+2.17.1
+

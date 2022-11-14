@@ -1,0 +1,59 @@
+From f7401faa595d8cd70392c73ce9578ed1e83ed81b Mon Sep 17 00:00:00 2001
+From: "arvin.zhu" <arvin.zhu@starfivetech.com>
+Date: Thu, 22 Sep 2022 19:06:50 +0800
+Subject: [PATCH] ffmpeg: add delay for decoding
+
+add delay for decoding
+
+Signed-off-by: arvin.zhu <arvin.zhu@starfivetech.com>
+---
+ libavcodec/omxdec.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+ mode change 100644 => 100755 libavcodec/omxdec.c
+
+diff --git a/libavcodec/omxdec.c b/libavcodec/omxdec.c
+old mode 100644
+new mode 100755
+index 32f39f3..03a2bca
+--- a/libavcodec/omxdec.c
++++ b/libavcodec/omxdec.c
+@@ -262,7 +262,7 @@ typedef struct OMXCodecContext {
+ 
+     int mutex_cond_inited;
+ 
+-    int eos_sent, got_eos, evnet_bufferflag;
++    int eos_sent, got_eos, evnet_bufferflag, first_get_outbuffer;
+ 
+ 	int extradata_sent;
+ 
+@@ -792,6 +792,9 @@ static int omx_decode_frame(AVCodecContext *avctx, void *data,
+ 
+     if (pkt->size) {
+ 	
++        //VPU init and fill buffer slow, so empty buf sleep to send before get vpu fill buf.
++        if(!s->first_get_outbuffer)
++        av_usleep(100000);
+         buffer = get_buffer(&s->input_mutex, &s->input_cond,
+                             &s->num_free_in_buffers, s->free_in_buffers, 1);
+ 
+@@ -831,6 +834,8 @@ static int omx_decode_frame(AVCodecContext *avctx, void *data,
+ 	    }
+     } else if (!s->eos_sent) {
+ 		
++        if(!s->first_get_outbuffer)
++        av_usleep(1000000);
+         buffer = get_buffer(&s->input_mutex, &s->input_cond,
+                             &s->num_free_in_buffers, s->free_in_buffers, 1);
+ 
+@@ -871,6 +876,8 @@ static int omx_decode_frame(AVCodecContext *avctx, void *data,
+         }
+ 		//if (!buffer)
+            // break;
++        if(!s->first_get_outbuffer)
++            s->first_get_outbuffer = 1;
+ 
+ 		if(!buffer->nFilledLen){
+             av_log(avctx, AV_LOG_ERROR, "buffer->nFilledLen %d\n",(int)buffer->nFilledLen);
+-- 
+2.17.1
+

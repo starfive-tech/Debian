@@ -1,0 +1,1027 @@
+Reset DRM to initial state on each playing.
+
+Signed-off-by: Windsome Zeng <windsome.zeng@starfivetech.com>
+
+diff -purN a/sys/kms/gstkmsallocator.c b/sys/kms/gstkmsallocator.c
+--- a/sys/kms/gstkmsallocator.c	2022-09-06 11:07:01.464180909 +0800
++++ b/sys/kms/gstkmsallocator.c	2022-09-06 11:03:57.761729431 +0800
+@@ -384,6 +384,9 @@ gst_kms_memory_map (GstMemory * mem, gsi
+   }
+   kmsmem->bo->ptr = out;
+ 
++  /* clear the framebuffer to 0 */
++  memset(out, 0, kmsmem->bo->size);
++
+ out:
+   g_atomic_int_inc (&kmsmem->bo->refs);
+   return kmsmem->bo->ptr;
+diff -purN a/sys/kms/gstkmssink.c b/sys/kms/gstkmssink.c
+--- a/sys/kms/gstkmssink.c	2022-09-06 11:07:01.464180909 +0800
++++ b/sys/kms/gstkmssink.c	2022-09-06 11:03:57.761729431 +0800
+@@ -74,6 +74,8 @@ static GstFlowReturn gst_kms_sink_show_f
+ static void gst_kms_sink_video_overlay_init (GstVideoOverlayInterface * iface);
+ static void gst_kms_sink_drain (GstKMSSink * self);
+ 
++int gst_kms_sink_reset_drm(GstKMSSink * self);
++
+ #define parent_class gst_kms_sink_parent_class
+ G_DEFINE_TYPE_WITH_CODE (GstKMSSink, gst_kms_sink, GST_TYPE_VIDEO_SINK,
+     GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, GST_PLUGIN_NAME, 0,
+@@ -818,6 +820,9 @@ retry_find_plane:
+   g_object_notify_by_pspec (G_OBJECT (self), g_properties[PROP_DISPLAY_WIDTH]);
+   g_object_notify_by_pspec (G_OBJECT (self), g_properties[PROP_DISPLAY_HEIGHT]);
+ 
++  GST_INFO_OBJECT (self, "Reset DRM to initial state using atomic API.");
++  gst_kms_sink_reset_drm (self);
++
+   gst_kms_sink_update_connector_properties (self);
+   gst_kms_sink_update_plane_properties (self);
+ 
+diff -purN a/sys/kms/meson.build b/sys/kms/meson.build
+--- a/sys/kms/meson.build	2022-09-06 11:07:01.464180909 +0800
++++ b/sys/kms/meson.build	2022-09-06 11:03:57.761729431 +0800
+@@ -3,6 +3,7 @@ kmssink_sources = [
+   'gstkmsbufferpool.c',
+   'gstkmssink.c',
+   'gstkmsutils.c',
++  'mymodetest.c',
+ ]
+ 
+ if host_system != 'linux'
+diff -purN a/sys/kms/mymodetest.c b/sys/kms/mymodetest.c
+--- a/sys/kms/mymodetest.c	1970-01-01 08:00:00.000000000 +0800
++++ b/sys/kms/mymodetest.c	2022-09-06 11:03:57.761729431 +0800
+@@ -0,0 +1,973 @@
++/*
++ * SPDX-License-Identifier: GPL-2.0
++ *
++ * Copyright (C) 2022 StarFive Technology Co., Ltd.
++ *
++ * Description: Reset drm to initial state in atomic API.
++ * This code is modified from libdrm/modetest. Instead of command line, all 
++ * its info comes from GstKMSSink, such as crtc/plane/connector etc.
++ *   Windsome Zeng <windsome.zeng@starfivetech.com>
++ */
++
++/*
++ * DRM based mode setting test program
++ * Copyright 2008 Tungsten Graphics
++ *   Jakob Bornecrantz <jakob@tungstengraphics.com>
++ * Copyright 2008 Intel Corporation
++ *   Jesse Barnes <jesse.barnes@intel.com>
++ *
++ * Permission is hereby granted, free of charge, to any person obtaining a
++ * copy of this software and associated documentation files (the "Software"),
++ * to deal in the Software without restriction, including without limitation
++ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
++ * and/or sell copies of the Software, and to permit persons to whom the
++ * Software is furnished to do so, subject to the following conditions:
++ *
++ * The above copyright notice and this permission notice shall be included in
++ * all copies or substantial portions of the Software.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
++ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
++ * IN THE SOFTWARE.
++ */
++
++/*
++ * This fairly simple test program dumps output in a similar format to the
++ * "xrandr" tool everyone knows & loves.  It's necessarily slightly different
++ * since the kernel separates outputs into encoder and connector structures,
++ * each with their own unique ID.  The program also allows test testing of the
++ * memory management and mode setting APIs by allowing the user to specify a
++ * connector and mode to use for mode setting.  If all works as expected, a
++ * blue background should be painted on the monitor attached to the specified
++ * connector after the selected mode is set.
++ *
++ * TODO: use cairo to write the mode info on the selected output once
++ *       the mode has been programmed, along with possible test patterns.
++ */
++
++#include <assert.h>
++#include <ctype.h>
++#include <stdbool.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <stdint.h>
++#include <inttypes.h>
++#include <unistd.h>
++#include <string.h>
++#include <strings.h>
++#include <errno.h>
++#include <poll.h>
++#include <sys/time.h>
++#if HAVE_SYS_SELECT_H
++#include <sys/select.h>
++#endif
++#include <math.h>
++
++#include "xf86drm.h"
++#include "xf86drmMode.h"
++#include "drm_fourcc.h"
++
++#include <gst/video/video.h>
++#include "gstkmssink.h"
++
++int gst_kms_sink_reset_drm(GstKMSSink * self);
++
++struct crtc {
++    drmModeCrtc *crtc;
++    drmModeObjectProperties *props;
++    drmModePropertyRes **props_info;
++    drmModeModeInfo *mode;
++};
++
++struct encoder {
++    drmModeEncoder *encoder;
++};
++
++struct connector {
++    drmModeConnector *connector;
++    drmModeObjectProperties *props;
++    drmModePropertyRes **props_info;
++    char *name;
++};
++
++struct fb {
++    drmModeFB *fb;
++};
++
++struct plane {
++    drmModePlane *plane;
++    drmModeObjectProperties *props;
++    drmModePropertyRes **props_info;
++};
++
++struct resources {
++    struct crtc *crtcs;
++    int count_crtcs;
++    struct encoder *encoders;
++    int count_encoders;
++    struct connector *connectors;
++    int count_connectors;
++    struct fb *fbs;
++    int count_fbs;
++    struct plane *planes;
++    uint32_t count_planes;
++};
++
++struct device {
++    int fd;
++
++    struct resources *resources;
++
++    struct {
++        unsigned int width;
++        unsigned int height;
++
++        unsigned int fb_id;
++        struct bo *bo;
++        struct bo *cursor_bo;
++    } mode;
++
++    int use_atomic;
++    drmModeAtomicReq *req;
++};
++
++static inline int64_t U642I64(uint64_t val)
++{
++    return (int64_t)*((int64_t *)&val);
++}
++
++static float mode_vrefresh(drmModeModeInfo *mode)
++{
++    return  mode->clock * 1000.00
++            / (mode->htotal * mode->vtotal);
++}
++
++static void free_resources(struct resources *res)
++{
++    int i;
++
++    if (!res)
++        return;
++
++#define free_resource(_res, type, Type)                    \
++    do {                                    \
++        if (!(_res)->type##s)                        \
++            break;                            \
++        for (i = 0; i < (int)(_res)->count_##type##s; ++i) {    \
++            if (!(_res)->type##s[i].type)                \
++                break;                        \
++            drmModeFree##Type((_res)->type##s[i].type);        \
++        }                                \
++        free((_res)->type##s);                        \
++    } while (0)
++
++#define free_properties(_res, type)                    \
++    do {                                    \
++        for (i = 0; i < (int)(_res)->count_##type##s; ++i) {    \
++            unsigned int j;                                        \
++            for (j = 0; j < res->type##s[i].props->count_props; ++j)\
++                drmModeFreeProperty(res->type##s[i].props_info[j]);\
++            free(res->type##s[i].props_info);            \
++            drmModeFreeObjectProperties(res->type##s[i].props);    \
++        }                                \
++    } while (0)
++
++    free_properties(res, plane);
++    free_resource(res, plane, Plane);
++
++    free_properties(res, connector);
++    free_properties(res, crtc);
++
++    for (i = 0; i < res->count_connectors; i++)
++        free(res->connectors[i].name);
++
++    free_resource(res, fb, FB);
++    free_resource(res, connector, Connector);
++    free_resource(res, encoder, Encoder);
++    free_resource(res, crtc, Crtc);
++
++    free(res);
++}
++
++struct type_name {
++    unsigned int type;
++    const char *name;
++};
++
++#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
++
++static const char *util_lookup_type_name(unsigned int type,
++                     const struct type_name *table,
++                     unsigned int count)
++{
++    unsigned int i;
++
++    for (i = 0; i < count; i++)
++        if (table[i].type == type)
++            return table[i].name;
++
++    return NULL;
++}
++
++static const struct type_name connector_type_names[] = {
++    { DRM_MODE_CONNECTOR_Unknown, "unknown" },
++    { DRM_MODE_CONNECTOR_VGA, "VGA" },
++    { DRM_MODE_CONNECTOR_DVII, "DVI-I" },
++    { DRM_MODE_CONNECTOR_DVID, "DVI-D" },
++    { DRM_MODE_CONNECTOR_DVIA, "DVI-A" },
++    { DRM_MODE_CONNECTOR_Composite, "composite" },
++    { DRM_MODE_CONNECTOR_SVIDEO, "s-video" },
++    { DRM_MODE_CONNECTOR_LVDS, "LVDS" },
++    { DRM_MODE_CONNECTOR_Component, "component" },
++    { DRM_MODE_CONNECTOR_9PinDIN, "9-pin DIN" },
++    { DRM_MODE_CONNECTOR_DisplayPort, "DP" },
++    { DRM_MODE_CONNECTOR_HDMIA, "HDMI-A" },
++    { DRM_MODE_CONNECTOR_HDMIB, "HDMI-B" },
++    { DRM_MODE_CONNECTOR_TV, "TV" },
++    { DRM_MODE_CONNECTOR_eDP, "eDP" },
++    { DRM_MODE_CONNECTOR_VIRTUAL, "Virtual" },
++    { DRM_MODE_CONNECTOR_DSI, "DSI" },
++    { DRM_MODE_CONNECTOR_DPI, "DPI" },
++};
++
++static const char *util_lookup_connector_type_name(unsigned int type)
++{
++    return util_lookup_type_name(type, connector_type_names,
++                     ARRAY_SIZE(connector_type_names));
++}
++
++static struct resources *get_resources(struct device *dev)
++{
++    drmModeRes *_res;
++    drmModePlaneRes *plane_res;
++    struct resources *res;
++    int i;
++
++    res = calloc(1, sizeof(*res));
++    if (res == 0)
++        return NULL;
++
++    drmSetClientCap(dev->fd, DRM_CLIENT_CAP_UNIVERSAL_PLANES, 1);
++
++    _res = drmModeGetResources(dev->fd);
++    if (!_res) {
++        fprintf(stderr, "drmModeGetResources failed: %s\n",
++            strerror(errno));
++        free(res);
++        return NULL;
++    }
++
++    res->count_crtcs = _res->count_crtcs;
++    res->count_encoders = _res->count_encoders;
++    res->count_connectors = _res->count_connectors;
++    res->count_fbs = _res->count_fbs;
++
++    res->crtcs = calloc(res->count_crtcs, sizeof(*res->crtcs));
++    res->encoders = calloc(res->count_encoders, sizeof(*res->encoders));
++    res->connectors = calloc(res->count_connectors, sizeof(*res->connectors));
++    res->fbs = calloc(res->count_fbs, sizeof(*res->fbs));
++
++    if (!res->crtcs || !res->encoders || !res->connectors || !res->fbs) {
++        drmModeFreeResources(_res);
++        goto error;
++    }
++
++#define get_resource(_res, __res, type, Type)                    \
++    do {                                    \
++        for (i = 0; i < (int)(_res)->count_##type##s; ++i) {    \
++            uint32_t type##id = (__res)->type##s[i];            \
++            (_res)->type##s[i].type =                            \
++                drmModeGet##Type(dev->fd, type##id);            \
++            if (!(_res)->type##s[i].type)                        \
++                fprintf(stderr, "could not get %s %i: %s\n",    \
++                    #type, type##id,                            \
++                    strerror(errno));            \
++        }                                \
++    } while (0)
++
++    get_resource(res, _res, crtc, Crtc);
++    get_resource(res, _res, encoder, Encoder);
++    get_resource(res, _res, connector, Connector);
++    get_resource(res, _res, fb, FB);
++
++    drmModeFreeResources(_res);
++
++    /* Set the name of all connectors based on the type name and the per-type ID. */
++    for (i = 0; i < res->count_connectors; i++) {
++        struct connector *connector = &res->connectors[i];
++        drmModeConnector *conn = connector->connector;
++        int num;
++
++        num = asprintf(&connector->name, "%s-%u",
++             util_lookup_connector_type_name(conn->connector_type),
++             conn->connector_type_id);
++        if (num < 0)
++            goto error;
++    }
++
++#define get_properties(_res, type, Type)                    \
++    do {                                    \
++        for (i = 0; i < (int)(_res)->count_##type##s; ++i) {    \
++            struct type *obj = &res->type##s[i];            \
++            unsigned int j;                        \
++            obj->props =                        \
++                drmModeObjectGetProperties(dev->fd, obj->type->type##_id, \
++                               DRM_MODE_OBJECT_##Type); \
++            if (!obj->props) {                    \
++                fprintf(stderr,                    \
++                    "could not get %s %i properties: %s\n", \
++                    #type, obj->type->type##_id,        \
++                    strerror(errno));            \
++                continue;                    \
++            }                            \
++            obj->props_info = calloc(obj->props->count_props,    \
++                         sizeof(*obj->props_info));    \
++            if (!obj->props_info)                    \
++                continue;                    \
++            for (j = 0; j < obj->props->count_props; ++j)        \
++                obj->props_info[j] =                \
++                    drmModeGetProperty(dev->fd, obj->props->props[j]); \
++        }                                \
++    } while (0)
++
++    get_properties(res, crtc, CRTC);
++    get_properties(res, connector, CONNECTOR);
++
++    for (i = 0; i < res->count_crtcs; ++i)
++        res->crtcs[i].mode = &res->crtcs[i].crtc->mode;
++
++    plane_res = drmModeGetPlaneResources(dev->fd);
++    if (!plane_res) {
++        fprintf(stderr, "drmModeGetPlaneResources failed: %s\n",
++            strerror(errno));
++        return res;
++    }
++
++    res->count_planes = plane_res->count_planes;
++
++    res->planes = calloc(res->count_planes, sizeof(*res->planes));
++    if (!res->planes) {
++        drmModeFreePlaneResources(plane_res);
++        goto error;
++    }
++
++    get_resource(res, plane_res, plane, Plane);
++    drmModeFreePlaneResources(plane_res);
++    get_properties(res, plane, PLANE);
++
++    return res;
++
++error:
++    free_resources(res);
++    return NULL;
++}
++
++static struct crtc *get_crtc_by_id(struct device *dev, uint32_t id)
++{
++    int i;
++
++    for (i = 0; i < dev->resources->count_crtcs; ++i) {
++        drmModeCrtc *crtc = dev->resources->crtcs[i].crtc;
++        if (crtc && crtc->crtc_id == id)
++            return &dev->resources->crtcs[i];
++    }
++
++    return NULL;
++}
++
++static uint32_t get_crtc_mask(struct device *dev, struct crtc *crtc)
++{
++    unsigned int i;
++
++    for (i = 0; i < (unsigned int)dev->resources->count_crtcs; i++) {
++        if (crtc->crtc->crtc_id == dev->resources->crtcs[i].crtc->crtc_id)
++            return 1 << i;
++    }
++    /* Unreachable: crtc->crtc is one of resources->crtcs[] */
++    /* Don't return zero or static analysers will complain */
++    abort();
++    return 0;
++}
++
++static drmModeConnector *get_connector_by_id(struct device *dev, uint32_t id)
++{
++    drmModeConnector *connector;
++    int i;
++
++    for (i = 0; i < dev->resources->count_connectors; i++) {
++        connector = dev->resources->connectors[i].connector;
++        if (connector && connector->connector_id == id)
++            return connector;
++    }
++
++    return NULL;
++}
++
++static drmModeEncoder *get_encoder_by_id(struct device *dev, uint32_t id)
++{
++    drmModeEncoder *encoder;
++    int i;
++
++    for (i = 0; i < dev->resources->count_encoders; i++) {
++        encoder = dev->resources->encoders[i].encoder;
++        if (encoder && encoder->encoder_id == id)
++            return encoder;
++    }
++
++    return NULL;
++}
++
++/* -----------------------------------------------------------------------------
++ * Pipes and planes
++ */
++
++/*
++ * Mode setting with the kernel interfaces is a bit of a chore.
++ * First you have to find the connector in question and make sure the
++ * requested mode is available.
++ * Then you need to find the encoder attached to that connector so you
++ * can bind it with a free crtc.
++ */
++struct pipe_arg {
++    const char **cons;
++    uint32_t *con_ids;
++    unsigned int num_cons;
++    uint32_t crtc_id;
++    char mode_str[64];
++    char format_str[5];
++    float vrefresh;
++    unsigned int fourcc;
++    drmModeModeInfo *mode;
++    struct crtc *crtc;
++    unsigned int fb_id[2], current_fb_id;
++    struct timeval start;
++
++    int swap_count;
++};
++
++struct plane_arg {
++    uint32_t plane_id;  /* the id of plane to use */
++    uint32_t crtc_id;  /* the id of CRTC to bind to */
++    bool has_position;
++    int32_t x, y;
++    uint32_t w, h;
++    double scale;
++    unsigned int fb_id;
++    unsigned int old_fb_id;
++    struct bo *bo;
++    struct bo *old_bo;
++    char format_str[5]; /* need to leave room for terminating \0 */
++    unsigned int fourcc;
++};
++
++static drmModeModeInfo *
++connector_find_mode(struct device *dev, uint32_t con_id, const char *mode_str,
++    const float vrefresh)
++{
++    drmModeConnector *connector;
++    drmModeModeInfo *mode;
++    int i;
++
++    connector = get_connector_by_id(dev, con_id);
++    if (!connector || !connector->count_modes)
++        return NULL;
++
++    /* Pick by Index */
++    if (mode_str[0] == '#') {
++        int index = atoi(mode_str + 1);
++
++        if (index >= connector->count_modes || index < 0)
++            return NULL;
++        return &connector->modes[index];
++    }
++
++    /* Pick by Name */
++    for (i = 0; i < connector->count_modes; i++) {
++        mode = &connector->modes[i];
++        if (!strcmp(mode->name, mode_str)) {
++            /* If the vertical refresh frequency is not specified
++             * then return the first mode that match with the name.
++             * Else, return the mode that match the name and
++             * the specified vertical refresh frequency.
++             */
++            if (vrefresh == 0)
++                return mode;
++            else if (fabs(mode_vrefresh(mode) - vrefresh) < 0.005)
++                return mode;
++        }
++    }
++
++    return NULL;
++}
++
++static struct crtc *pipe_find_crtc(struct device *dev, struct pipe_arg *pipe)
++{
++    uint32_t possible_crtcs = ~0;
++    uint32_t active_crtcs = 0;
++    unsigned int crtc_idx;
++    unsigned int i;
++    int j;
++
++    for (i = 0; i < pipe->num_cons; ++i) {
++        uint32_t crtcs_for_connector = 0;
++        drmModeConnector *connector;
++        drmModeEncoder *encoder;
++        struct crtc *crtc;
++
++        connector = get_connector_by_id(dev, pipe->con_ids[i]);
++        if (!connector)
++            return NULL;
++
++        for (j = 0; j < connector->count_encoders; ++j) {
++            encoder = get_encoder_by_id(dev, connector->encoders[j]);
++            if (!encoder)
++                continue;
++
++            crtcs_for_connector |= encoder->possible_crtcs;
++            crtc = get_crtc_by_id(dev, encoder->crtc_id);
++            if (!crtc)
++                continue;
++            active_crtcs |= get_crtc_mask(dev, crtc);
++        }
++
++        possible_crtcs &= crtcs_for_connector;
++    }
++
++    if (!possible_crtcs)
++        return NULL;
++
++    /* Return the first possible and active CRTC if one exists, or the first
++     * possible CRTC otherwise.
++     */
++    if (possible_crtcs & active_crtcs)
++        crtc_idx = ffs(possible_crtcs & active_crtcs);
++    else
++        crtc_idx = ffs(possible_crtcs);
++
++    return &dev->resources->crtcs[crtc_idx - 1];
++}
++
++static int pipe_find_crtc_and_mode(struct device *dev, struct pipe_arg *pipe)
++{
++    drmModeModeInfo *mode = NULL;
++    int i;
++
++    pipe->mode = NULL;
++
++    for (i = 0; i < (int)pipe->num_cons; i++) {
++        mode = connector_find_mode(dev, pipe->con_ids[i],
++                       pipe->mode_str, pipe->vrefresh);
++        if (mode == NULL) {
++            if (pipe->vrefresh)
++                fprintf(stderr,
++                "failed to find mode "
++                "\"%s-%.2fHz\" for connector %d\n",
++                pipe->mode_str, pipe->vrefresh, pipe->con_ids[i]);
++            else
++                fprintf(stderr,
++                "failed to find mode \"%s\" for connector %d\n",
++                pipe->mode_str, pipe->con_ids[i]);
++            return -EINVAL;
++        }
++    }
++
++    /* If the CRTC ID was specified, get the corresponding CRTC. Otherwise
++     * locate a CRTC that can be attached to all the connectors.
++     */
++    if (pipe->crtc_id != (uint32_t)-1) {
++        pipe->crtc = get_crtc_by_id(dev, pipe->crtc_id);
++    } else {
++        pipe->crtc = pipe_find_crtc(dev, pipe);
++        pipe->crtc_id = pipe->crtc->crtc->crtc_id;
++    }
++
++    if (!pipe->crtc) {
++        fprintf(stderr, "failed to find CRTC for pipe\n");
++        return -EINVAL;
++    }
++
++    pipe->mode = mode;
++    pipe->crtc->mode = mode;
++
++    return 0;
++}
++
++/* -----------------------------------------------------------------------------
++ * Properties
++ */
++
++struct property_arg {
++    uint32_t obj_id;
++    uint32_t obj_type;
++    char name[DRM_PROP_NAME_LEN+1];
++    uint32_t prop_id;
++    uint64_t value;
++    bool optional;
++};
++
++static bool set_property(struct device *dev, struct property_arg *p)
++{
++    drmModeObjectProperties *props = NULL;
++    drmModePropertyRes **props_info = NULL;
++    const char *obj_type;
++    int ret;
++    int i;
++
++    p->obj_type = 0;
++    p->prop_id = 0;
++
++#define find_object(_res, type, Type)                    \
++    do {                                    \
++        for (i = 0; i < (int)(_res)->count_##type##s; ++i) {    \
++            struct type *obj = &(_res)->type##s[i];            \
++            if (obj->type->type##_id != p->obj_id)            \
++                continue;                    \
++            p->obj_type = DRM_MODE_OBJECT_##Type;            \
++            obj_type = #Type;                    \
++            props = obj->props;                    \
++            props_info = obj->props_info;                \
++        }                                \
++    } while(0)                                \
++
++    find_object(dev->resources, crtc, CRTC);
++    if (p->obj_type == 0)
++        find_object(dev->resources, connector, CONNECTOR);
++    if (p->obj_type == 0)
++        find_object(dev->resources, plane, PLANE);
++    if (p->obj_type == 0) {
++        fprintf(stderr, "Object %i not found, can't set property\n",
++            p->obj_id);
++        return false;
++    }
++
++    if (!props) {
++        fprintf(stderr, "%s %i has no properties\n",
++            obj_type, p->obj_id);
++        return false;
++    }
++
++    for (i = 0; i < (int)props->count_props; ++i) {
++        if (!props_info[i])
++            continue;
++        if (strcmp(props_info[i]->name, p->name) == 0)
++            break;
++    }
++
++    if (i == (int)props->count_props) {
++        if (!p->optional)
++            fprintf(stderr, "%s %i has no %s property\n",
++                obj_type, p->obj_id, p->name);
++        return false;
++    }
++
++    p->prop_id = props->props[i];
++
++    if (!dev->use_atomic)
++        ret = drmModeObjectSetProperty(dev->fd, p->obj_id, p->obj_type,
++                                       p->prop_id, p->value);
++    else
++        ret = drmModeAtomicAddProperty(dev->req, p->obj_id, p->prop_id, p->value);
++
++    if (ret < 0)
++        fprintf(stderr, "failed to set %s %i property %s to %" PRIu64 ": %s\n",
++            obj_type, p->obj_id, p->name, p->value, strerror(errno));
++
++    return true;
++}
++
++/* -------------------------------------------------------------------------- */
++
++static void add_property(struct device *dev, uint32_t obj_id,
++                   const char *name, uint64_t value)
++{
++    struct property_arg p;
++
++    p.obj_id = obj_id;
++    strcpy(p.name, name);
++    p.value = value;
++
++    set_property(dev, &p);
++}
++
++static bool add_property_optional(struct device *dev, uint32_t obj_id,
++                  const char *name, uint64_t value)
++{
++    struct property_arg p;
++
++    p.obj_id = obj_id;
++    strcpy(p.name, name);
++    p.value = value;
++    p.optional = true;
++
++    return set_property(dev, &p);
++}
++
++static void util_smpte_c8_gamma(unsigned size, struct drm_color_lut *lut)
++{
++    if (size < 7 + 7 + 8) {
++        printf("Error: gamma too small: %d < %d\n", size, 7 + 7 + 8);
++        return;
++    }
++    memset(lut, 0, size * sizeof(struct drm_color_lut));
++
++#define FILL_COLOR(idx, r, g, b) \
++    lut[idx].red = (r) << 8; \
++    lut[idx].green = (g) << 8; \
++    lut[idx].blue = (b) << 8
++
++    FILL_COLOR( 0, 192, 192, 192);    /* grey */
++    FILL_COLOR( 1, 192, 192, 0  );    /* yellow */
++    FILL_COLOR( 2, 0,   192, 192);    /* cyan */
++    FILL_COLOR( 3, 0,   192, 0  );    /* green */
++    FILL_COLOR( 4, 192, 0,   192);    /* magenta */
++    FILL_COLOR( 5, 192, 0,   0  );    /* red */
++    FILL_COLOR( 6, 0,   0,   192);    /* blue */
++
++    FILL_COLOR( 7, 0,   0,   192);    /* blue */
++    FILL_COLOR( 8, 19,  19,  19 );    /* black */
++    FILL_COLOR( 9, 192, 0,   192);    /* magenta */
++    FILL_COLOR(10, 19,  19,  19 );    /* black */
++    FILL_COLOR(11, 0,   192, 192);    /* cyan */
++    FILL_COLOR(12, 19,  19,  19 );    /* black */
++    FILL_COLOR(13, 192, 192, 192);    /* grey */
++
++    FILL_COLOR(14, 0,   33,  76);    /* in-phase */
++    FILL_COLOR(15, 255, 255, 255);    /* super white */
++    FILL_COLOR(16, 50,  0,   106);    /* quadrature */
++    FILL_COLOR(17, 19,  19,  19);    /* black */
++    FILL_COLOR(18, 9,   9,   9);    /* 3.5% */
++    FILL_COLOR(19, 19,  19,  19);    /* 7.5% */
++    FILL_COLOR(20, 29,  29,  29);    /* 11.5% */
++    FILL_COLOR(21, 19,  19,  19);    /* black */
++
++#undef FILL_COLOR
++}
++
++static void set_gamma(struct device *dev, unsigned crtc_id, unsigned fourcc)
++{
++    unsigned blob_id = 0;
++    /* TODO: support 1024-sized LUTs, when the use-case arises */
++    struct drm_color_lut gamma_lut[256];
++    int i, ret;
++
++    if (fourcc == DRM_FORMAT_C8) {
++        /* TODO: Add C8 support for more patterns */
++        util_smpte_c8_gamma(256, gamma_lut);
++        drmModeCreatePropertyBlob(dev->fd, gamma_lut, sizeof(gamma_lut), &blob_id);
++    } else {
++        for (i = 0; i < 256; i++) {
++            gamma_lut[i].red =
++            gamma_lut[i].green =
++            gamma_lut[i].blue = i << 8;
++        }
++    }
++
++    add_property_optional(dev, crtc_id, "DEGAMMA_LUT", 0);
++    add_property_optional(dev, crtc_id, "CTM", 0);
++    if (!add_property_optional(dev, crtc_id, "GAMMA_LUT", blob_id)) {
++        uint16_t r[256], g[256], b[256];
++
++        for (i = 0; i < 256; i++) {
++            r[i] = gamma_lut[i].red;
++            g[i] = gamma_lut[i].green;
++            b[i] = gamma_lut[i].blue;
++        }
++
++        ret = drmModeCrtcSetGamma(dev->fd, crtc_id, 256, r, g, b);
++        if (ret)
++            fprintf(stderr, "failed to set gamma: %s\n", strerror(errno));
++    }
++}
++
++static void atomic_set_planes(struct device *dev, struct plane_arg *p,
++                  unsigned int count)
++{
++    if (p && (count > 0))
++        set_gamma(dev, p[0].crtc_id, p[0].fourcc);
++}
++
++static void atomic_clear_planes(struct device *dev, struct plane_arg *p, unsigned int count)
++{
++    unsigned int i;
++
++    for (i = 0; i < count; i++) {
++        add_property(dev, p[i].plane_id, "FB_ID", 0);
++        add_property(dev, p[i].plane_id, "CRTC_ID", 0);
++        add_property(dev, p[i].plane_id, "SRC_X", 0);
++        add_property(dev, p[i].plane_id, "SRC_Y", 0);
++        add_property(dev, p[i].plane_id, "SRC_W", 0);
++        add_property(dev, p[i].plane_id, "SRC_H", 0);
++        add_property(dev, p[i].plane_id, "CRTC_X", 0);
++        add_property(dev, p[i].plane_id, "CRTC_Y", 0);
++        add_property(dev, p[i].plane_id, "CRTC_W", 0);
++        add_property(dev, p[i].plane_id, "CRTC_H", 0);
++    }
++}
++
++static void atomic_clear_FB(struct device *dev, struct plane_arg *p, unsigned int count)
++{
++    unsigned int i;
++
++    for (i = 0; i < count; i++) {
++        if (p[i].fb_id) {
++            drmModeRmFB(dev->fd, p[i].fb_id);
++            p[i].fb_id = 0;
++        }
++        if (p[i].old_fb_id) {
++            drmModeRmFB(dev->fd, p[i].old_fb_id);
++            p[i].old_fb_id = 0;
++        }
++    }
++}
++
++static void set_mode(struct device *dev, struct pipe_arg *pipes, unsigned int count)
++{
++    unsigned int i, j;
++    int ret;
++
++    for (i = 0; i < count; i++) {
++        struct pipe_arg *pipe = &pipes[i];
++        ret = pipe_find_crtc_and_mode(dev, pipe);
++        if (ret < 0)
++            continue;
++    }
++
++    for (i = 0; i < count; i++) {
++        struct pipe_arg *pipe = &pipes[i];
++        uint32_t blob_id;
++
++        if (pipe->mode == NULL)
++            continue;
++
++        for (j = 0; j < pipe->num_cons; ++j) {
++            add_property(dev, pipe->con_ids[j], "CRTC_ID", pipe->crtc_id);
++        }
++
++        drmModeCreatePropertyBlob(dev->fd, pipe->mode, sizeof(*pipe->mode), &blob_id);
++        add_property(dev, pipe->crtc_id, "MODE_ID", blob_id);
++        add_property(dev, pipe->crtc_id, "ACTIVE", 1);
++    }
++}
++
++static void atomic_clear_mode(struct device *dev, struct pipe_arg *pipes, unsigned int count)
++{
++    unsigned int i;
++    unsigned int j;
++
++    for (i = 0; i < count; i++) {
++        struct pipe_arg *pipe = &pipes[i];
++
++        if (pipe->mode == NULL)
++            continue;
++
++        for (j = 0; j < pipe->num_cons; ++j)
++            add_property(dev, pipe->con_ids[j], "CRTC_ID",0);
++
++        add_property(dev, pipe->crtc_id, "MODE_ID", 0);
++        add_property(dev, pipe->crtc_id, "ACTIVE", 0);
++    }
++}
++
++int
++gst_kms_sink_reset_drm(GstKMSSink * self)
++{
++    int ret = -1;
++    struct device dev;
++    uint64_t cap = 0;
++
++    const unsigned int connector_count = 1, plane_count = 1;
++    struct pipe_arg pipe_args[1];
++    struct plane_arg plane_args[1];
++    uint32_t connectors[1];
++    GValueArray *formats = NULL;
++    GstStructure *st = NULL;
++
++    if (!self || (self->fd < 0))
++        return ret;
++
++    memset (&dev, 0, sizeof(dev));
++    memset (&plane_args, 0, sizeof(*plane_args));
++    memset (&pipe_args, 0, sizeof(*pipe_args));
++
++    dev.fd = self->fd;
++    ret = drmSetClientCap(dev.fd, DRM_CLIENT_CAP_ATOMIC, 1);
++    if (ret) {
++        fprintf(stderr, "no atomic modesetting support: %s\n", strerror(errno));
++        goto out;
++    }
++
++    ret = drmGetCap(dev.fd, DRM_CAP_DUMB_BUFFER, &cap);
++    if (ret || cap == 0) {
++        fprintf(stderr, "driver doesn't support the dumb buffer API\n");
++        goto out;
++    }
++
++    dev.use_atomic = 1;
++    dev.resources = get_resources(&dev);
++    if (!dev.resources)
++        goto out;
++
++    plane_args[0].plane_id = self->plane_id;  /* the id of plane to use */
++    plane_args[0].crtc_id = self->crtc_id;  /* the id of CRTC to bind to */
++    plane_args[0].w = self->render_rect.w;
++    plane_args[0].h = self->render_rect.h;
++    plane_args[0].scale = 1.0;
++    strncpy(plane_args[0].format_str, "NV12", 4);
++
++    /* Find the first supported format and also has correct FOURCC value. */
++    st = gst_caps_get_structure(self->allowed_caps, 0);
++    if (st && gst_structure_get_list (st, "format", &formats)) {
++        for (int i = 0; formats && (i < formats->n_values); ++i) {
++            const gchar *format = g_value_get_string(g_value_array_get_nth(formats, i));
++            if (format && (gst_video_format_to_fourcc(gst_video_format_from_string(format)) != 0)) {
++                strncpy(plane_args[0].format_str, format, 4);
++                break;
++            }
++        }
++
++        g_value_array_free(formats);
++        formats = NULL;
++    }
++
++    plane_args[0].fourcc = gst_video_format_to_fourcc(gst_video_format_from_string(plane_args[0].format_str));
++
++    connectors[0] = self->conn_id;
++    pipe_args[0].con_ids = connectors;
++    pipe_args[0].num_cons = connector_count;
++    pipe_args[0].crtc_id = self->crtc_id;
++    strncpy(pipe_args[0].format_str, plane_args[0].format_str, 4);
++    pipe_args[0].fourcc = plane_args[0].fourcc;
++    snprintf(pipe_args[0].mode_str, sizeof(pipe_args[0].mode_str), "%dx%d", plane_args[0].w, plane_args[0].h);
++
++    dev.req = drmModeAtomicAlloc();
++    set_mode(&dev, pipe_args, connector_count);
++    atomic_set_planes(&dev, plane_args, plane_count);
++    ret = drmModeAtomicCommit(dev.fd, dev.req, DRM_MODE_ATOMIC_ALLOW_MODESET, NULL);
++    if (ret) {
++        fprintf(stderr, "Atomic Commit failed [1]\n");
++        goto out;
++    }
++
++    // clear
++    atomic_clear_planes(&dev, plane_args, plane_count);
++    atomic_clear_mode(&dev, pipe_args, connector_count);
++    ret = drmModeAtomicCommit(dev.fd, dev.req, DRM_MODE_ATOMIC_ALLOW_MODESET, NULL);
++    if (ret)
++        fprintf(stderr, "Atomic Commit failed\n");
++    atomic_clear_FB(&dev, plane_args, plane_count);
++    drmModeAtomicFree(dev.req);
++    ret = 0;
++
++out:
++    free_resources(dev.resources);
++
++    ret = drmSetClientCap(dev.fd, DRM_CLIENT_CAP_ATOMIC, 0);
++    if (ret)
++        fprintf(stderr, "no atomic modesetting support: %s\n", strerror(errno));
++
++    return ret;
++}

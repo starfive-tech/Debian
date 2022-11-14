@@ -1,0 +1,83 @@
+From 39a500044fe9216453960529ae9320fda2ef73e4 Mon Sep 17 00:00:00 2001
+From: "sw.multimedia" <se.multimedia@starfivetech.com>
+Date: Wed, 25 May 2022 20:58:57 +0800
+Subject: [PATCH 6/8] fix omx decoder setting pix-fmt bug
+
+Signed-off-by: sw.multimedia <se.multimedia@starfivetech.com>
+---
+ libavcodec/omxdec.c | 36 ++++++++++++++++++++++++++++++++++--
+ 1 file changed, 34 insertions(+), 2 deletions(-)
+
+diff --git a/libavcodec/omxdec.c b/libavcodec/omxdec.c
+index 9eb5dca..8d00b86 100644
+--- a/libavcodec/omxdec.c
++++ b/libavcodec/omxdec.c
+@@ -28,6 +28,7 @@
+ #include <dlfcn.h>
+ #include <OMX_Core.h>
+ #include <OMX_Component.h>
++#include <OMX_IVCommon.h>
+ #include <pthread.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+@@ -80,6 +81,8 @@ static int64_t from_omx_ticks(OMX_TICKS value)
+         }                                                                 \
+     } while (0)
+ 
++#define FF_ARRAY_ELEMS(a) (sizeof(a) / sizeof((a)[0]))
++
+ typedef struct OMXContext {
+     void *lib;
+     void *lib2;
+@@ -93,6 +96,36 @@ typedef struct OMXContext {
+     void (*host_init)(void);
+ } OMXContext;
+ 
++static const struct {
++
++    int color_format;
++    enum AVPixelFormat pix_fmt;
++
++} color_formats[] = {
++
++    { OMX_COLOR_FormatYUV420Planar,                           AV_PIX_FMT_YUV420P },
++    { OMX_COLOR_FormatYUV420SemiPlanar,                       AV_PIX_FMT_NV12    },
++    { OMX_COLOR_FormatYUV420PackedSemiPlanar,                 AV_PIX_FMT_NV21    },
++    { 0 }
++};
++
++static enum AVPixelFormat omx_map_color_format(AVCodecContext *avctx, int color_format)
++{
++    int i;
++    enum AVPixelFormat ret = AV_PIX_FMT_NONE;
++
++    for (i = 0; i < FF_ARRAY_ELEMS(color_formats); i++) {
++        if (color_formats[i].color_format == color_format) {
++            return color_formats[i].pix_fmt;
++        }
++    }
++
++    av_log(avctx, AV_LOG_ERROR, "Output color format 0x%x (value=%d) is not supported\n",
++        color_format, color_format);
++
++    return ret;
++}
++
+ static av_cold void *dlsym_prefixed(void *handle, const char *symbol, const char *prefix)
+ {
+     char buf[50];
+@@ -835,10 +868,9 @@ static int omx_decode_frame(AVCodecContext *avctx, void *data,
+ 
+         avctx->width = dec_out_width;
+ 		avctx->height = dec_out_height;
+-		avctx->pix_fmt = AV_PIX_FMT_YUV420P;
++        avctx->pix_fmt = omx_map_color_format(avctx, dec_pix_fmt);
+ 		s->stride     = avctx->width;
+     	s->plane_size = avctx->height;
+-		//avctx->pix_fmt = dec_pix_fmt;
+ 		
+         if (buffer->nFlags & OMX_BUFFERFLAG_EOS)
+             s->got_eos = 1;
+-- 
+2.17.1
+

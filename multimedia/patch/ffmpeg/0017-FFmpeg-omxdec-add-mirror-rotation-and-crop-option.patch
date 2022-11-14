@@ -1,0 +1,265 @@
+From 0c7df7e92eb46143fabeefd42af3023e6b7fc53f Mon Sep 17 00:00:00 2001
+From: "arvin.zhu" <arvin.zhu@starfivetech.com>
+Date: Fri, 21 Oct 2022 10:39:31 +0800
+Subject: [PATCH] FFmpeg:omxdec: add mirror rotation and crop option
+
+add mirror rotation and crop option for mjpeg_omx decoder
+
+Signed-off-by: arvin.zhu <arvin.zhu@starfivetech.com>
+---
+ libavcodec/omxdec.c | 181 +++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 146 insertions(+), 35 deletions(-)
+
+diff --git a/libavcodec/omxdec.c b/libavcodec/omxdec.c
+index 87e5a1a..b4a7c96 100755
+--- a/libavcodec/omxdec.c
++++ b/libavcodec/omxdec.c
+@@ -276,6 +276,15 @@ typedef struct OMXCodecContext {
+ 
+     OMX_U32 scale_width;
+     OMX_U32 scale_height;
++    OMX_U32 rotation;
++    OMX_U32 mirror;
++    char *crop_expr;
++    struct {
++        int x;
++        int y;
++        int w;
++        int h;
++    } crop;
+ 
+     int input_zerocopy;
+     int profile;
+@@ -359,7 +368,6 @@ static OMX_ERRORTYPE event_handler(OMX_HANDLETYPE component, OMX_PTR app_data, O
+             av_log(s->avctx, AV_LOG_ERROR, "err %d\n",err);          
+             return AVERROR_UNKNOWN;
+         }
+-
+         for (i = 0; i < video_port_params.nPorts; i++) {
+             int port = video_port_params.nStartPortNumber + i;
+             OMX_PARAM_PORTDEFINITIONTYPE port_params = { 0 };
+@@ -571,7 +579,7 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+     out_port_params.format.video.nBitrate      = avctx->bit_rate;
+     out_port_params.format.video.xFramerate    = in_port_params.format.video.xFramerate;
+     out_port_params.format.video.bFlagErrorConcealment  = OMX_FALSE;
+-    av_log(avctx, AV_LOG_VERBOSE, "OMX setting pixel_format:%s\n", s->pixel_format);
++
+     if (avctx->codec->id == AV_CODEC_ID_MPEG4)
+         out_port_params.format.video.eCompressionFormat = OMX_VIDEO_CodingMPEG4;
+     else if (avctx->codec->id == AV_CODEC_ID_H264) {
+@@ -580,12 +588,12 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+     else if (avctx->codec->id == AV_CODEC_ID_HEVC) {
+         out_port_params.format.video.eCompressionFormat = OMX_VIDEO_CodingHEVC;
+     }
+-    else if (avctx->codec->id == AV_CODEC_ID_MJPEG){
++    else if (avctx->codec->id == AV_CODEC_ID_MJPEG) {
+         out_port_params.format.video.eCompressionFormat = OMX_VIDEO_CodingMJPEG;
+ 
+         /* Set Scale config setting*/
+         if (s->scale_width || s->scale_height) {
+-            av_log(avctx, AV_LOG_TRACE, "mjpeg decoder: scaling width: %ld scaling height: %ld .\n", s->scale_width, s->scale_height);
++            av_log(avctx, AV_LOG_TRACE, "mjpeg decoder: scaling width: %d scaling height: %d .\n", s->scale_width, s->scale_height);
+             OMX_CONFIG_SCALEFACTORTYPE ScaleConfig;
+             INIT_STRUCT(ScaleConfig);
+             ScaleConfig.nPortIndex = 1;
+@@ -599,38 +607,138 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+             out_port_params.format.video.nFrameHeight  = avctx->height;
+         }
+ 
+-        switch (av_get_pix_fmt(s->pixel_format)) {
+-        case AV_PIX_FMT_NV12:
+-            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV420SemiPlanar;
+-            break;
+-        case AV_PIX_FMT_NV21:
+-            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYVU420SemiPlanar;
+-            break;
+-        case AV_PIX_FMT_YUV420P:
+-            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV420Planar;
+-            break;
+-        case AV_PIX_FMT_NV16:
+-            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV422SemiPlanar;
+-            break;
+-        case AV_PIX_FMT_YUV422P:
+-            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV422Planar;
+-            break;
+-        case AV_PIX_FMT_YUYV422:
+-            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYCbYCr;
+-            break;
+-        case AV_PIX_FMT_YVYU422:
+-            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYCrYCb;
+-            break;
+-        case AV_PIX_FMT_UYVY422:
+-            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatCbYCrY;
+-            break;
+-        case AV_PIX_FMT_YUV444P:
+-            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV444Planar;
+-            break;
+-        default:
++        /* Set pixel format to decoder output*/
++        if (s->pixel_format) {
++            switch (av_get_pix_fmt(s->pixel_format)) {
++            case AV_PIX_FMT_NV12:
++                out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV420SemiPlanar;
++                break;
++            case AV_PIX_FMT_NV21:
++                out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYVU420SemiPlanar;
++                break;
++            case AV_PIX_FMT_YUV420P:
++                out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV420Planar;
++                break;
++            case AV_PIX_FMT_NV16:
++                out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV422SemiPlanar;
++                break;
++            case AV_PIX_FMT_YUV422P:
++                out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV422Planar;
++                break;
++            case AV_PIX_FMT_YUYV422:
++                out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYCbYCr;
++                break;
++            case AV_PIX_FMT_YVYU422:
++                out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYCrYCb;
++                break;
++            case AV_PIX_FMT_UYVY422:
++                out_port_params.format.video.eColorFormat = OMX_COLOR_FormatCbYCrY;
++                break;
++            case AV_PIX_FMT_YUV444P:
++                out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV444Planar;
++                break;
++            default:
++                return AVERROR_OPTION_NOT_FOUND;
++            }
++            av_log(avctx, AV_LOG_VERBOSE, "OMX setting pixel_format:%s\n", s->pixel_format);
++        } else {
++            switch (avctx->pix_fmt) {
++            case AV_PIX_FMT_YUVJ420P:
++                out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV420Planar;
++                break;
++            case AV_PIX_FMT_YUVJ422P:
++                out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV422Planar;
++                break;
++            case AV_PIX_FMT_YUVJ444P:
++                out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV444Planar;
++                break;
++            default:
++                out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV420Planar;
++                break;
++            }
++        }
++
++        /* Set Mirror config setting*/
++        if (s->mirror) {
++            if (s->pixel_format || s->scale_width || s->scale_height || s->rotation) {
++                av_log(avctx, AV_LOG_ERROR, "Mirror cannot work with other option together.\n");
++                return AVERROR_INVALIDDATA;
++            }
++            av_log(avctx, AV_LOG_TRACE, "mjpeg decoder: mirror\n");
++            OMX_CONFIG_MIRRORTYPE MirrorConfig;
++            INIT_STRUCT(MirrorConfig);
++            MirrorConfig.nPortIndex = 1;
++            OMX_GetConfig(s->handle, OMX_IndexConfigCommonMirror, &MirrorConfig);
++            MirrorConfig.eMirror = s->mirror;
++            OMX_SetConfig(s->handle, OMX_IndexConfigCommonMirror, &MirrorConfig);
++        }
++
++        /* Set Rotation config setting*/
++        if (s->rotation) {
++            if (s->pixel_format || s->scale_width || s->scale_height || s->mirror) {
++                av_log(avctx, AV_LOG_ERROR, "Rotation cannot work with other option together.\n");
++                return AVERROR_INVALIDDATA;
++            }
++            av_log(avctx, AV_LOG_TRACE, "mjpeg decoder: rotation\n");
++            OMX_CONFIG_ROTATIONTYPE RotatConfig;
++            INIT_STRUCT(RotatConfig);
++            RotatConfig.nPortIndex = 1;
++            OMX_GetConfig(s->handle, OMX_IndexConfigCommonRotate, &RotatConfig);
++            switch (s->rotation) {
++            case 1:
++                RotatConfig.nRotation = 90;
++                break;
++            case 2:
++                RotatConfig.nRotation = 180;
++                break;
++            case 3:
++                RotatConfig.nRotation = 270;
++                break;
++            default:
++                RotatConfig.nRotation = 0;
++                break;
++            }
++            OMX_SetConfig(s->handle, OMX_IndexConfigCommonRotate, &RotatConfig);
++        }
++
++        /* Set Roi config setting*/
++        if (s->crop_expr && sscanf(s->crop_expr, "%d,%d,%d,%d",
++                                &s->crop.x, &s->crop.y,
++                                &s->crop.w, &s->crop.h) != 4) {
++            av_log(avctx, AV_LOG_ERROR, "Invalid cropping expressions.\n");
+             return AVERROR_OPTION_NOT_FOUND;
+         }
++
++        if (s->crop.w && s->crop.h) {
++            if (s->pixel_format || s->scale_width || s->scale_height || s->mirror || s->rotation) {
++                av_log(avctx, AV_LOG_ERROR, "Crop cannot work with other option together.\n");
++                return AVERROR_INVALIDDATA;
++            }
++            if ((s->crop.x < 0) || (s->crop.x > (avctx->width - s->crop.w)) ||
++                 (s->crop.y < 0) || (s->crop.y > (avctx->height - s->crop.h)) ||
++                 (s->crop.w < 16) || (s->crop.w > (avctx->width - s->crop.x)) ||
++                 (s->crop.h < 16) || (s->crop.h > (avctx->height - s->crop.y))) {
++                av_log(avctx, AV_LOG_ERROR, "Invalid cropping range.\n");
++                return AVERROR_INVALIDDATA;
++            }
++            if (s->crop.w % 16 != 0 || s->crop.h % 16 != 0) {
++                av_log(avctx, AV_LOG_ERROR, "The width/height must be an integer multiple of 16\n");
++                return AVERROR_INVALIDDATA;
++            }
++
++            OMX_CONFIG_RECTTYPE RectConfig; 
++            INIT_STRUCT(RectConfig);
++            RectConfig.nPortIndex = 1;
++            OMX_GetConfig(s->handle, OMX_IndexConfigCommonOutputCrop, &RectConfig);
++            RectConfig.nLeft = s->crop.x;
++            RectConfig.nTop = s->crop.y;
++            RectConfig.nWidth = s->crop.w;
++            RectConfig.nHeight = s->crop.h;
++            OMX_SetConfig(s->handle, OMX_IndexConfigCommonOutputCrop, &RectConfig);
++            av_log(avctx, AV_LOG_ERROR, "mjpeg decoder:roi x: %d y: %d w: %d h: %d .\n", s->crop.x, s->crop.y, s->crop.w, s->crop.h);
++        }
+     }
++
+     if (avctx->codec->id == AV_CODEC_ID_H264 || avctx->codec->id == AV_CODEC_ID_HEVC) {
+         /* Set Scale config setting*/
+         if ((s->scale_width != 0) && ((s->scale_width < avctx->width/8) ||
+@@ -675,6 +783,7 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+     s->done_out_buffers   = av_mallocz(sizeof(OMX_BUFFERHEADERTYPE*) * s->num_out_buffers);
+     if (!s->in_buffer_headers || !s->free_in_buffers || !s->out_buffer_headers || !s->done_out_buffers)
+         return AVERROR(ENOMEM);
++
+     for (i = 0; i < s->num_in_buffers && err == OMX_ErrorNone; i++) {
+         if (s->input_zerocopy)
+             err = OMX_UseBuffer(s->handle, &s->in_buffer_headers[i], s->in_port, s, in_port_params.nBufferSize, NULL);
+@@ -699,7 +808,6 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+         av_log(avctx, AV_LOG_ERROR, "Didn't get OMX_StateExecuting\n");
+         return AVERROR_UNKNOWN;
+     }
+-
+     for (i = 0; i < s->num_out_buffers && err == OMX_ErrorNone; i++)
+         err = OMX_FillThisBuffer(s->handle, s->out_buffer_headers[i]);
+     if (err != OMX_ErrorNone) {
+@@ -1055,9 +1163,12 @@ static const AVOption options_mjpeg[] = {
+     { "omx_libname", "OpenMAX library name", OFFSET(libname), AV_OPT_TYPE_STRING, { 0 }, 0, 0, VDE },
+     { "omx_libprefix", "OpenMAX library prefix", OFFSET(libprefix), AV_OPT_TYPE_STRING, { 0 }, 0, 0, VDE },
+     { "zerocopy", "Try to avoid copying input frames if possible", OFFSET(input_zerocopy), AV_OPT_TYPE_INT, { .i64 = CONFIG_OMX_RPI }, 0, 1, VD },
+-    { "omx_pix_fmt", "Set the decoding pixel format for mjpeg_omx decoder. The following formats are supported: yuv420p, nv12, nv21, nv16, yuv422p, yuyv422, yvyu422, uyvy422, yuv444p.", OFFSET(pixel_format), AV_OPT_TYPE_STRING, { .str = "yuv420p" }, 0, 0, VD },
++    { "omx_pix_fmt", "Set the decoding pixel format for mjpeg_omx decoder. The following formats are supported: yuv420p, nv12, nv21, nv16, yuv422p, yuyv422, yvyu422, uyvy422, yuv444p.", OFFSET(pixel_format), AV_OPT_TYPE_STRING, { .str = NULL }, 0, 0, VD },
+     { "scale_width", "Set the scaling width for omx (Only zoom out is support, Horizontal downscale: 0(none), 1(1/2), 2(1/4), 3(1/8)) and minimum 1/8)", OFFSET(scale_width), AV_OPT_TYPE_INT, { .i64 = 0 }, 0, 3, VD },
+     { "scale_height", "Set the scaling height for omx (Only zoom out is support, Vertical downscale: 0(none), 1(1/2), 2(1/4), 3(1/8)) and minimum 1/8)", OFFSET(scale_height), AV_OPT_TYPE_INT, { .i64 = 0 }, 0, 3, VD },
++    { "mirror", "mirror 0(none), 1(V), 2(H) or 3(VH), cannot be set at the same time as pixel format conversion, rotation and crop", OFFSET(mirror), AV_OPT_TYPE_INT, { .i64 = 0 }, 0, 3, VD },
++    { "rotation", "rotation 0(0), 1(90), 2(180) or 3(270), cannot be set at the same time as pixel format conversion, mirror and crop", OFFSET(rotation), AV_OPT_TYPE_INT, { .i64 = 0 }, 0, 3, VD },
++    { "crop", "crop <x>,<y>,<w>,<h>: crop coord and width/height(from left/top, must be an integer multiple of 16), cannot be set at the same time as pixel format conversion, mirror and rotation", OFFSET(crop_expr), AV_OPT_TYPE_STRING, { .str = NULL }, 0, 0, VD },
+     { NULL },
+ };
+ 
+-- 
+2.17.1
+

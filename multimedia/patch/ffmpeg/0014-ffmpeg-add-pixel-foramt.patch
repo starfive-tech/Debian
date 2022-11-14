@@ -1,0 +1,159 @@
+From 474232dff26df2188fe37287aeb7834f6d3853d1 Mon Sep 17 00:00:00 2001
+From: "arvin.zhu" <arvin.zhu@starfivetech.com>
+Date: Thu, 29 Sep 2022 16:05:09 +0800
+Subject: [PATCH] ffmpeg: add pixel foramt
+
+add pixel format option for codecs of VPU
+
+Signed-off-by: arvin.zhu <arvin.zhu@starfivetech.com>
+---
+ libavcodec/omx.c    | 19 ++++++++++++++++---
+ libavcodec/omxdec.c | 43 +++++++++++++++++++++++++++++++++++++------
+ 2 files changed, 53 insertions(+), 9 deletions(-)
+
+diff --git a/libavcodec/omx.c b/libavcodec/omx.c
+index 1c4179f..6976884 100755
+--- a/libavcodec/omx.c
++++ b/libavcodec/omx.c
+@@ -456,18 +456,31 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+             break;
+         }
+     }
++
+     if (s->color_format == 0) {
+         av_log(avctx, AV_LOG_ERROR, "No supported pixel formats (%d formats available)\n", i);
+         return AVERROR_UNKNOWN;
+     }
+-
++    av_log(avctx, AV_LOG_VERBOSE, "OMX setting pixel_format:%s\n", av_get_pix_fmt_name(avctx->pix_fmt));
+     in_port_params.bEnabled   = OMX_TRUE;
+     in_port_params.bPopulated = OMX_FALSE;
+     in_port_params.eDomain    = OMX_PortDomainVideo;
+ 
+     in_port_params.format.video.pNativeRender         = NULL;
+     in_port_params.format.video.bFlagErrorConcealment = OMX_FALSE;
+-    in_port_params.format.video.eColorFormat          = s->color_format;
++    switch (avctx->pix_fmt) {
++        case AV_PIX_FMT_NV12:
++            in_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV420SemiPlanar;
++            break;
++        case AV_PIX_FMT_NV21:
++            in_port_params.format.video.eColorFormat = OMX_COLOR_FormatYVU420SemiPlanar;
++            break;
++        case AV_PIX_FMT_YUV420P:
++            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV420Planar;
++            break;
++        default:
++            return AVERROR_OPTION_NOT_FOUND;
++        }
+     s->stride     = avctx->width;
+     s->plane_size = avctx->height;
+     // If specific codecs need to manually override the stride/plane_size,
+@@ -986,7 +999,7 @@ static const AVOption options_hevc[] = {
+ };
+ 
+ static const enum AVPixelFormat omx_encoder_pix_fmts[] = {
+-    AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE
++    AV_PIX_FMT_YUV420P, AV_PIX_FMT_NV12, AV_PIX_FMT_NV21, AV_PIX_FMT_NONE
+ };
+ 
+ static const AVClass omx_mpeg4enc_class = {
+diff --git a/libavcodec/omxdec.c b/libavcodec/omxdec.c
+index 20298b8..074ff4a 100755
+--- a/libavcodec/omxdec.c
++++ b/libavcodec/omxdec.c
+@@ -481,7 +481,7 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+     //OMX_VIDEO_PARAM_BITRATETYPE vid_param_bitrate = { 0 };
+     OMX_ERRORTYPE err;
+     int i;
+-
++av_log(avctx, AV_LOG_VERBOSE, "OMX avctx pixel_format:%s\n", av_get_pix_fmt_name(avctx->pix_fmt));
+     s->version.s.nVersionMajor = 1;
+     s->version.s.nVersionMinor = 1;
+     s->version.s.nRevision     = 2;
+@@ -571,16 +571,46 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+     out_port_params.format.video.nBitrate      = avctx->bit_rate;
+     out_port_params.format.video.xFramerate    = in_port_params.format.video.xFramerate;
+     out_port_params.format.video.bFlagErrorConcealment  = OMX_FALSE;
++    av_log(avctx, AV_LOG_VERBOSE, "OMX setting pixel_format:%s\n", s->pixel_format);
+     if (avctx->codec->id == AV_CODEC_ID_MPEG4)
+         out_port_params.format.video.eCompressionFormat = OMX_VIDEO_CodingMPEG4;
+-    else if (avctx->codec->id == AV_CODEC_ID_H264)
++    else if (avctx->codec->id == AV_CODEC_ID_H264) {
+         out_port_params.format.video.eCompressionFormat = OMX_VIDEO_CodingAVC;
+-    else if (avctx->codec->id == AV_CODEC_ID_HEVC)
++
++        switch (av_get_pix_fmt(s->pixel_format)) {
++        case AV_PIX_FMT_NV12:
++            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV420SemiPlanar;
++            break;
++        case AV_PIX_FMT_NV21:
++            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYVU420SemiPlanar;
++            break;
++        case AV_PIX_FMT_YUV420P:
++            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV420Planar;
++            break;
++        default:
++            return AVERROR_OPTION_NOT_FOUND;
++        }
++    }
++    else if (avctx->codec->id == AV_CODEC_ID_HEVC) {
+         out_port_params.format.video.eCompressionFormat = OMX_VIDEO_CodingHEVC;
++
++        switch (av_get_pix_fmt(s->pixel_format)) {
++        case AV_PIX_FMT_NV12:
++            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV420SemiPlanar;
++            break;
++        case AV_PIX_FMT_NV21:
++            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYVU420SemiPlanar;
++            break;
++        case AV_PIX_FMT_YUV420P:
++            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV420Planar;
++            break;
++        default:
++            return AVERROR_OPTION_NOT_FOUND;
++        }
++    }
+     else if (avctx->codec->id == AV_CODEC_ID_MJPEG){
+         out_port_params.format.video.eCompressionFormat = OMX_VIDEO_CodingMJPEG;
+ 
+-        av_log(avctx, AV_LOG_VERBOSE, "OMX_pixel_format:%s\n", s->pixel_format);
+         switch (av_get_pix_fmt(s->pixel_format)) {
+         case AV_PIX_FMT_NV12:
+             out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV420SemiPlanar;
+@@ -610,7 +640,7 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+             out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV444Planar;
+             break;
+         default:
+-            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV420Planar;
++            return AVERROR_OPTION_NOT_FOUND;
+         }
+     }
+ 
+@@ -991,6 +1021,7 @@ static const AVOption options[] = {
+     { "baseline", "",                         0,               AV_OPT_TYPE_CONST, { .i64 = FF_PROFILE_H264_BASELINE }, 0, 0, VE, "profile" },
+     { "main",     "",                         0,               AV_OPT_TYPE_CONST, { .i64 = FF_PROFILE_H264_MAIN },     0, 0, VE, "profile" },
+     { "high",     "",                         0,               AV_OPT_TYPE_CONST, { .i64 = FF_PROFILE_H264_HIGH },     0, 0, VE, "profile" },
++    { "omx_pix_fmt", "Set the decoding pixel format for h264_omx decoder. The following formats are supported: yuv420p, nv12, nv21.", OFFSET(pixel_format), AV_OPT_TYPE_STRING, { .str = "yuv420p" }, 0, 0, VD },
+     { NULL }
+ };
+ 
+@@ -998,6 +1029,7 @@ static const AVOption options_hevc[] = {
+     { "omx_libname", "OpenMAX library name", OFFSET(libname), AV_OPT_TYPE_STRING, { 0 }, 0, 0, VDE },
+     { "omx_libprefix", "OpenMAX library prefix", OFFSET(libprefix), AV_OPT_TYPE_STRING, { 0 }, 0, 0, VDE },
+     { "zerocopy", "Try to avoid copying input frames if possible", OFFSET(input_zerocopy), AV_OPT_TYPE_INT, { .i64 = CONFIG_OMX_RPI }, 0, 1, VE },
++    { "omx_pix_fmt", "Set the decoding pixel format for hevc_omx decoder. The following formats are supported: yuv420p, nv12, nv21.", OFFSET(pixel_format), AV_OPT_TYPE_STRING, { .str = "yuv420p" }, 0, 0, VD },
+     { NULL },
+ };
+ 
+@@ -1006,7 +1038,6 @@ static const AVOption options_mjpeg[] = {
+     { "omx_libprefix", "OpenMAX library prefix", OFFSET(libprefix), AV_OPT_TYPE_STRING, { 0 }, 0, 0, VDE },
+     { "zerocopy", "Try to avoid copying input frames if possible", OFFSET(input_zerocopy), AV_OPT_TYPE_INT, { .i64 = CONFIG_OMX_RPI }, 0, 1, VD },
+     { "omx_pix_fmt", "Set the decoding pixel format for mjpeg_omx decoder. The following formats are supported: yuv420p, nv12, nv21, nv16, yuv422p, yuyv422, yvyu422, uyvy422, yuv444p.", OFFSET(pixel_format), AV_OPT_TYPE_STRING, { .str = "yuv420p" }, 0, 0, VD },
+-
+     { NULL },
+ };
+ 
+-- 
+2.17.1
+

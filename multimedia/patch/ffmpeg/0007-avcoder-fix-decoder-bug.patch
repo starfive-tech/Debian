@@ -1,0 +1,307 @@
+From 9ca5512fde8d237977b102e240c957e7506a276a Mon Sep 17 00:00:00 2001
+From: "sw.multimedia" <se.multimedia@starfivetech.com>
+Date: Wed, 25 May 2022 20:52:37 +0800
+Subject: [PATCH 5/8] avcoder fix decoder bug
+
+Signed-off-by: sw.multimedia <se.multimedia@starfivetech.com>
+---
+ libavcodec/omxdec.c | 182 +++++++++++++++++++++++++++-----------------
+ 1 file changed, 114 insertions(+), 68 deletions(-)
+
+diff --git a/libavcodec/omxdec.c b/libavcodec/omxdec.c
+index 96a2829..9eb5dca 100644
+--- a/libavcodec/omxdec.c
++++ b/libavcodec/omxdec.c
+@@ -46,6 +46,11 @@
+ #include "internal.h"
+ #include "profiles.h"
+ 
++int evnet_bufferflag;
++int dec_out_height;
++int dec_out_width;
++int dec_pix_fmt;
++
+ #ifdef OMX_SKIP64BIT
+ static OMX_TICKS to_omx_ticks(int64_t value)
+ {
+@@ -223,7 +228,7 @@ typedef struct OMXCodecContext {
+ 
+     int mutex_cond_inited;
+ 
+-    int eos_sent, got_eos, first_get_outbuffer;
++    int eos_sent, got_eos, evnet_bufferflag;
+ 
+ 	int extradata_sent;
+ 
+@@ -274,6 +279,11 @@ static OMX_ERRORTYPE event_handler(OMX_HANDLETYPE component, OMX_PTR app_data, O
+     // This uses casts in the printfs, since OMX_U32 actually is a typedef for
+     // unsigned long in official header versions (but there are also modified
+     // versions where it is something else).
++    OMX_PARAM_PORTDEFINITIONTYPE out_port_params = { 0 };
++	OMX_PORT_PARAM_TYPE video_port_params = { 0 };
++	OMX_ERRORTYPE err;
++	int i;
++
+     switch (event) {
+     case OMX_EventError:
+         pthread_mutex_lock(&s->state_mutex);
+@@ -299,8 +309,36 @@ static OMX_ERRORTYPE event_handler(OMX_HANDLETYPE component, OMX_PTR app_data, O
+         }
+         break;
+     case OMX_EventPortSettingsChanged:
+-        av_log(s->avctx, AV_LOG_VERBOSE, "OMX port %"PRIu32" settings changed\n", (uint32_t) data1);
++        av_log(s->avctx, AV_LOG_ERROR, "OMX port %"PRIu32" settings changed\n", (uint32_t) data1);
++		INIT_STRUCT(video_port_params);
++		err = OMX_GetParameter(s->handle, OMX_IndexParamVideoInit, &video_port_params);
++		if(err != OMX_ErrorNone){
++            av_log(s->avctx, AV_LOG_ERROR, "err %d\n",err);          
++            return AVERROR_UNKNOWN;
++			}
++
++		for (i = 0; i < video_port_params.nPorts; i++) {
++	        int port = video_port_params.nStartPortNumber + i;
++	        OMX_PARAM_PORTDEFINITIONTYPE port_params = { 0 };
++	        INIT_STRUCT(port_params);
++	        port_params.nPortIndex = port;
++	        err = OMX_GetParameter(s->handle, OMX_IndexParamPortDefinition, &port_params);
++	        if (err != OMX_ErrorNone) {
++	            av_log(s->avctx, AV_LOG_WARNING, "port %d error %x\n", port, err);
++            return AVERROR_UNKNOWN;
++	        }
++	        if (port_params.eDir == OMX_DirOutput) {
++				out_port_params = port_params;
++				dec_out_width = out_port_params.format.video.nFrameWidth;
++				dec_out_height = out_port_params.format.video.nFrameHeight;
++				dec_pix_fmt = out_port_params.format.video.eColorFormat;
++	            
++	        } 
++	    }		
+         break;
++	case OMX_EventBufferFlag:
++		av_log(s->avctx, AV_LOG_VERBOSE, "OMX decoder competd set event_bufferflag\n");
++		evnet_bufferflag = 1;
+     default:
+         av_log(s->avctx, AV_LOG_VERBOSE, "OMX event %d %"PRIx32" %"PRIx32"\n",
+                                          event, (uint32_t) data1, (uint32_t) data2);
+@@ -453,7 +491,7 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+ 
+     in_port_params.format.video.pNativeRender         = NULL;
+     in_port_params.format.video.bFlagErrorConcealment = OMX_FALSE;
+-    //in_port_params.format.video.eColorFormat          = s->color_format;
++    in_port_params.format.video.eColorFormat          = s->color_format;
+     s->stride     = avctx->width;
+     s->plane_size = avctx->height;
+     // If specific codecs need to manually override the stride/plane_size,
+@@ -473,11 +511,10 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+     err = OMX_GetParameter(s->handle, OMX_IndexParamPortDefinition, &in_port_params);
+     CHECK(err);
+ 
+-#if 1
+     s->stride         = in_port_params.format.video.nStride;
+     s->plane_size     = in_port_params.format.video.nSliceHeight;
+     s->num_in_buffers = in_port_params.nBufferCountActual;
+-#endif
++
+     err = OMX_GetParameter(s->handle, OMX_IndexParamPortDefinition, &out_port_params);
+     out_port_params.bEnabled   = OMX_TRUE;
+     out_port_params.bPopulated = OMX_FALSE;
+@@ -645,51 +682,51 @@ static av_cold int omx_decode_init(AVCodecContext *avctx)
+     if ((ret = omx_component_init(avctx, role)) < 0)
+         goto fail;
+ 
+-#if 0
+-    if (avctx->flags & AV_CODEC_FLAG_GLOBAL_HEADER) {
+-        while (1) {
+-            buffer = get_buffer(&s->output_mutex, &s->output_cond,
+-                                &s->num_done_out_buffers, s->done_out_buffers, 1);
+-            if (buffer->nFlags & OMX_BUFFERFLAG_CODECCONFIG) {
+-                if ((ret = av_reallocp(&avctx->extradata, avctx->extradata_size + buffer->nFilledLen + AV_INPUT_BUFFER_PADDING_SIZE)) < 0) {
+-                    avctx->extradata_size = 0;
+-                    goto fail;
+-                }
+-                memcpy(avctx->extradata + avctx->extradata_size, buffer->pBuffer + buffer->nOffset, buffer->nFilledLen);
+-                avctx->extradata_size += buffer->nFilledLen;
+-                memset(avctx->extradata + avctx->extradata_size, 0, AV_INPUT_BUFFER_PADDING_SIZE);
+-            }
+-            err = OMX_FillThisBuffer(s->handle, buffer);
+-            if (err != OMX_ErrorNone) {
+-                append_buffer(&s->output_mutex, &s->output_cond,
+-                              &s->num_done_out_buffers, s->done_out_buffers, buffer);
+-                av_log(avctx, AV_LOG_ERROR, "OMX_FillThisBuffer failed: %x\n", err);
+-                ret = AVERROR_UNKNOWN;
+-                goto fail;
+-            }
+-            if (avctx->codec->id == AV_CODEC_ID_H264) {
+-                // For H.264, the extradata can be returned in two separate buffers
+-                // (the videocore encoder on raspberry pi does this);
+-                // therefore check that we have got both SPS and PPS before continuing.
+-                int nals[32] = { 0 };
+-                int i;
+-                for (i = 0; i + 4 < avctx->extradata_size; i++) {
+-                     if (!avctx->extradata[i + 0] &&
+-                         !avctx->extradata[i + 1] &&
+-                         !avctx->extradata[i + 2] &&
+-                         avctx->extradata[i + 3] == 1) {
+-                         nals[avctx->extradata[i + 4] & 0x1f]++;
+-                     }
+-                }
+-                if (nals[H264_NAL_SPS] && nals[H264_NAL_PPS])
+-                    break;
+-            } else {
+-                if (avctx->extradata_size > 0)
+-                    break;
+-            }
+-        }
+-    }
+-#endif
++// #if 0
++//     if (avctx->flags & AV_CODEC_FLAG_GLOBAL_HEADER) {
++//         while (1) {
++//             buffer = get_buffer(&s->output_mutex, &s->output_cond,
++//                                 &s->num_done_out_buffers, s->done_out_buffers, 1);
++//             if (buffer->nFlags & OMX_BUFFERFLAG_CODECCONFIG) {
++//                 if ((ret = av_reallocp(&avctx->extradata, avctx->extradata_size + buffer->nFilledLen + AV_INPUT_BUFFER_PADDING_SIZE)) < 0) {
++//                     avctx->extradata_size = 0;
++//                     goto fail;
++//                 }
++//                 memcpy(avctx->extradata + avctx->extradata_size, buffer->pBuffer + buffer->nOffset, buffer->nFilledLen);
++//                 avctx->extradata_size += buffer->nFilledLen;
++//                 memset(avctx->extradata + avctx->extradata_size, 0, AV_INPUT_BUFFER_PADDING_SIZE);
++//             }
++//             err = OMX_FillThisBuffer(s->handle, buffer);
++//             if (err != OMX_ErrorNone) {
++//                 append_buffer(&s->output_mutex, &s->output_cond,
++//                               &s->num_done_out_buffers, s->done_out_buffers, buffer);
++//                 av_log(avctx, AV_LOG_ERROR, "OMX_FillThisBuffer failed: %x\n", err);
++//                 ret = AVERROR_UNKNOWN;
++//                 goto fail;
++//             }
++//             if (avctx->codec->id == AV_CODEC_ID_H264) {
++//                 // For H.264, the extradata can be returned in two separate buffers
++//                 // (the videocore encoder on raspberry pi does this);
++//                 // therefore check that we have got both SPS and PPS before continuing.
++//                 int nals[32] = { 0 };
++//                 int i;
++//                 for (i = 0; i + 4 < avctx->extradata_size; i++) {
++//                      if (!avctx->extradata[i + 0] &&
++//                          !avctx->extradata[i + 1] &&
++//                          !avctx->extradata[i + 2] &&
++//                          avctx->extradata[i + 3] == 1) {
++//                          nals[avctx->extradata[i + 4] & 0x1f]++;
++//                      }
++//                 }
++//                 if (nals[H264_NAL_SPS] && nals[H264_NAL_PPS])
++//                     break;
++//             } else {
++//                 if (avctx->extradata_size > 0)
++//                     break;
++//             }
++//         }
++//     }
++// #endif
+ 	
+     return 0;
+ fail:
+@@ -712,10 +749,6 @@ static int omx_decode_frame(AVCodecContext *avctx, void *data,
+ 	int linesize[4];
+ 
+     if (pkt->size) {
+-
+-		//VPU init and fill buffer slow, so empty buf sleep to send before get vpu fill buf.
+-		if(!s->first_get_outbuffer)
+-			av_usleep(100000);
+ 	
+         buffer = get_buffer(&s->input_mutex, &s->input_cond,
+                             &s->num_free_in_buffers, s->free_in_buffers, 1);
+@@ -726,7 +759,7 @@ static int omx_decode_frame(AVCodecContext *avctx, void *data,
+         }
+ 
+ 		//cpy the extradata
+-		if(!s->extradata_sent) {
++		if(!s->extradata_sent && avctx->extradata ) {
+ 
+ 			memcpy(buffer->pBuffer + buffer->nOffset, avctx->extradata, avctx->extradata_size);	
+ 			memcpy(buffer->pBuffer + buffer->nOffset + avctx->extradata_size, pkt->data, pkt->size);
+@@ -746,6 +779,7 @@ static int omx_decode_frame(AVCodecContext *avctx, void *data,
+ 		
+ 		buffer->pOutputPortPrivate = NULL;
+ 		buffer->pAppPrivate = avctx->priv_data;
++        buffer->nFlags = OMX_BUFFERFLAG_ENDOFFRAME;
+ 
+ 	    err = OMX_EmptyThisBuffer(s->handle, buffer);
+ 	    if (err != OMX_ErrorNone) {
+@@ -754,16 +788,19 @@ static int omx_decode_frame(AVCodecContext *avctx, void *data,
+ 	        return AVERROR_UNKNOWN;
+ 	    }
+     } else if (!s->eos_sent) {
+-
+-		if(!s->first_get_outbuffer)
+-			av_usleep(1000000);
+ 		
+         buffer = get_buffer(&s->input_mutex, &s->input_cond,
+                             &s->num_free_in_buffers, s->free_in_buffers, 1);
+ 
++        if(!buffer) {
++        	av_log(avctx, AV_LOG_ERROR, "get_buffer NULL\n");
++            return AVERROR(ENOMEM);
++		}
++
+         buffer->nFilledLen = 0;
+         buffer->nFlags = OMX_BUFFERFLAG_EOS;
+         buffer->pAppPrivate = buffer->pOutputPortPrivate = NULL;
++        
+         err = OMX_EmptyThisBuffer(s->handle, buffer);
+         if (err != OMX_ErrorNone) {
+             append_buffer(&s->input_mutex, &s->input_cond, &s->num_free_in_buffers, s->free_in_buffers, buffer);
+@@ -782,20 +819,26 @@ static int omx_decode_frame(AVCodecContext *avctx, void *data,
+                             !pkt || had_partial);
+ 
+         if (!buffer) {
+-            /*eos is sent but fill buf still can't get then continue*/
+-            if(!s->first_get_outbuffer && s->eos_sent)
++            /*eos is sent wait for vpu evnet_bufferflag to get all frames*/
+++           if(s->eos_sent && !evnet_bufferflag){}
+ 				continue; 
+-			else
++            }
+ 				break;
+         }
+ 		//if (!buffer)
+            // break;
+ 
+-		if(!buffer->nFilledLen)
+-			goto end;
+-		
+-		if(!s->first_get_outbuffer)
+-			s->first_get_outbuffer = 1;
++		if(!buffer->nFilledLen){
++            av_log(avctx, AV_LOG_ERROR, "buffer->nFilledLen %d\n",(int)buffer->nFilledLen);
++            goto end;
++        }
++
++        avctx->width = dec_out_width;
++		avctx->height = dec_out_height;
++		avctx->pix_fmt = AV_PIX_FMT_YUV420P;
++		s->stride     = avctx->width;
++    	s->plane_size = avctx->height;
++		//avctx->pix_fmt = dec_pix_fmt;
+ 		
+         if (buffer->nFlags & OMX_BUFFERFLAG_EOS)
+             s->got_eos = 1;
+@@ -807,8 +850,11 @@ static int omx_decode_frame(AVCodecContext *avctx, void *data,
+ 		
+ 		ret = av_image_fill_arrays(dst, linesize, buffer->pBuffer,
+ 								   avctx->pix_fmt, s->stride, s->plane_size, 1);
+-		if (ret < 0)
+-			goto end;
++		if (ret < 0){
++            av_log(avctx, AV_LOG_ERROR, "av_image_fill_arrays ret:%d\n", ret);
++            goto end;
++        }
++
+ 		av_image_copy(avframe->data, avframe->linesize, (const uint8_t**)dst, linesize, 
+ 							avctx->pix_fmt, avctx->width, avctx->height);
+ 	
+-- 
+2.17.1
+

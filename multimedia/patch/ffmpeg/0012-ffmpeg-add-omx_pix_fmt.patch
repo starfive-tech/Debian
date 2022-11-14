@@ -1,0 +1,120 @@
+From c4fe39d5b2e35b7195ae3041adcb6ef786322dbb Mon Sep 17 00:00:00 2001
+From: "arvin.zhu" <arvin.zhu@starfivetech.com>
+Date: Fri, 23 Sep 2022 10:04:25 +0800
+Subject: [PATCH] ffmpeg: add omx_pix_fmt
+
+add omx_pix_fmt for mjpeg_omx decoder
+
+Signed-off-by: arvin.zhu <arvin.zhu@starfivetech.com>
+---
+ libavcodec/omxdec.c | 58 +++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 54 insertions(+), 4 deletions(-)
+
+diff --git a/libavcodec/omxdec.c b/libavcodec/omxdec.c
+index 03a2bca..b489c09 100755
+--- a/libavcodec/omxdec.c
++++ b/libavcodec/omxdec.c
+@@ -105,8 +105,13 @@ static const struct {
+ 
+     { OMX_COLOR_FormatYUV420Planar,                           AV_PIX_FMT_YUV420P },
+     { OMX_COLOR_FormatYUV420SemiPlanar,                       AV_PIX_FMT_NV12    },
+-    { OMX_COLOR_FormatYUV420PackedSemiPlanar,                 AV_PIX_FMT_NV21    },
+-    { OMX_COLOR_FormatYUV444Interleaved,                      AV_PIX_FMT_YUV444P },
++    { OMX_COLOR_FormatYVU420SemiPlanar,                       AV_PIX_FMT_NV21    },
++    { OMX_COLOR_FormatYUV422SemiPlanar,                       AV_PIX_FMT_NV16    },
++    { OMX_COLOR_FormatYUV422Planar,                           AV_PIX_FMT_YUV422P },
++    { OMX_COLOR_FormatYCbYCr,                                 AV_PIX_FMT_YUYV422 },
++    { OMX_COLOR_FormatYCrYCb,                                 AV_PIX_FMT_YVYU422 },
++    { OMX_COLOR_FormatCbYCrY,                                 AV_PIX_FMT_UYVY422 },
++    { OMX_COLOR_FormatYUV444Planar,                           AV_PIX_FMT_YUV444P },
+     { 0 }
+ };
+ 
+@@ -271,6 +276,7 @@ typedef struct OMXCodecContext {
+ 
+     int input_zerocopy;
+     int profile;
++    char *pixel_format;     /**< Set by a private option. */
+ } OMXCodecContext;
+ 
+ static void append_buffer(pthread_mutex_t *mutex, pthread_cond_t *cond,
+@@ -571,9 +577,43 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+         out_port_params.format.video.eCompressionFormat = OMX_VIDEO_CodingAVC;
+     else if (avctx->codec->id == AV_CODEC_ID_HEVC)
+         out_port_params.format.video.eCompressionFormat = OMX_VIDEO_CodingHEVC;
+-    else if (avctx->codec->id == AV_CODEC_ID_MJPEG)
++    else if (avctx->codec->id == AV_CODEC_ID_MJPEG){
+         out_port_params.format.video.eCompressionFormat = OMX_VIDEO_CodingMJPEG;
+ 
++        av_log(avctx, AV_LOG_VERBOSE, "OMX_pixel_format:%s\n", s->pixel_format);
++        switch (av_get_pix_fmt(s->pixel_format)) {
++        case AV_PIX_FMT_NV12:
++            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV420SemiPlanar;
++            break;
++        case AV_PIX_FMT_NV21:
++            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYVU420SemiPlanar;
++            break;
++        case AV_PIX_FMT_YUV420P:
++            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV420Planar;
++            break;
++        case AV_PIX_FMT_NV16:
++            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV422SemiPlanar;
++            break;
++        case AV_PIX_FMT_YUV422P:
++            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV422Planar;
++            break;
++        case AV_PIX_FMT_YUYV422:
++            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYCbYCr;
++            break;
++        case AV_PIX_FMT_YVYU422:
++            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYCrYCb;
++            break;
++        case AV_PIX_FMT_UYVY422:
++            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatCbYCrY;
++            break;
++        case AV_PIX_FMT_YUV444P:
++            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV444Planar;
++            break;
++        default:
++            out_port_params.format.video.eColorFormat = OMX_COLOR_FormatYUV420Planar;
++        }
++    }
++
+     err = OMX_SetParameter(s->handle, OMX_IndexParamPortDefinition, &out_port_params);
+     CHECK(err);
+     err = OMX_GetParameter(s->handle, OMX_IndexParamPortDefinition, &out_port_params);
+@@ -961,6 +1001,15 @@ static const AVOption options_hevc[] = {
+ 	{ NULL },
+ };
+ 
++static const AVOption options_mjpeg[] = {
++    { "omx_libname", "OpenMAX library name", OFFSET(libname), AV_OPT_TYPE_STRING, { 0 }, 0, 0, VDE },
++    { "omx_libprefix", "OpenMAX library prefix", OFFSET(libprefix), AV_OPT_TYPE_STRING, { 0 }, 0, 0, VDE },
++    { "zerocopy", "Try to avoid copying input frames if possible", OFFSET(input_zerocopy), AV_OPT_TYPE_INT, { .i64 = CONFIG_OMX_RPI }, 0, 1, VD },
++    { "omx_pix_fmt", "Set the decoding pixel format for mjpeg_omx decoder. The following formats are supported: yuv420p, nv12, nv21, nv16, yuv422p, yuyv422, yvyu422, uyvy422, yuv444p.", OFFSET(pixel_format), AV_OPT_TYPE_STRING, { .str = "yuv420p" }, 0, 0, VD },
++
++    { NULL },
++};
++
+ static const AVClass omx_mpeg4dec_class = {
+     .class_name = "mpeg4_omx",
+     .item_name  = av_default_item_name,
+@@ -1027,6 +1076,7 @@ AVCodec ff_hevc_omx_decoder = {
+ static const AVClass omx_mjpegdec_class = {
+     .class_name = "mjpeg_omx",
+     .item_name  = av_default_item_name,
++    .option     = options_mjpeg,
+     .version    = LIBAVUTIL_VERSION_INT,
+ };
+ AVCodec ff_mjpeg_omx_decoder = {
+@@ -1040,6 +1090,6 @@ AVCodec ff_mjpeg_omx_decoder = {
+     .close            = omx_decode_end,
+ 	.capabilities	  = AV_CODEC_CAP_DR1,
+ 	.max_lowres 	  = 3,
+-	.caps_internal	  = FF_CODEC_CAP_INIT_THREADSAFE,
++	.caps_internal	  = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP,
+     .priv_class       = &omx_mjpegdec_class,
+ };
+-- 
+2.17.1
+

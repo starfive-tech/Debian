@@ -1,0 +1,34 @@
+From bc391d931fa56ab788ae9cee7c249f91a9263d5b Mon Sep 17 00:00:00 2001
+From: "arvin.zhu" <arvin.zhu@starfivetech.com>
+Date: Wed, 2 Nov 2022 17:21:01 +0800
+Subject: [PATCH] FFmpeg:omcdec: fix mjpeg_omx decoder scale option bug
+
+fix mjpeg_omx decoder scale option bug
+
+Signed-off-by: arvin.zhu <arvin.zhu@starfivetech.com>
+---
+ libavcodec/omxdec.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/libavcodec/omxdec.c b/libavcodec/omxdec.c
+index b4a7c96..019db2e 100755
+--- a/libavcodec/omxdec.c
++++ b/libavcodec/omxdec.c
+@@ -602,11 +602,11 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+             ScaleConfig.xWidth = (1 << 16) >> (s->scale_width & 0x3);
+             ScaleConfig.xHeight = (1 << 16) >> (s->scale_height & 0x3);
+             OMX_SetConfig(s->handle, OMX_IndexConfigCommonScale, &ScaleConfig);
+-        } else {
+-            out_port_params.format.video.nFrameWidth   = avctx->width;
+-            out_port_params.format.video.nFrameHeight  = avctx->height;
+         }
+ 
++        out_port_params.format.video.nFrameWidth   = avctx->width;
++        out_port_params.format.video.nFrameHeight  = avctx->height;
++
+         /* Set pixel format to decoder output*/
+         if (s->pixel_format) {
+             switch (av_get_pix_fmt(s->pixel_format)) {
+-- 
+2.17.1
+

@@ -1,0 +1,72 @@
+--- a/sys/fbdev/gstfbdevsink.c	2021-07-06 16:02:46.304928800 +0800
++++ b/sys/fbdev/gstfbdevsink.c	2021-07-06 16:02:11.593693100 +0800
+@@ -73,7 +73,7 @@
+ static GstStateChangeReturn gst_fbdevsink_change_state (GstElement * element,
+     GstStateChange transition);
+ 
+-#define VIDEO_CAPS "{ RGB, BGR, BGRx, xBGR, RGB, RGBx, xRGB, RGB15, RGB16 }"
++#define VIDEO_CAPS "{ RGB, BGR, BGRx, xBGR, RGB, RGBx, xRGB, RGB15, RGB16, I420, NV12, NV21 }"
+ 
+ static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
+     GST_PAD_SINK,
+@@ -133,7 +133,10 @@
+   /* FIXME: locking */
+   if (!fbdevsink->framebuffer)
+     goto done;
+-
++  if (fbdevsink->varinfo.grayscale == 1) {
++    format = GST_VIDEO_FORMAT_NV12;
++    goto common;
++  }
+   bpp = fbdevsink->varinfo.bits_per_pixel;
+ 
+   rmask = ((1 << fbdevsink->varinfo.red.length) - 1)
+@@ -182,6 +185,8 @@
+   if (format == GST_VIDEO_FORMAT_UNKNOWN)
+     goto unknown_format;
+ 
++common:
++
+   caps = gst_caps_make_writable (caps);
+   gst_caps_set_simple (caps, "format", G_TYPE_STRING,
+       gst_video_format_to_string (format), NULL);
+@@ -272,12 +277,33 @@
+   if (!gst_buffer_map (buf, &map, GST_MAP_READ))
+     return GST_FLOW_ERROR;
+ 
+-  for (i = 0; i < fbdevsink->lines; i++) {
+-    memcpy (fbdevsink->framebuffer
+-        + (i + fbdevsink->cy) * fbdevsink->fixinfo.line_length
+-        + fbdevsink->cx * fbdevsink->bytespp,
+-        map.data + i * fbdevsink->width * fbdevsink->bytespp,
+-        fbdevsink->linelen);
++  if (fbdevsink->varinfo.grayscale == 1) {
++    int screen_offset = fbdevsink->varinfo.xres * fbdevsink->varinfo.yres;
++    int buffer_offset = fbdevsink->height * fbdevsink->width;
++
++    for (i = 0; i < fbdevsink->lines; i++) {
++      memcpy (fbdevsink->framebuffer
++          + (i + fbdevsink->cy) * fbdevsink->varinfo.xres
++          + fbdevsink->cx * 1,
++          map.data + i * fbdevsink->width * 1,
++          fbdevsink->width);
++    }
++
++    for (i = 0; i < fbdevsink->lines/2; i++) {
++      memcpy (fbdevsink->framebuffer + screen_offset
++          + (i + fbdevsink->cy/2) * fbdevsink->varinfo.xres
++          + fbdevsink->cx * 1,
++          map.data + buffer_offset + i * fbdevsink->width * 1,
++          fbdevsink->width);
++    }  
++  } else {
++    for (i = 0; i < fbdevsink->lines; i++) {
++      memcpy (fbdevsink->framebuffer
++          + (i + fbdevsink->cy) * fbdevsink->fixinfo.line_length
++          + fbdevsink->cx * fbdevsink->bytespp,
++          map.data + i * fbdevsink->width * fbdevsink->bytespp,
++          fbdevsink->linelen);
++    } 
+   }
+ 
+   gst_buffer_unmap (buf, &map);
