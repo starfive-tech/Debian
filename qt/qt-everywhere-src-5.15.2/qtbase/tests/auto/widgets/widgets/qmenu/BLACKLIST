@@ -1,0 +1,13 @@
+[task258920_mouseBorder]
+macos
+[layoutDirection]
+macos
+# Fails when enabling synchronous expose events QTBUG-62092
+[pushButtonPopulateOnAboutToShow]
+macos
+[tearOff]
+macos
+[activeSubMenuPosition]
+winrt
+[submenuTearOffDontClose]
+macos # Can't move cursor (QTBUG-76312)

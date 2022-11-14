@@ -1,0 +1,37 @@
+From c546d74d0705aa2ad71a09a2f902540092912f88 Mon Sep 17 00:00:00 2001
+From: Andy Hu <andy.hu@starfivetech.com>
+Date: Tue, 27 Sep 2022 12:25:14 +0800
+Subject: [PATCH 4/6] qtdeclarative: fix building issue
+
+---
+ qtdeclarative/src/qml/jsruntime/jsruntime.pri     | 1 +
+ qtdeclarative/src/qml/jsruntime/qv4typedarray.cpp | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/qtdeclarative/src/qml/jsruntime/jsruntime.pri b/qtdeclarative/src/qml/jsruntime/jsruntime.pri
+index 32acc6affc..514d833f69 100644
+--- a/qtdeclarative/src/qml/jsruntime/jsruntime.pri
++++ b/qtdeclarative/src/qml/jsruntime/jsruntime.pri
+@@ -1,6 +1,7 @@
+ INCLUDEPATH += $$PWD
+ INCLUDEPATH += $$OUT_PWD
+ 
++linux:LIBS += -latomic
+ SOURCES += \
+     $$PWD/qv4engine.cpp \
+     $$PWD/qv4context.cpp \
+diff --git a/qtdeclarative/src/qml/jsruntime/qv4typedarray.cpp b/qtdeclarative/src/qml/jsruntime/qv4typedarray.cpp
+index d03b67aa27..975468d8d2 100644
+--- a/qtdeclarative/src/qml/jsruntime/qv4typedarray.cpp
++++ b/qtdeclarative/src/qml/jsruntime/qv4typedarray.cpp
+@@ -46,6 +46,7 @@
+ #include "qv4runtime_p.h"
+ #include <QtCore/qatomic.h>
+ 
++#include <limits>
+ #include <cmath>
+ 
+ using namespace QV4;
+-- 
+2.36.0
+

@@ -1,0 +1,107 @@
+{
+    "module": "bluetooth",
+    "testDir": "../../config.tests",
+
+    "commandline": {
+        "options": {
+            "native-win32-bluetooth": "boolean"
+        }
+    },
+
+    "libraries": {
+        "bluez": {
+            "label": "BlueZ",
+            "test": "bluez",
+            "sources": [
+                { "type": "pkgConfig", "args": "bluez" },
+                "-lbluetooth"
+            ]
+        }
+    },
+
+    "tests": {
+        "bluez_le": {
+            "label": "BlueZ Low Energy",
+            "type": "compile",
+            "test": "bluez_le"
+        },
+        "linux_crypto_api": {
+            "label": "Linux Crypto API",
+            "type": "compile",
+            "test": "linux_crypto_api"
+        },
+        "winrt_bt": {
+            "label": "WinRT Bluetooth API",
+            "type": "compile",
+            "test": "winrt_bt"
+        },
+        "winrt_btle_no_pairing": {
+            "label": "WinRT extended bluetooth low energy API",
+            "type": "compile",
+            "test": "winrt_btle_no_pairing"
+        }
+    },
+
+    "features": {
+        "bluez": {
+            "label": "BlueZ",
+            "condition": "libs.bluez && features.concurrent && features.dbus",
+            "output": [ "publicFeature" ]
+        },
+        "bluez_le": {
+            "label": "BlueZ Low Energy",
+            "condition": "features.bluez && tests.bluez_le",
+            "output": [ "privateFeature" ]
+        },
+        "linux_crypto_api": {
+            "label": "Linux Crypto API",
+            "condition": "features.bluez_le && tests.linux_crypto_api",
+            "output": [ "privateFeature" ]
+        },
+        "native-win32-bluetooth": {
+            "label": "Native Win32 Bluetooth",
+            "purpose": "Uses the native Win32 Bluetooth backend.",
+            "section": "Qt Bluetooth",
+            "autoDetect": false,
+            "output": [ "publicFeature", "feature" ]
+        },
+        "winrt_bt": {
+            "label": "WinRT Bluetooth API (desktop & UWP)",
+            "condition": "config.win32 && !features.native-win32-bluetooth && tests.winrt_bt",
+            "output": [ "privateFeature" ]
+        },
+        "winrt_btle_no_pairing": {
+            "label": "WinRT advanced bluetooth low energy API (desktop & UWP)",
+            "condition": "config.win32 && features.winrt_bt && tests.winrt_btle_no_pairing",
+            "output": [ "privateFeature" ]
+        }
+    },
+
+    "report": [
+        {
+            "type": "note",
+            "condition": "features.bluez_le && !features.linux_crypto_api",
+            "message": "Linux crypto API not present. BTLE signed writes will not work."
+        },
+        {
+            "type": "note",
+            "condition": "features.bluez && !features.bluez_le",
+            "message": "Bluez version is too old to support Bluetooth Low Energy.
+Only classic Bluetooth will be available."
+        }
+    ],
+
+    "summary": [
+        {
+            "section": "Qt Bluetooth",
+            "entries": [
+                "bluez",
+                "bluez_le",
+                "linux_crypto_api",
+                "native-win32-bluetooth",
+                "winrt_bt",
+                "winrt_btle_no_pairing"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,24 @@
+From ae20218e16c560d5329aa1509583a7467f9ad99e Mon Sep 17 00:00:00 2001
+From: Andy Hu <andy.hu@starfivetech.com>
+Date: Thu, 29 Sep 2022 09:35:50 +0800
+Subject: [PATCH 5/6] qtwayland: fix building issue
+
+---
+ qtwayland/tests/auto/client/shared/corecompositor.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/qtwayland/tests/auto/client/shared/corecompositor.cpp b/qtwayland/tests/auto/client/shared/corecompositor.cpp
+index 5c6c83baa8..fa9b7662a0 100644
+--- a/qtwayland/tests/auto/client/shared/corecompositor.cpp
++++ b/qtwayland/tests/auto/client/shared/corecompositor.cpp
+@@ -27,6 +27,7 @@
+ ****************************************************************************/
+ 
+ #include "corecompositor.h"
++#include <thread>
+ 
+ namespace MockCompositor {
+ 
+-- 
+2.36.0
+

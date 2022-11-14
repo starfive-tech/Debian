@@ -1,0 +1,24 @@
+From e6ddc9ad22a70c83ea7aa6023b2d0339523b2a8b Mon Sep 17 00:00:00 2001
+From: Andy Hu <andy.hu@starfivetech.com>
+Date: Thu, 29 Sep 2022 09:36:25 +0800
+Subject: [PATCH 6/6] qt3d: fix building issue
+
+---
+ qt3d/src/plugins/renderers/opengl/renderer/renderer.pri | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/qt3d/src/plugins/renderers/opengl/renderer/renderer.pri b/qt3d/src/plugins/renderers/opengl/renderer/renderer.pri
+index 1a0240e776..005a68ccc1 100644
+--- a/qt3d/src/plugins/renderers/opengl/renderer/renderer.pri
++++ b/qt3d/src/plugins/renderers/opengl/renderer/renderer.pri
+@@ -1,5 +1,7 @@
+ INCLUDEPATH += $$PWD
+ 
++linux:LIBS += -latomic
++
+ SOURCES += \
+     $$PWD/gllights.cpp \
+     $$PWD/openglvertexarrayobject.cpp \
+-- 
+2.36.0
+

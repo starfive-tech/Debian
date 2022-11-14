@@ -1,0 +1,38 @@
+From 425586bd274f36270cffffa2100b7a7fe209fb86 Mon Sep 17 00:00:00 2001
+From: Andy Hu <andy.hu@starfivetech.com>
+Date: Tue, 27 Sep 2022 12:21:30 +0800
+Subject: [PATCH 2/6] qtbase: fix building issue
+
+---
+ .../auto/corelib/thread/qatomicinteger/qatomicinteger.pri   | 2 ++
+ qtbase/tests/auto/tools/moc/moc.pro                         | 6 ++++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/qtbase/tests/auto/corelib/thread/qatomicinteger/qatomicinteger.pri b/qtbase/tests/auto/corelib/thread/qatomicinteger/qatomicinteger.pri
+index f1030d41ef..e37ee6fed7 100644
+--- a/qtbase/tests/auto/corelib/thread/qatomicinteger/qatomicinteger.pri
++++ b/qtbase/tests/auto/corelib/thread/qatomicinteger/qatomicinteger.pri
+@@ -9,3 +9,5 @@ QT = core testlib
+ TARGET = tst_qatomicinteger_$$lower($$suffix)
+ SOURCES = $$PWD/tst_qatomicinteger.cpp
+ DEFINES += QATOMIC_TEST_TYPE=$$TYPE tst_QAtomicIntegerXX=tst_QAtomicInteger_$$suffix
++
++linux:LIBS += -latomic
+diff --git a/qtbase/tests/auto/tools/moc/moc.pro b/qtbase/tests/auto/tools/moc/moc.pro
+index cafc7bc184..a0c1d47af8 100644
+--- a/qtbase/tests/auto/tools/moc/moc.pro
++++ b/qtbase/tests/auto/tools/moc/moc.pro
+@@ -1,4 +1,10 @@
+ CONFIG += testcase
++
++qtConfig(c++11): CONFIG += c++11
++qtConfig(c++14): CONFIG += c++14
++#CONFIG += c++14  # for std::shared_timed_mutex
++#CONFIG += c++1z  # for std::shared_mutex
++
+ TARGET = tst_moc
+ 
+ #exists(/usr/include/boost/spirit.hpp) {
+-- 
+2.36.0
+
