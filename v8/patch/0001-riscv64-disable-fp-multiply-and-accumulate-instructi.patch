@@ -1,0 +1,31 @@
+From 4a599374d97dc4402ddc00171e388df6df21265c Mon Sep 17 00:00:00 2001
+From: JY <junyuan.tan@starfivetech.com>
+Date: Mon, 14 Nov 2022 10:39:16 +0800
+Subject: [PATCH 1/1] [riscv64]  disable fp multiply and accumulate
+ instructions
+
+Some wasm interpreter tests are failing since instructions generated
+by gcc such as *multiply and and* (fmadds) create intermediate
+results bigger than 8 bytes which doesn't match other architectures,
+hence the resulting output differs.
+
+Port commit 13314a207e2b22a10c72bfa83f985c7ff144c775
+---
+ BUILD.gn | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/BUILD.gn b/BUILD.gn
+index 988c907d96..fff48825e0 100644
+--- a/BUILD.gn
++++ b/BUILD.gn
+@@ -1009,6 +1009,7 @@ config("toolchain") {
+   cflags = []
+   ldflags = []
+ 
++  cflags += ["-ffp-contract=off"]
+   if (v8_current_cpu == "arm") {
+     defines += [ "V8_TARGET_ARCH_ARM" ]
+     if (arm_version >= 7) {
+-- 
+2.25.1
+

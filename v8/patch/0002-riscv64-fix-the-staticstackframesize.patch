@@ -1,0 +1,30 @@
+From 70caf337c3f69b16ac9ffec0d9a776aa95f896fc Mon Sep 17 00:00:00 2001
+From: Lu Yahan <yahan@iscas.ac.cn>
+Date: Thu, 14 Apr 2022 11:32:59 +0800
+Subject: [PATCH] [riscv64] Fix the StaticStackFrameSize
+
+ Update the size to kTierupBudgetOffset.
+
+Change-Id: Ibe241211ef67148fae3a4a9eed271f9293ca4801
+Reviewed-on: https://chromium-review.googlesource.com/c/v8/v8/+/3585492
+Reviewed-by: ji qiu <qiuji@iscas.ac.cn>
+Commit-Queue: Yahan Lu <yahan@iscas.ac.cn>
+Auto-Submit: Yahan Lu <yahan@iscas.ac.cn>
+Cr-Commit-Position: refs/heads/main@{#79978}
+---
+ src/wasm/baseline/riscv64/liftoff-assembler-riscv64.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/wasm/baseline/riscv64/liftoff-assembler-riscv64.h b/src/wasm/baseline/riscv64/liftoff-assembler-riscv64.h
+index 642a7d2a335..8d7ef96f3ad 100644
+--- a/src/wasm/baseline/riscv64/liftoff-assembler-riscv64.h
++++ b/src/wasm/baseline/riscv64/liftoff-assembler-riscv64.h
+@@ -393,7 +393,7 @@ void LiftoffAssembler::AbortCompilation() { AbortedCodeGeneration(); }
+ 
+ // static
+ constexpr int LiftoffAssembler::StaticStackFrameSize() {
+-  return liftoff::kFeedbackVectorOffset;
++  return liftoff::kTierupBudgetOffset;
+ }
+ 
+ int LiftoffAssembler::SlotSizeForType(ValueKind kind) {
