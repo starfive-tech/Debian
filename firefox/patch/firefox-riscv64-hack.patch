@@ -1,0 +1,102 @@
+Temporary hack to allow us to directly apply diff of matoko's branch.  Disable
+rust-vet to skip auditing third party libs in order to download/vendor rust
+deps on non-git firefox src.  Skip some style checks, as
+macroassembler support in js/src/jit/ is not complete yet
+
+diff --git a/python/mozbuild/mozbuild/vendor/vendor_rust.py b/python/mozbuild/mozbuild/vendor/vendor_rust.py
+index 7394ccaf40..491bd7fbdb 100644
+--- a/python/mozbuild/mozbuild/vendor/vendor_rust.py
++++ b/python/mozbuild/mozbuild/vendor/vendor_rust.py
+@@ -740,38 +740,40 @@ license file's hash.
+                     failed = True
+ 
+         # Only emit warnings for cargo-vet for now.
+-        env = os.environ.copy()
+-        env["PATH"] = os.pathsep.join(
+-            (
+-                str(Path(cargo).parent),
+-                os.environ["PATH"],
+-            )
+-        )
+-        flags = ["--output-format=json"]
+-        if "MOZ_AUTOMATION" in os.environ:
+-            flags.append("--locked")
+-            flags.append("--frozen")
+-        res = cargo_vet(
+-            self,
+-            flags,
+-            stdout=subprocess.PIPE,
+-            env=env,
+-        )
+-        if res.returncode:
+-            vet = json.loads(res.stdout)
+-            for failure in vet.get("failures", []):
+-                failure["crate"] = failure.pop("name")
+-                self.log(
+-                    logging.ERROR,
+-                    "cargo_vet_failed",
+-                    failure,
+-                    "Missing audit for {crate}:{version} (requires {missing_criteria})."
+-                    " Run `./mach cargo vet` for more information.",
+-                )
+-                failed = True
+-
+-        if failed:
+-            return False
++        #env = os.environ.copy()
++        #env["PATH"] = os.pathsep.join(
++        #    (
++        #        str(Path(cargo).parent),
++        #        os.environ["PATH"],
++        #    )
++        #)
++        #print(env["PATH"])
++        #print(self.topsrcdir)
++        #flags = ["--output-format=json"]
++        #if "MOZ_AUTOMATION" in os.environ:
++        #    flags.append("--locked")
++        #    flags.append("--frozen")
++        #res = cargo_vet(
++        #    self,
++        #    flags,
++        #    stdout=subprocess.PIPE,
++        #    env=env,
++        #)
++        #if res.returncode:
++        #    vet = json.loads(res.stdout)
++        #    for failure in vet.get("failures", []):
++        #        failure["crate"] = failure.pop("name")
++        #        self.log(
++        #            logging.ERROR,
++        #            "cargo_vet_failed",
++        #            failure,
++        #            "Missing audit for {crate}:{version} (requires {missing_criteria})."
++        #            " Run `./mach cargo vet` for more information.",
++        #        )
++        #        failed = True
++
++        #if failed:
++        #    return False
+ 
+         res = subprocess.run(
+             [cargo, "vendor", vendor_dir], cwd=self.topsrcdir, stdout=subprocess.PIPE
+@@ -848,6 +848,7 @@ license file's hash.
+                     directory=replace["directory"],
+                 )
+             )
++        return True
+ 
+         if not self._check_licenses(vendor_dir):
+             self.log(
+diff --git a/js/src/build/moz.build b/js/src/build/moz.build
+index 4c48a5c4ff..e68d79447e 100644
+--- a/js/src/build/moz.build
++++ b/js/src/build/moz.build
+@@ -101,7 +101,5 @@ GeneratedFile(
+     inputs=[
+         "!%sjs_static.%s" % (CONFIG["LIB_PREFIX"], CONFIG["LIB_SUFFIX"]),
+-        "/config/check_spidermonkey_style.py",
+-        "/config/check_macroassembler_style.py",
+         "/config/check_js_opcode.py",
+     ],
+ )
