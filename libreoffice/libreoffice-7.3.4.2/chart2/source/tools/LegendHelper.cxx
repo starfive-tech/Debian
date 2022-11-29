@@ -1,0 +1,123 @@
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/*
+ * This file is part of the LibreOffice project.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * This file incorporates work covered by the following license notice:
+ *
+ *   Licensed to the Apache Software Foundation (ASF) under one or more
+ *   contributor license agreements. See the NOTICE file distributed
+ *   with this work for additional information regarding copyright
+ *   ownership. The ASF licenses this file to you under the Apache
+ *   License, Version 2.0 (the "License"); you may not use this file
+ *   except in compliance with the License. You may obtain a copy of
+ *   the License at http://www.apache.org/licenses/LICENSE-2.0 .
+ */
+
+#include <LegendHelper.hxx>
+#include <ChartModel.hxx>
+#include <com/sun/star/chart/ChartLegendExpansion.hpp>
+#include <com/sun/star/chart2/LegendPosition.hpp>
+#include <com/sun/star/chart2/RelativePosition.hpp>
+#include <com/sun/star/uno/XComponentContext.hpp>
+#include <tools/diagnose_ex.h>
+
+using namespace ::com::sun::star;
+using ::com::sun::star::uno::Reference;
+
+namespace chart
+{
+
+Reference< chart2::XLegend > LegendHelper::showLegend( ChartModel& rModel
+                                                    , const uno::Reference< uno::XComponentContext >& xContext )
+{
+    uno::Reference< chart2::XLegend > xLegend = LegendHelper::getLegend( rModel, xContext, true );
+    uno::Reference< beans::XPropertySet > xProp( xLegend, uno::UNO_QUERY );
+    if( xProp.is())
+    {
+        xProp->setPropertyValue( "Show", uno::Any(true) );
+
+        chart2::RelativePosition aRelativePosition;
+        if( !(xProp->getPropertyValue( "RelativePosition") >>=  aRelativePosition) )
+        {
+            chart2::LegendPosition ePos = chart2::LegendPosition_LINE_END;
+            if( !(xProp->getPropertyValue( "AnchorPosition") >>= ePos ) )
+                xProp->setPropertyValue( "AnchorPosition", uno::Any( ePos ));
+
+            css::chart::ChartLegendExpansion eExpansion =
+                    ( ePos == chart2::LegendPosition_LINE_END ||
+                      ePos == chart2::LegendPosition_LINE_START )
+                    ? css::chart::ChartLegendExpansion_HIGH
+                    : css::chart::ChartLegendExpansion_WIDE;
+            if( !(xProp->getPropertyValue( "Expansion") >>= eExpansion ) )
+                xProp->setPropertyValue( "Expansion", uno::Any( eExpansion ));
+
+            xProp->setPropertyValue( "RelativePosition", uno::Any());
+        }
+
+    }
+    return xLegend;
+}
+
+void LegendHelper::hideLegend( ChartModel& rModel )
+{
+    uno::Reference< chart2::XLegend > xLegend = LegendHelper::getLegend( rModel, nullptr );
+    uno::Reference< beans::XPropertySet > xProp( xLegend, uno::UNO_QUERY );
+    if( xProp.is())
+    {
+        xProp->setPropertyValue( "Show", uno::Any(false) );
+    }
+}
+
+uno::Reference< chart2::XLegend > LegendHelper::getLegend(
+      ChartModel& rModel
+    , const uno::Reference< uno::XComponentContext >& xContext
+    , bool bCreate )
+{
+    uno::Reference< chart2::XLegend > xResult;
+
+    try
+    {
+        uno::Reference< chart2::XDiagram > xDia( rModel.getFirstDiagram());
+        if( xDia.is() )
+        {
+            xResult.set( xDia->getLegend() );
+            if( bCreate && !xResult.is() && xContext.is() )
+            {
+                xResult.set( xContext->getServiceManager()->createInstanceWithContext(
+                            "com.sun.star.chart2.Legend", xContext ), uno::UNO_QUERY );
+                xDia->setLegend( xResult );
+            }
+        }
+        else if(bCreate)
+        {
+            OSL_FAIL("need diagram for creation of legend");
+        }
+    }
+    catch( const uno::Exception & )
+    {
+        DBG_UNHANDLED_EXCEPTION("chart2");
+    }
+
+    return xResult;
+}
+
+bool LegendHelper::hasLegend( const uno::Reference< chart2::XDiagram > & xDiagram )
+{
+    bool bReturn = false;
+    if( xDiagram.is())
+    {
+        uno::Reference< beans::XPropertySet > xLegendProp( xDiagram->getLegend(), uno::UNO_QUERY );
+        if( xLegendProp.is())
+            xLegendProp->getPropertyValue( "Show") >>= bReturn;
+    }
+
+    return bReturn;
+}
+
+} //namespace chart
+
+/* vim:set shiftwidth=4 softtabstop=4 expandtab: */

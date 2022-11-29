@@ -1,0 +1,196 @@
+#
+# This file is part of the LibreOffice project.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+# This file incorporates work covered by the following license notice:
+#
+#   Licensed to the Apache Software Foundation (ASF) under one or more
+#   contributor license agreements. See the NOTICE file distributed
+#   with this work for additional information regarding copyright
+#   ownership. The ASF licenses this file to you under the Apache
+#   License, Version 2.0 (the "License"); you may not use this file
+#   except in compliance with the License. You may obtain a copy of
+#   the License at http://www.apache.org/licenses/LICENSE-2.0 .
+#
+
+# Format:
+
+# Start
+# scpModule
+# shellscript file (optional)
+# solarispackagename
+# solarisrequires (optional)
+# solarisprovides (optional)
+# packagename
+# linuxreplaces (optional)
+# requires (optional)
+# provides (optional)
+# copyright
+# vendor
+# description
+# destpath
+# End
+
+Start
+module = "gid_Module_Langpack_Basis"
+solarispackagename = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-%LANGUAGESTRING"
+solarisrequires = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-core"
+packagename = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING"
+provides = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING"
+requires = "%BASISPACKAGEPREFIX%PRODUCTVERSION-core %PACKAGEVERSION %PACKAGEVERSION-%PACKAGEREVISION"
+copyright = "2022 The Document Foundation"
+solariscopyright = "solariscopyrightfile"
+vendor = "The Document Foundation"
+description = "Language module for %PRODUCTNAME %PRODUCTVERSION, language %LANGUAGESTRING"
+destpath = "/opt"
+packageversion = "%PACKAGEVERSION"
+pkg_list_entry = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-core"
+End
+
+Start
+module = "gid_Module_Langpack_Fonts"
+solarispackagename = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-%LANGUAGESTRING-fonts"
+solarisrequires = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-%LANGUAGESTRING"
+packagename = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING-fonts"
+provides = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING-fonts"
+requires = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING %PACKAGEVERSION %PACKAGEVERSION-%PACKAGEREVISION"
+copyright = "2022 The Document Foundation"
+solariscopyright = "solariscopyrightfile"
+vendor = "The Document Foundation"
+description = "Language fonts module for %PRODUCTNAME %PRODUCTVERSION, language %LANGUAGESTRING"
+destpath = "/opt"
+packageversion = "%PACKAGEVERSION"
+pkg_list_entry = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-core"
+End
+
+Start
+module = "gid_Module_Langpack_Resource"
+solarispackagename = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-%LANGUAGESTRING-res"
+solarisrequires = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-%LANGUAGESTRING"
+packagename = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING-res"
+provides = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING-res"
+requires = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING %PACKAGEVERSION %PACKAGEVERSION-%PACKAGEREVISION"
+copyright = "2022 The Document Foundation"
+solariscopyright = "solariscopyrightfile"
+vendor = "The Document Foundation"
+description = "Language resource module for %PRODUCTNAME %PRODUCTVERSION, language %LANGUAGESTRING"
+destpath = "/opt"
+packageversion = "%PACKAGEVERSION"
+pkg_list_entry = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-core"
+End
+
+Start
+module = "gid_Module_Langpack_Writer"
+solarispackagename = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-%LANGUAGESTRING-writer"
+solarisrequires = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-%LANGUAGESTRING"
+packagename = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING-writer"
+provides = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING-writer"
+requires = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING %PACKAGEVERSION %PACKAGEVERSION-%PACKAGEREVISION"
+copyright = "2022 The Document Foundation"
+solariscopyright = "solariscopyrightfile"
+vendor = "The Document Foundation"
+description = "Writer language module for %PRODUCTNAME %PRODUCTVERSION, language %LANGUAGESTRING"
+destpath = "/opt"
+packageversion = "%PACKAGEVERSION"
+pkg_list_entry = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-writer"
+End
+
+Start
+module = "gid_Module_Langpack_Calc"
+solarispackagename = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-%LANGUAGESTRING-calc"
+solarisrequires = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-%LANGUAGESTRING"
+packagename = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING-calc"
+provides = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING-calc"
+requires = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING %PACKAGEVERSION %PACKAGEVERSION-%PACKAGEREVISION"
+copyright = "2022 The Document Foundation"
+solariscopyright = "solariscopyrightfile"
+vendor = "The Document Foundation"
+description = "Calc language module for %PRODUCTNAME %PRODUCTVERSION, language %LANGUAGESTRING"
+destpath = "/opt"
+packageversion = "%PACKAGEVERSION"
+pkg_list_entry = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-calc"
+End
+
+Start
+module = "gid_Module_Langpack_Impress"
+solarispackagename = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-%LANGUAGESTRING-impress"
+solarisrequires = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-%LANGUAGESTRING"
+packagename = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING-impress"
+provides = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING-impress"
+requires = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING %PACKAGEVERSION %PACKAGEVERSION-%PACKAGEREVISION"
+copyright = "2022 The Document Foundation"
+solariscopyright = "solariscopyrightfile"
+vendor = "The Document Foundation"
+description = "Impress language module for %PRODUCTNAME %PRODUCTVERSION, language %LANGUAGESTRING"
+destpath = "/opt"
+packageversion = "%PACKAGEVERSION"
+pkg_list_entry = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-impress"
+End
+
+Start
+module = "gid_Module_Langpack_Draw"
+solarispackagename = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-%LANGUAGESTRING-draw"
+solarisrequires = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-%LANGUAGESTRING"
+packagename = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING-draw"
+provides = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING-draw"
+requires = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING %PACKAGEVERSION %PACKAGEVERSION-%PACKAGEREVISION"
+copyright = "2022 The Document Foundation"
+solariscopyright = "solariscopyrightfile"
+vendor = "The Document Foundation"
+description = "Draw language module for %PRODUCTNAME %PRODUCTVERSION, language %LANGUAGESTRING"
+destpath = "/opt"
+packageversion = "%PACKAGEVERSION"
+pkg_list_entry = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-draw"
+End
+
+Start
+module = "gid_Module_Langpack_Math"
+solarispackagename = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-%LANGUAGESTRING-math"
+solarisrequires = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-%LANGUAGESTRING"
+packagename = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING-math"
+provides = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING-math"
+requires = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING %PACKAGEVERSION %PACKAGEVERSION-%PACKAGEREVISION"
+copyright = "2022 The Document Foundation"
+solariscopyright = "solariscopyrightfile"
+vendor = "The Document Foundation"
+description = "Math language module for %PRODUCTNAME %PRODUCTVERSION, language %LANGUAGESTRING"
+destpath = "/opt"
+packageversion = "%PACKAGEVERSION"
+pkg_list_entry = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-math"
+End
+
+Start
+module = "gid_Module_Langpack_Base"
+solarispackagename = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-%LANGUAGESTRING-base"
+solarisrequires = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-%LANGUAGESTRING"
+packagename = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING-base"
+provides = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING-base"
+requires = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING %PACKAGEVERSION %PACKAGEVERSION-%PACKAGEREVISION"
+copyright = "2022 The Document Foundation"
+solariscopyright = "solariscopyrightfile"
+vendor = "The Document Foundation"
+description = "Base language module for %PRODUCTNAME %PRODUCTVERSION, language %LANGUAGESTRING"
+destpath = "/opt"
+packageversion = "%PACKAGEVERSION"
+pkg_list_entry = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-base"
+End
+
+Start
+module = "gid_Module_Langpack_Onlineupdate"
+solarispackagename = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-%LANGUAGESTRING-onlineupd"
+solarisrequires = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-%LANGUAGESTRING"
+packagename = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING-onlineupd"
+provides = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING-onlineupd"
+requires = "%BASISPACKAGEPREFIX%PRODUCTVERSION-%LANGUAGESTRING %PACKAGEVERSION %PACKAGEVERSION-%PACKAGEREVISION"
+copyright = "2022 The Document Foundation"
+solariscopyright = "solariscopyrightfile"
+vendor = "The Document Foundation"
+description = "Online update language module for %PRODUCTNAME %PRODUCTVERSION, language %LANGUAGESTRING"
+destpath = "/opt"
+packageversion = "%PACKAGEVERSION"
+pkg_list_entry = "%BASISPACKAGEPREFIX%WITHOUTDOTPRODUCTVERSION-onlineupdate"
+End
+

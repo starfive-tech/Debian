@@ -1,0 +1,49 @@
+--- misc/cairo-1.10.2/src/cairo-image-surface.c
++++ misc/cairo-1.10.2/src/cairo-image-surface.c
+@@ -97,11 +97,11 @@
+ 	return CAIRO_FORMAT_RGBA128F;
+     case PIXMAN_rgb_float:
+ 	return CAIRO_FORMAT_RGB96F;
+-    case PIXMAN_a8r8g8b8:
++    case PIXMAN_a8b8g8r8: //tweaked
+ 	return CAIRO_FORMAT_ARGB32;
+     case PIXMAN_x2r10g10b10:
+ 	return CAIRO_FORMAT_RGB30;
+-    case PIXMAN_x8r8g8b8:
++    case PIXMAN_x8b8g8r8: //tweaked
+ 	return CAIRO_FORMAT_RGB24;
+     case PIXMAN_a8:
+ 	return CAIRO_FORMAT_A8;
+@@ -117,7 +117,7 @@
+ #if PIXMAN_VERSION >= PIXMAN_VERSION_ENCODE(0,27,2)
+     case PIXMAN_a8r8g8b8_sRGB:
+ #endif
+-	case PIXMAN_a8b8g8r8: case PIXMAN_x8b8g8r8:
++    case PIXMAN_a8r8g8b8: case PIXMAN_x8r8g8b8: //tweaked
+     case PIXMAN_b8g8r8:   case PIXMAN_b5g6r5:
+     case PIXMAN_a1r5g5b5: case PIXMAN_x1r5g5b5: case PIXMAN_a1b5g5r5:
+     case PIXMAN_x1b5g5r5: case PIXMAN_a4r4g4b4: case PIXMAN_x4r4g4b4:
+@@ -320,7 +320,7 @@
+ 	ret = PIXMAN_a8;
+ 	break;
+     case CAIRO_FORMAT_RGB24:
+-	ret = PIXMAN_x8r8g8b8;
++	ret = PIXMAN_x8b8g8r8; //tweaked
+ 	break;
+     case CAIRO_FORMAT_RGB30:
+ 	ret = PIXMAN_x2r10g10b10;
+@@ -335,12 +335,12 @@
+ 	ret = PIXMAN_rgba_float;
+ 	break;
+ 	case CAIRO_FORMAT_RGB24_888:
+-	ret = PIXMAN_r8g8b8;
++	ret = PIXMAN_b8g8r8; // tweaked
+ 	break;
+     case CAIRO_FORMAT_ARGB32:
+     case CAIRO_FORMAT_INVALID:
+     default:
+-	ret = PIXMAN_a8r8g8b8;
++	ret = PIXMAN_a8b8g8r8; //tweaked
+ 	break;
+     }
+     return ret;

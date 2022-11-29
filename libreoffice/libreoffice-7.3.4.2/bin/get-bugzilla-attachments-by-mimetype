@@ -1,0 +1,584 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# This file is part of the LibreOffice project.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+
+# This digs through a pile of bugzilla's and populates the cwd with a big
+# collection of bug-docs in per-filetype dirs with bug-ids as names with
+# prefixes to indicate which bug-tracker, e.g.
+#
+# fdo-bugid-X.suffix
+# rhbz-bugid-X.suffix
+# moz-bugid-X.suffix
+#
+# where X is the n'th attachment of that type in the bug
+#
+# The results are stored in the current directory, categorized by the
+# extension of the downloaded file.  When a file already exists, it is assumed
+# it is already downloaded by a previous run, and up-to-date.
+
+from __future__ import print_function
+import feedparser
+import base64
+import datetime
+import glob
+import re
+import os, os.path
+import stat
+import sys
+import threading
+try:
+    import queue
+except:
+    import Queue as queue
+try:
+    from urllib.request import urlopen
+except:
+    from urllib import urlopen
+try:
+    import xmlrpc.client as xmlrpclib
+except:
+    import xmlrpclib
+from xml.dom import minidom
+from xml.sax.saxutils import escape
+
+def urlopen_retry(url):
+    maxretries = 3
+    for i in range(maxretries + 1):
+        try:
+            return urlopen(url)
+        except IOError as e:
+            print("caught IOError: " + str(e))
+            if maxretries == i:
+                raise
+            print("retrying...")
+
+def get_from_bug_url_via_xml(url, mimetype, prefix, suffix):
+    id = url.rsplit('=', 2)[1]
+    print("id is " + prefix + id + " " + suffix)
+    print("parsing " + id)
+    sock = urlopen_retry(url+"&ctype=xml")
+    dom = minidom.parse(sock)
+    sock.close()
+    attachmentid=0
+    for attachment in dom.getElementsByTagName('attachment'):
+        attachmentid += 1
+        print(" mimetype is", end=' ')
+        for node in attachment.childNodes:
+            if node.nodeName == 'type':
+                # check if attachment is deleted
+                if not node.firstChild:
+                    print('deleted attachment, skipping')
+                    continue
+
+                print(node.firstChild.nodeValue, end=' ')
+                if node.firstChild.nodeValue.lower() != mimetype.lower():
+                    print('skipping')
+                    break
+            elif node.nodeName == 'data':
+                # check if attachment is deleted (i.e. https://bugs.kde.org/show_bug.cgi?id=53343&ctype=xml)
+                if not node.firstChild:
+                    print('deleted attachment, skipping')
+                    continue
+
+                download = suffix + '/' +prefix + id + '-' + str(attachmentid) + '.' + suffix
+                if os.path.isfile(download):
+                    print("assuming " + download + " is up to date")
+                    continue
+
+                # prevent re-downloading FDO attachments from TDF
+                if prefix == "tdf" and int(id) < 88776:
+                    fdodownload = download.replace("tdf", "fdo")
+                    if os.path.isfile(fdodownload):
+                        print("assuming FDO " + fdodownload + " is up to date")
+                        continue
+
+                print('downloading as ' + download)
+                tmpfile = download + ".tmp"
+                f = open(tmpfile, 'wb')
+                f.write(base64.b64decode(node.firstChild.nodeValue))
+                f.close()
+                os.rename(tmpfile, download)
+                break
+
+def get_novell_bug_via_xml(url, mimetype, prefix, suffix):
+    id = url.rsplit('=', 2)[1]
+    print("id is " + prefix + id + " " + suffix)
+    print("parsing " + id)
+    sock = urlopen_retry(url+"&ctype=xml")
+    dom = minidom.parse(sock)
+    sock.close()
+    attachmentid=0
+    for comment in dom.getElementsByTagName('thetext'):
+        commentText = comment.firstChild.nodeValue
+        match = re.search(r".*Created an attachment \(id=([0-9]+)\)", commentText)
+        if not match:
+            continue
+
+        attachmentid += 1
+
+        download = suffix + '/' + prefix + id + '-' + str(attachmentid) + '.' + suffix
+        if os.path.isfile(download):
+            print("assuming " + download + " is up to date")
+            continue
+
+        realAttachmentId = match.group(1)
+        handle = urlopen_retry(novellattach + realAttachmentId)
+        if not handle:
+            print("attachment %s is not accessible" % realAttachmentId)
+            continue
+        print(" mimetype is", end=' ')
+
+        info = handle.info()
+        if info.get_content_type:
+            remoteMime = info.get_content_type()
+        else:
+            remoteMime = info.gettype()
+        print(remoteMime, end=' ')
+        if remoteMime != mimetype:
+            print("skipping")
+            continue
+
+        print('downloading as ' + download)
+        tmpfile = download + ".tmp"
+        f = open(tmpfile, 'wb')
+        f.write(handle.read())
+        f.close()
+        os.rename(tmpfile, download)
+
+def create_query(mimetype):
+    query = dict()
+    query['query_format']='advanced'
+    query['field0-0-0']='attachments.mimetype'
+    query['type0-0-0']='equals'
+    query['value0-0-0']=mimetype
+    return query
+
+def get_downloaded_files(prefix, suffix):
+    return glob.glob(os.path.join(suffix, '%s*.%s' % (prefix, suffix)))
+
+def get_file_bz_ids(files, prefix):
+    return set([os.path.basename(f).split('-')[0].replace(prefix, '', 1) for f in files])
+
+def get_changed_date(files):
+    newest = max([os.stat(f)[stat.ST_MTIME] for f in files])
+    # Subtract a day to avoid timezone differences. The worst thing that
+    # can happen is that we are going to process more bugs than necessary.
+    return datetime.date.fromtimestamp(newest - 24 * 60 * 60)
+
+def get_through_rpc_query(rpcurl, showurl, mimetype, prefix, suffix):
+    try:
+        os.mkdir(suffix)
+    except:
+        pass
+
+    def process(query, full, have=[]):
+        try:
+            proxy = xmlrpclib.ServerProxy(rpcurl)
+            result = proxy.Bug.search(query)
+            bugs = result['bugs']
+            print(str(len(bugs)) + ' bugs to process')
+
+            if full:
+                available = set([str(bug['id']) for bug in bugs])
+                # we already have files from all available bugs
+                if available.difference(set(have)) == set():
+                    print("assuming all downloaded files are up to date")
+                    return
+
+            for bug in bugs:
+                url = showurl + str(bug['id'])
+                get_from_bug_url_via_xml(url, mimetype, prefix, suffix)
+        except xmlrpclib.Fault as err:
+            print("A fault occurred")
+            print("Fault code: %s" % err.faultCode)
+            print(err.faultString)
+
+    query = create_query(mimetype)
+    query['column_list']='bug_id'
+
+    files = get_downloaded_files(prefix, suffix)
+
+    if files != []:
+        print('looking for updated bugs having %s attachment(s)' % mimetype)
+        query_changed = query.copy()
+        query_changed['field0-1-0'] = 'days_elapsed'
+        query_changed['type0-1-0'] = 'lessthaneq'
+        query_changed['value0-1-0'] = str((datetime.date.today() - get_changed_date(files)).days)
+        process(query_changed, False)
+
+    print('looking for all bugs having %s attachment(s)' % mimetype)
+    process(query, True, get_file_bz_ids(files, prefix))
+
+def get_through_rss_query(queryurl, mimetype, prefix, suffix):
+    try:
+        os.mkdir(suffix)
+    except:
+        pass
+
+    #Getting detailed bug information and downloading an attachment body is not possible without logging in to Novell bugzilla
+    #get_novell_bug_via_xml function is a workaround for that situation
+    get_bug_function = get_novell_bug_via_xml if prefix == "novell" else get_from_bug_url_via_xml
+
+    def process(query, full, have=[]):
+        url = queryurl + '?' + '&'.join(['='.join(kv) for kv in query.items()])
+        print('url is ' + url)
+        d = feedparser.parse(url)
+        print(str(len(d['entries'])) + ' bugs to process')
+
+        entries = []
+        for entry in d['entries']:
+            bugid = entry['id'].split('=')[-1]
+            entries.append(entry)
+
+        if full:
+            available = set([str(entry['id'].split('=')[-1]) for entry in entries])
+            # we already have files from all available bugs
+            if available.difference(set(have)) == set():
+                print("assuming all downloaded files are up to date")
+                return
+
+        for entry in entries:
+            try:
+                get_bug_function(entry['id'], mimetype, prefix, suffix)
+            except KeyboardInterrupt:
+                raise # Ctrl+C should work
+            except:
+                print(entry['id'] + " failed: " + str(sys.exc_info()[0]))
+                pass
+
+    query = create_query(escape(mimetype.replace("+","%2B")))
+    query['ctype'] = 'rss'
+
+    files = get_downloaded_files(prefix, suffix)
+
+    if files != []:
+        print('looking for updated bugs having %s attachment(s)' % mimetype)
+        query_changed = query.copy()
+        query_changed['field0-1-0'] = 'delta_ts'
+        query_changed['type0-1-0'] = 'greaterthaneq'
+        query_changed['value0-1-0'] = get_changed_date(files).isoformat()
+        process(query_changed, False)
+
+    print('looking for all bugs having %s attachment(s)' % mimetype)
+    process(query, True, get_file_bz_ids(files, prefix))
+
+#since searching bugs having attachments with specific mimetypes is not available in launchpad API
+#we're iterating over all bugs of the most interesting source packages
+launchpad_pkgs = (
+    "abiword",
+    "calibre",
+    "calligra",
+    "gnumeric",
+    "inkscape",
+    "koffice",
+    "libabw",
+    "libcdr",
+    "libe-book",
+    "libetonyek",
+    "libfreehand",
+    "libmspub",
+    "libmwaw",
+    "liborcus",
+    "libpagemaker",
+    "libreoffice",
+    "libvisio",
+    "libwpd",
+    "libwpg",
+    "libwps",
+    "openoffice.org",
+    "python-uniconvertor",
+    "scribus",
+    "sk1",
+    "unoconv",
+)
+
+def get_launchpad_bugs(prefix):
+    #launchpadlib python module is required to download launchpad attachments
+    from launchpadlib.launchpad import Launchpad
+
+    launchpad = Launchpad.login_anonymously("attachmentdownload", "production")
+    ubuntu = launchpad.distributions["ubuntu"]
+
+    for pkg in launchpad_pkgs:
+        srcpkg = ubuntu.getSourcePackage(name=pkg)
+        pkgbugs = srcpkg.searchTasks(status=["New", "Fix Committed", "Invalid", "Won't Fix", "Confirmed", "Triaged", "In Progress", "Incomplete", "Incomplete (with response)", "Incomplete (without response)", "Fix Released", "Opinion", "Expired"])
+
+        for bugtask in pkgbugs:
+            bug = bugtask.bug
+            id = str(bug.id)
+            print("parsing " + id + " status: " + bugtask.status + " title: " + bug.title[:50])
+            attachmentid = 0
+            for attachment in bug.attachments:
+                attachmentid += 1
+                handle = attachment.data.open()
+                if not handle.content_type in mimetypes:
+                    #print "skipping"
+                    continue
+
+                suffix = mimetypes[handle.content_type]
+                if not os.path.isdir(suffix):
+                    try:
+                        os.mkdir(suffix)
+                    except:
+                        pass
+
+                download = suffix + '/' + prefix + id + '-' + str(attachmentid) + '.' + suffix
+
+                if os.path.isfile(download):
+                    print("assuming " + id + " is up to date")
+                    break
+
+                print('mimetype is ' + handle.content_type + ' downloading as ' + download)
+
+                tmpfile = download + ".tmp"
+                f = open(tmpfile, "wb")
+                f.write(handle.read())
+                f.close()
+                os.rename(tmpfile, download)
+
+rss_bugzillas = (
+    ( 'abi', 'http://bugzilla.abisource.com/buglist.cgi' ), #added for abiword
+    ( 'fdo', 'http://bugs.freedesktop.org/buglist.cgi' ),
+    ( 'gentoo', 'http://bugs.gentoo.org/buglist.cgi' ),
+    ( 'gnome', 'http://bugzilla.gnome.org/buglist.cgi' ), # added for gnumeric
+    ( 'kde', 'http://bugs.kde.org/buglist.cgi' ), # added for koffice/calligra
+    ( 'mandriva', 'https://qa.mandriva.com/buglist.cgi' ),
+    ( 'moz', 'https://bugzilla.mozilla.org/buglist.cgi' ),
+    # It seems something has changed and it is no longer possible to
+    # download any files from there.
+    # NOTE: I am leaving it in the list, commented out, just so someone
+    # does not add it back immediately .-)
+    # 'novell': 'https://bugzilla.novell.com/buglist.cgi',
+# note: running this script against bz.apache.org apparently causes one's IP
+# to be banned or something; you won't get new files in any case...
+#    ( 'ooo', 'https://bz.apache.org/ooo/buglist.cgi' ),
+    ( 'tdf', 'http://bugs.documentfoundation.org/buglist.cgi' ),
+)
+
+redhatrpc = 'https://bugzilla.redhat.com/xmlrpc.cgi'
+redhatbug = 'https://bugzilla.redhat.com/show_bug.cgi?id='
+
+#Novell Bugzilla requires users to log in, in order to get details of the bugs such as attachment bodies etc.
+#As a dirty workaround, we parse comments containing "Created an attachment (id=xxxxxx)" and download attachments manually
+#python-bugzilla claims that it supports Novell bugzilla login but it's not working right now and novell bugzilla login
+#system is a nightmare
+novellattach = 'https://bugzilla.novell.com/attachment.cgi?id='
+
+mimetypes = {
+# ODF
+    'application/vnd.oasis.opendocument.base': 'odb',
+    'application/vnd.oasis.opendocument.database': 'odb',
+    'application/vnd.oasis.opendocument.chart': 'odc',
+    'application/vnd.oasis.opendocument.chart-template': 'otc',
+    'application/vnd.oasis.opendocument.formula': 'odf',
+    'application/vnd.oasis.opendocument.formula-template': 'otf',
+    'application/vnd.oasis.opendocument.graphics': 'odg',
+    'application/vnd.oasis.opendocument.graphics-template': 'otg',
+    'application/vnd.oasis.opendocument.graphics-flat-xml': 'fodg',
+    'application/vnd.oasis.opendocument.presentation': 'odp',
+    'application/vnd.oasis.opendocument.presentation-template': 'otp',
+    'application/vnd.oasis.opendocument.presentation-flat-xml': 'fodp',
+    'application/vnd.oasis.opendocument.spreadsheet': 'ods',
+    'application/vnd.oasis.opendocument.spreadsheet-template': 'ots',
+    'application/vnd.oasis.opendocument.spreadsheet-flat-xml': 'fods',
+    'application/vnd.oasis.opendocument.text': 'odt',
+    'application/vnd.oasis.opendocument.text-flat-xml': 'fodt',
+    'application/vnd.oasis.opendocument.text-master': 'odm',
+    'application/vnd.oasis.opendocument.text-template': 'ott',
+    'application/vnd.oasis.opendocument.text-master-template': 'otm',
+    'application/vnd.oasis.opendocument.text-web': 'oth',
+# OOo XML
+    'application/vnd.sun.xml.base': 'odb',
+    'application/vnd.sun.xml.calc': 'sxc',
+    'application/vnd.sun.xml.calc.template': 'stc',
+    'application/vnd.sun.xml.chart': 'sxs',
+    'application/vnd.sun.xml.draw': 'sxd',
+    'application/vnd.sun.xml.draw.template': 'std',
+    'application/vnd.sun.xml.impress': 'sxi',
+    'application/vnd.sun.xml.impress.template': 'sti',
+    'application/vnd.sun.xml.math': 'sxm',
+    'application/vnd.sun.xml.writer': 'sxw',
+    'application/vnd.sun.xml.writer.global': 'sxg',
+    'application/vnd.sun.xml.writer.template': 'stw',
+    'application/vnd.sun.xml.writer.web': 'stw',
+# MSO
+    'application/rtf': 'rtf',
+    'text/rtf': 'rtf',
+    'application/msword': 'doc',
+    'application/vnd.ms-powerpoint': 'ppt',
+    'application/vnd.ms-excel': 'xls',
+    'application/vnd.ms-excel.sheet.binary.macroEnabled.12': 'xlsb',
+    'application/vnd.ms-excel.sheet.macroEnabled.12': 'xlsm',
+    'application/vnd.ms-excel.template.macroEnabled.12': 'xltm',
+    'application/vnd.ms-powerpoint.presentation.macroEnabled.12': 'pptm',
+    'application/vnd.ms-powerpoint.slide.macroEnabled.12': 'sldm',
+    'application/vnd.ms-powerpoint.slideshow.macroEnabled.12': 'ppsm',
+    'application/vnd.ms-powerpoint.template.macroEnabled.12': 'potm',
+    'application/vnd.ms-word.document.macroEnabled.12': 'docm',
+    'application/vnd.ms-word.template.macroEnabled.12': 'dotm',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.template': 'xltx',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'pptx',
+    'application/vnd.openxmlformats-officedocument.presentationml.template': 'potx',
+    'application/vnd.openxmlformats-officedocument.presentationml.slideshow': 'ppsx',
+    'application/vnd.openxmlformats-officedocument.presentationml.slide': 'sldx',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.template': 'dotx',
+    'application/vnd.visio': 'vsd',
+    'application/visio.drawing': 'vsd',
+    'application/vnd.visio2013': 'vsdx',
+    'application/vnd.visio.xml': 'vdx',
+    'application/x-mspublisher': 'pub',
+#WPS Office
+    'application/wps-office.doc': 'doc',
+    'application/wps-office.docx': 'docx',
+    'application/wps-office.xls': 'xls',
+    'application/wps-office.xlsx': 'xlsx',
+    'application/wps-office.ppt': 'ppt',
+    'application/wps-office.pptx': 'pptx',
+# W3C
+    'application/xhtml+xml': 'xhtml',
+    'application/mathml+xml': 'mml',
+    'text/html': 'html',
+    'application/docbook+xml': 'docbook',
+# misc
+    'text/csv': 'csv',
+    'text/spreadsheet': 'slk',
+    'application/x-qpro': 'qpro',
+    'application/x-dbase': 'dbf',
+    'application/vnd.corel-draw': 'cdr',
+    'application/vnd.lotus-wordpro': 'lwp',
+    'application/vnd.lotus-1-2-3': 'wks',
+    'application/vnd.wordperfect': 'wpd',
+    'application/wordperfect5.1': 'wpd',
+    'application/vnd.ms-works': 'wps',
+    'application/clarisworks' : 'cwk',
+    'application/macwriteii' : 'mw',
+    'application/vnd.apple.keynote': 'key',
+    'application/vnd.apple.numbers': 'numbers',
+    'application/vnd.apple.pages': 'pages',
+    'application/x-iwork-keynote-sffkey': 'key',
+    'application/x-iwork-numbers-sffnumbers': 'numbers',
+    'application/x-iwork-pages-sffpages': 'pages',
+    'application/x-hwp': 'hwp',
+    'application/x-aportisdoc': 'pdb',
+    'application/prs.plucker' : 'pdb_plucker',
+    'application/vnd.palm' : 'pdb_palm',
+    'application/x-sony-bbeb' : 'lrf',
+    'application/x-pocket-word': 'psw',
+    'application/x-t602': '602',
+    'application/x-fictionbook+xml': 'fb2',
+    'application/x-abiword': 'abw',
+    'application/x-pagemaker': 'pmd',
+    'application/x-gnumeric': 'gnumeric',
+    'application/vnd.stardivision.calc': 'sdc',
+    'application/vnd.stardivision.draw': 'sda',
+    'application/vnd.stardivision.writer': 'sdw',
+    'application/x-starcalc': 'sdc',
+    'application/x-stardraw': 'sdd',
+    'application/x-starwriter': 'sdw',
+# relatively uncommon image mimetypes
+    'image/x-freehand': 'fh',
+    'image/cgm': 'cgm',
+    'image/tif': 'tiff',
+    'image/tiff': 'tiff',
+    'image/vnd.dxf': 'dxf',
+    'image/emf': 'emf',
+    'image/x-emf': 'emf',
+    'image/x-targa': 'tga',
+    'image/x-sgf': 'sgf',
+    'image/x-svm': 'svm',
+    'image/wmf': 'wmf',
+    'image/x-wmf': 'wmf',
+    'image/x-pict': 'pict',
+    'image/x-cmx': 'cmx',
+    'image/svg+xml': 'svg',
+    'image/bmp': 'bmp',
+    'image/x-ms-bmp': 'bmp',
+    'image/x-MS-bmp': 'bmp',
+    'image/x-wpg': 'wpg',
+    'image/x-eps': 'eps',
+    'image/x-met': 'met',
+    'image/x-portable-bitmap': 'pbm',
+    'image/x-photo-cd': 'pcd',
+    'image/x-pcx': 'pcx',
+    'image/x-portable-graymap': 'pgm',
+    'image/x-portable-pixmap': 'ppm',
+    'image/vnd.adobe.photoshop': 'psd',
+    'image/x-cmu-raster': 'ras',
+    'image/x-sun-raster': 'ras',
+    'image/x-xbitmap': 'xbm',
+    'image/x-xpixmap': 'xpm',
+}
+
+# disabled for now, this would download gigs of pngs/jpegs...
+common_noncore_mimetypes = {
+# graphics
+    'image/gif': 'gif',
+    'image/jpeg': 'jpeg',
+    'image/png': 'png',
+# pdf, etc.
+    'application/pdf': 'pdf',
+}
+
+class manage_threads(threading.Thread):
+    def run(self):
+        #print(threading.current_thread().get_ident())
+        while 1:
+            # Try to receive a job from queue
+            try:
+                # Get job from queue
+                # Use job parameters to call our query
+                # Then let the queue know we are done with this job
+                (uri, mimetype, prefix, extension) = jobs.get(True,6)
+                try:
+                    get_through_rss_query(uri, mimetype, prefix, extension)
+                finally:
+                    jobs.task_done()
+            except KeyboardInterrupt:
+                raise # Ctrl+C should work
+            except queue.Empty:
+                break
+
+def generate_multi_threading():
+    for (prefix, uri) in rss_bugzillas:
+
+        # Initialize threads
+        for i in range(max_threads):
+            manage_threads().start()
+
+        # Create a job for every mimetype for a bugzilla
+        for (mimetype,extension) in mimetypes.items():
+            # It seems that bugzilla has problems returning that many results
+            # (10000 results is probably a limit set somewhere) so we always
+            # end processing the complete list.
+            if mimetype == 'text/html' and prefix == 'moz':
+                    continue
+
+            jobs.put([uri, mimetype, prefix, extension], block=True)
+            print("successfully placed a job in the queue searching for " + mimetype + " in bugtracker " + prefix)
+
+        # Continue when all mimetypes are done for a bugzilla
+        jobs.join()
+        print("DONE with bugtracker " + prefix)
+
+max_threads = 20 # Number of threads to create, (1 = without multi-threading)
+jobs = queue.Queue()
+
+generate_multi_threading()
+
+for (mimetype,extension) in mimetypes.items():
+    get_through_rpc_query(redhatrpc, redhatbug, mimetype, "rhbz", extension)
+
+try:
+    get_launchpad_bugs("lp")
+except ImportError:
+    print("launchpadlib unavailable, skipping Ubuntu tracker")
+
+# vim:set shiftwidth=4 softtabstop=4 expandtab:

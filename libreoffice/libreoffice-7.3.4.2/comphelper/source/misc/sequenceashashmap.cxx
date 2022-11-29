@@ -1,0 +1,239 @@
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/*
+ * This file is part of the LibreOffice project.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * This file incorporates work covered by the following license notice:
+ *
+ *   Licensed to the Apache Software Foundation (ASF) under one or more
+ *   contributor license agreements. See the NOTICE file distributed
+ *   with this work for additional information regarding copyright
+ *   ownership. The ASF licenses this file to you under the Apache
+ *   License, Version 2.0 (the "License"); you may not use this file
+ *   except in compliance with the License. You may obtain a copy of
+ *   the License at http://www.apache.org/licenses/LICENSE-2.0 .
+ */
+
+#include <sal/config.h>
+
+#include <com/sun/star/beans/NamedValue.hpp>
+#include <com/sun/star/beans/PropertyValue.hpp>
+#include <com/sun/star/lang/IllegalArgumentException.hpp>
+#include <comphelper/sequenceashashmap.hxx>
+
+
+namespace comphelper{
+
+SequenceAsHashMap::SequenceAsHashMap()
+{
+}
+
+SequenceAsHashMap::SequenceAsHashMap(const css::uno::Any& aSource)
+{
+    (*this) << aSource;
+}
+
+
+SequenceAsHashMap::SequenceAsHashMap(const css::uno::Sequence< css::uno::Any >& lSource)
+{
+    (*this) << lSource;
+}
+
+SequenceAsHashMap::SequenceAsHashMap(const css::uno::Sequence< css::beans::PropertyValue >& lSource)
+{
+    (*this) << lSource;
+}
+
+SequenceAsHashMap::SequenceAsHashMap(const css::uno::Sequence< css::beans::NamedValue >& lSource)
+{
+    (*this) << lSource;
+}
+
+void SequenceAsHashMap::operator<<(const css::uno::Any& aSource)
+{
+    // An empty Any reset this instance!
+    if (!aSource.hasValue())
+    {
+        clear();
+        return;
+    }
+
+    css::uno::Sequence< css::beans::NamedValue > lN;
+    if (aSource >>= lN)
+    {
+        (*this) << lN;
+        return;
+    }
+
+    css::uno::Sequence< css::beans::PropertyValue > lP;
+    if (aSource >>= lP)
+    {
+        (*this) << lP;
+        return;
+    }
+
+    throw css::lang::IllegalArgumentException(
+        "Any contains wrong type.", css::uno::Reference<css::uno::XInterface>(),
+        -1);
+}
+
+
+void SequenceAsHashMap::operator<<(const css::uno::Sequence< css::uno::Any >& lSource)
+{
+    sal_Int32 c = lSource.getLength();
+    sal_Int32 i = 0;
+
+    for (i=0; i<c; ++i)
+    {
+        css::beans::PropertyValue lP;
+        if (lSource[i] >>= lP)
+        {
+            if (
+                (lP.Name.isEmpty()) ||
+                (!lP.Value.hasValue())
+               )
+                throw css::lang::IllegalArgumentException(
+                    "PropertyValue struct contains no useful information.",
+                    css::uno::Reference<css::uno::XInterface>(), -1);
+            (*this)[lP.Name] = lP.Value;
+            continue;
+        }
+
+        css::beans::NamedValue lN;
+        if (lSource[i] >>= lN)
+        {
+            if (
+                (lN.Name.isEmpty()) ||
+                (!lN.Value.hasValue())
+               )
+                throw css::lang::IllegalArgumentException(
+                    "NamedValue struct contains no useful information.",
+                    css::uno::Reference<css::uno::XInterface>(), -1);
+            (*this)[lN.Name] = lN.Value;
+            continue;
+        }
+
+        // ignore VOID Any ... but reject wrong filled ones!
+        if (lSource[i].hasValue())
+            throw css::lang::IllegalArgumentException(
+                "Any contains wrong type.",
+                css::uno::Reference<css::uno::XInterface>(), -1);
+    }
+}
+
+void SequenceAsHashMap::operator<<(const css::uno::Sequence< css::beans::PropertyValue >& lSource)
+{
+    clear();
+
+    sal_Int32                        c       = lSource.getLength();
+    const css::beans::PropertyValue* pSource = lSource.getConstArray();
+
+    for (sal_Int32 i=0; i<c; ++i)
+        (*this)[pSource[i].Name] = pSource[i].Value;
+}
+
+void SequenceAsHashMap::operator<<(const css::uno::Sequence< css::beans::NamedValue >& lSource)
+{
+    clear();
+
+    sal_Int32                     c       = lSource.getLength();
+    const css::beans::NamedValue* pSource = lSource.getConstArray();
+
+    for (sal_Int32 i=0; i<c; ++i)
+        (*this)[pSource[i].Name] = pSource[i].Value;
+}
+
+void SequenceAsHashMap::operator>>(css::uno::Sequence< css::beans::PropertyValue >& lDestination) const
+{
+    sal_Int32 c = static_cast<sal_Int32>(size());
+    lDestination.realloc(c);
+    css::beans::PropertyValue* pDestination = lDestination.getArray();
+
+    sal_Int32 i = 0;
+    for (const_iterator pThis  = begin();
+                        pThis != end()  ;
+                      ++pThis           )
+    {
+        pDestination[i].Name  = pThis->first ;
+        pDestination[i].Value = pThis->second;
+        ++i;
+    }
+}
+
+void SequenceAsHashMap::operator>>(css::uno::Sequence< css::beans::NamedValue >& lDestination) const
+{
+    sal_Int32 c = static_cast<sal_Int32>(size());
+    lDestination.realloc(c);
+    css::beans::NamedValue* pDestination = lDestination.getArray();
+
+    sal_Int32 i = 0;
+    for (const_iterator pThis  = begin();
+                        pThis != end()  ;
+                      ++pThis           )
+    {
+        pDestination[i].Name  = pThis->first ;
+        pDestination[i].Value = pThis->second;
+        ++i;
+    }
+}
+
+css::uno::Any SequenceAsHashMap::getAsConstAny(bool bAsPropertyValueList) const
+{
+    css::uno::Any aDestination;
+    if (bAsPropertyValueList)
+        aDestination <<= getAsConstPropertyValueList();
+    else
+        aDestination <<= getAsConstNamedValueList();
+    return aDestination;
+}
+
+css::uno::Sequence< css::beans::NamedValue > SequenceAsHashMap::getAsConstNamedValueList() const
+{
+    css::uno::Sequence< css::beans::NamedValue > lReturn;
+    (*this) >> lReturn;
+    return lReturn;
+}
+
+css::uno::Sequence< css::beans::PropertyValue > SequenceAsHashMap::getAsConstPropertyValueList() const
+{
+    css::uno::Sequence< css::beans::PropertyValue > lReturn;
+    (*this) >> lReturn;
+    return lReturn;
+}
+
+bool SequenceAsHashMap::match(const SequenceAsHashMap& rCheck) const
+{
+    for (auto const& elem : rCheck)
+    {
+        const OUString& sCheckName  = elem.first;
+        const css::uno::Any&   aCheckValue = elem.second;
+        const_iterator         pFound      = find(sCheckName);
+
+        if (pFound == end())
+            return false;
+
+        const css::uno::Any& aFoundValue = pFound->second;
+        if (aFoundValue != aCheckValue)
+            return false;
+    }
+
+    return true;
+}
+
+void SequenceAsHashMap::update(const SequenceAsHashMap& rUpdate)
+{
+    for (auto const& elem : rUpdate)
+    {
+        const OUString& sName  = elem.first;
+        const css::uno::Any&   aValue = elem.second;
+
+        (*this)[sName] = aValue;
+    }
+}
+
+} // namespace comphelper
+
+/* vim:set shiftwidth=4 softtabstop=4 expandtab: */

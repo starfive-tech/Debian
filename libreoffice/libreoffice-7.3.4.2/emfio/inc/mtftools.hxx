@@ -1,0 +1,711 @@
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/*
+ * This file is part of the LibreOffice project.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * This file incorporates work covered by the following license notice:
+ *
+ *   Licensed to the Apache Software Foundation (ASF) under one or more
+ *   contributor license agreements. See the NOTICE file distributed
+ *   with this work for additional information regarding copyright
+ *   ownership. The ASF licenses this file to you under the Apache
+ *   License, Version 2.0 (the "License"); you may not use this file
+ *   except in compliance with the License. You may obtain a copy of
+ *   the License at http://www.apache.org/licenses/LICENSE-2.0 .
+ */
+
+#ifndef INCLUDED_EMFIO_INC_MTFTOOLS_HXX
+#define INCLUDED_EMFIO_INC_MTFTOOLS_HXX
+
+#include <config_options.h>
+#include <basegfx/utils/b2dclipstate.hxx>
+#include <tools/poly.hxx>
+#include <vcl/font.hxx>
+#include <vcl/bitmapex.hxx>
+#include <vcl/lineinfo.hxx>
+#include <vcl/rendercontext/State.hxx>
+#include <rtl/ref.hxx>
+
+#include "emfiodllapi.h"
+
+#define ERROR                   0
+#define NULLREGION              1
+#define COMPLEXREGION           3
+
+#define RGN_AND                 1
+#define RGN_OR                  2
+#define RGN_XOR                 3
+#define RGN_DIFF                4
+#define RGN_COPY                5
+
+namespace emfio
+{
+    enum class BkMode
+    {
+        NONE = 0,
+        Transparent = 1,
+        OPAQUE = 2,
+    };
+}
+
+/* xform stuff */
+#define MWT_IDENTITY            1
+#define MWT_LEFTMULTIPLY        2
+#define MWT_RIGHTMULTIPLY       3
+#define MWT_SET                 4
+
+#define ENHMETA_STOCK_OBJECT    0x80000000
+
+/* Stock Logical Objects */
+#define WHITE_BRUSH             0
+#define LTGRAY_BRUSH            1
+#define GRAY_BRUSH              2
+#define DKGRAY_BRUSH            3
+#define BLACK_BRUSH             4
+#define NULL_BRUSH              5
+#define WHITE_PEN               6
+#define BLACK_PEN               7
+#define NULL_PEN                8
+#define ANSI_FIXED_FONT         11
+#define ANSI_VAR_FONT           12
+#define SYSTEM_FIXED_FONT       16
+
+namespace emfio
+{
+    enum class WMFRasterOp {
+        NONE = 0,
+        Black = 1,
+        Not = 6,
+        XorPen = 7,
+        Nop = 11,
+        CopyPen = 13
+    };
+}
+
+/* Mapping modes */
+#define MM_TEXT                 1
+#define MM_LOMETRIC             2
+#define MM_HIMETRIC             3
+#define MM_LOENGLISH            4
+#define MM_HIENGLISH            5
+#define MM_TWIPS                6
+#define MM_ISOTROPIC            7
+#define MM_ANISOTROPIC          8
+
+/* Graphics modes */
+#define GM_COMPATIBLE           1
+#define GM_ADVANCED             2
+
+/* StretchBlt() modes */
+#define BLACKONWHITE            1
+#define WHITEONBLACK            2
+#define COLORONCOLOR            3
+#define HALFTONE                4
+#define STRETCH_ANDSCANS        BLACKONWHITE
+#define STRETCH_ORSCANS         WHITEONBLACK
+#define STRETCH_DELETESCANS     COLORONCOLOR
+
+#define LF_FACESIZE             32
+
+namespace emfio
+{
+    struct LOGFONTW
+    {
+        sal_Int32       lfHeight;
+        sal_Int32       lfWidth;
+        sal_Int32       lfEscapement;
+        sal_Int32       lfOrientation;
+        sal_Int32       lfWeight;
+        sal_uInt8       lfItalic;
+        sal_uInt8       lfUnderline;
+        sal_uInt8       lfStrikeOut;
+        sal_uInt8       lfCharSet;
+        sal_uInt8       lfOutPrecision;
+        sal_uInt8       lfClipPrecision;
+        sal_uInt8       lfQuality;
+        sal_uInt8       lfPitchAndFamily;
+        OUString        alfFaceName;
+        LOGFONTW()
+            : lfHeight(0)
+            , lfWidth(0)
+            , lfEscapement(0)
+            , lfOrientation(0)
+            , lfWeight(0)
+            , lfItalic(0)
+            , lfUnderline(0)
+            , lfStrikeOut(0)
+            , lfCharSet(0)
+            , lfOutPrecision(0)
+            , lfClipPrecision(0)
+            , lfQuality(0)
+            , lfPitchAndFamily(0)
+        {
+        }
+    };
+}
+
+#define TA_NOUPDATECP           0x0000
+#define TA_UPDATECP             0x0001
+#define TA_LEFT                 0x0000
+#define TA_RIGHT                0x0002
+#define TA_CENTER               0x0006
+#define TA_RIGHT_CENTER  (TA_RIGHT | TA_CENTER)
+#define TA_TOP                  0x0000
+#define TA_BOTTOM               0x0008
+#define TA_BASELINE             0x0018
+
+#define SRCCOPY                 0x00CC0020L
+#define SRCPAINT                0x00EE0086L
+#define SRCAND                  0x008800C6L
+#define SRCINVERT               0x00660046L
+#define SRCERASE                0x00440328L
+#define PATCOPY                 0x00F00021L
+#define PATINVERT               0x005A0049L
+#define BLACKNESS               0x00000042L
+#define WHITENESS               0x00FF0062L
+
+#define PS_SOLID                0
+#define PS_DASH                 1
+#define PS_DOT                  2
+#define PS_DASHDOT              3
+#define PS_DASHDOTDOT           4
+#define PS_NULL                 5
+#define PS_INSIDEFRAME          6
+#define PS_STYLE_MASK           15
+
+#define PS_ENDCAP_ROUND      0x000
+#define PS_ENDCAP_SQUARE     0x100
+#define PS_ENDCAP_FLAT       0x200
+#define PS_ENDCAP_STYLE_MASK 0xF00
+
+#define PS_JOIN_ROUND       0x0000
+#define PS_JOIN_BEVEL       0x1000
+#define PS_JOIN_MITER       0x2000
+#define PS_JOIN_STYLE_MASK  0xF000
+
+#define ANSI_CHARSET            0
+#define DEFAULT_CHARSET         1
+#define SYMBOL_CHARSET          2
+#define SHIFTJIS_CHARSET        128
+#define HANGEUL_CHARSET         129
+#define GB2312_CHARSET          134
+#define CHINESEBIG5_CHARSET     136
+#define OEM_CHARSET             255
+/*WINVER >= 0x0400*/
+#define JOHAB_CHARSET           130
+#define HEBREW_CHARSET          177
+#define ARABIC_CHARSET          178
+#define GREEK_CHARSET           161
+#define TURKISH_CHARSET         162
+#define VIETNAMESE_CHARSET      163
+#define THAI_CHARSET            222
+#define EASTEUROPE_CHARSET      238
+#define RUSSIAN_CHARSET         204
+#define MAC_CHARSET             77
+#define BALTIC_CHARSET          186
+
+#define ETO_OPAQUE              0x0002
+#define ETO_CLIPPED             0x0004
+/*WINVER >= 0x0400*/
+#define ETO_GLYPH_INDEX         0x0010
+#define ETO_RTLREADING          0x0080
+/*_WIN32_WINNT >= 0x0500*/
+#define ETO_NO_RECT             0x0100
+#define ETO_PDY                 0x2000
+
+#define DEFAULT_PITCH           0x00
+#define FIXED_PITCH             0x01
+#define VARIABLE_PITCH          0x02
+
+/* Font Families */
+#define FF_DONTCARE             0x00
+#define FF_ROMAN                0x10
+#define FF_SWISS                0x20
+#define FF_MODERN               0x30
+#define FF_SCRIPT               0x40
+#define FF_DECORATIVE           0x50
+
+#define FW_THIN                 100
+#define FW_EXTRALIGHT           200
+#define FW_LIGHT                300
+#define FW_NORMAL               400
+#define FW_MEDIUM               500
+#define FW_SEMIBOLD             600
+#define FW_BOLD                 700
+#define FW_EXTRABOLD            800
+#define FW_ULTRALIGHT           200
+#define FW_ULTRABOLD            800
+#define FW_BLACK                900
+
+#define BS_SOLID                0
+#define BS_NULL                 1
+#define BS_HOLLOW               1
+#define BS_HATCHED              2
+#define BS_PATTERN              3
+#define BS_INDEXED              4
+#define BS_DIBPATTERN           5
+#define BS_DIBPATTERNPT         6
+#define BS_PATTERN8X8           7
+#define BS_DIBPATTERN8X8        8
+#define BS_MONOPATTERN          9
+
+#define RDH_RECTANGLES          1
+#define W_MFCOMMENT             15
+#define PRIVATE_ESCAPE_UNICODE  2
+
+//Scalar constants
+#define UNDOCUMENTED_WIN_RCL_RELATION 32
+#define MS_FIXPOINT_BITCOUNT_28_4 4
+
+class MetaFontAction;
+
+//============================ WmfReader ==================================
+
+namespace emfio
+{
+    class WinMtfClipPath
+    {
+        basegfx::utils::B2DClipState maClip;
+
+    public:
+        WinMtfClipPath() : maClip() {};
+
+        void        setClipPath(const basegfx::B2DPolyPolygon&, sal_Int32 nClippingMode);
+        void        intersectClip(const basegfx::B2DPolyPolygon& rPolyPolygon);
+        void        excludeClip(const basegfx::B2DPolyPolygon& rPolyPolygon);
+        void        moveClipRegion(const Size& rSize);
+        void        setDefaultClipPath();
+
+        bool        isEmpty() const { return maClip.isCleared(); }
+
+        basegfx::utils::B2DClipState const & getClip() const { return maClip; }
+        basegfx::B2DPolyPolygon const & getClipPath() const;
+
+        bool        operator==(const WinMtfClipPath& rPath) const
+        {
+            return maClip == rPath.maClip;
+        };
+    };
+
+    class WinMtfPathObj : public tools::PolyPolygon
+    {
+        bool    bClosed;
+
+    public:
+
+        WinMtfPathObj() :
+            bClosed(true)
+        {}
+
+        void        Init()
+        {
+            Clear();
+            bClosed = true;
+        }
+
+        void        ClosePath();
+        void        AddPoint(const Point& rPoint);
+        void        AddPolygon(const tools::Polygon& rPoly);
+        void        AddPolyLine(const tools::Polygon& rPoly);
+        void        AddPolyPolygon(const tools::PolyPolygon& rPolyPolygon);
+    };
+
+    struct EMFIO_DLLPUBLIC GDIObj
+    {
+        GDIObj() = default;
+        GDIObj(GDIObj const &) = default;
+        virtual ~GDIObj() = default; // Polymorphic base class
+        GDIObj & operator =(GDIObj const &) = default;
+    };
+
+    struct UNLESS_MERGELIBS(EMFIO_DLLPUBLIC) WinMtfFontStyle final : GDIObj
+    {
+        vcl::Font    aFont;
+
+        explicit WinMtfFontStyle(LOGFONTW const & rLogFont);
+    };
+
+    enum class WinMtfFillStyleType
+    {
+        Solid, Pattern
+    };
+
+    struct WinMtfFillStyle final : GDIObj
+    {
+        Color               aFillColor;
+        bool                bTransparent;
+        WinMtfFillStyleType aType;
+        Bitmap              aBmp;
+
+        WinMtfFillStyle()
+            : aFillColor(COL_BLACK)
+            , bTransparent(false)
+            , aType(WinMtfFillStyleType::Solid)
+        {}
+
+        WinMtfFillStyle(const Color& rColor, bool bTrans = false)
+            : aFillColor(rColor)
+            , bTransparent(bTrans)
+            , aType(WinMtfFillStyleType::Solid)
+        {}
+
+        explicit WinMtfFillStyle(Bitmap const & rBmp)
+            : bTransparent(false)
+            , aType(WinMtfFillStyleType::Pattern)
+            , aBmp(rBmp)
+        {}
+
+        bool operator==(const WinMtfFillStyle& rStyle) const
+        {
+            return aFillColor == rStyle.aFillColor
+                && bTransparent == rStyle.bTransparent
+                && aType == rStyle.aType;
+        }
+    };
+
+
+    struct WinMtfPalette final : GDIObj
+    {
+        std::vector< Color > aPaletteColors;
+
+        WinMtfPalette()
+            : aPaletteColors(std::vector< Color >{})
+        {}
+
+        WinMtfPalette(const std::vector< Color > rPaletteColors)
+            : aPaletteColors(rPaletteColors)
+        {}
+
+    };
+
+
+    struct WinMtfLineStyle final : GDIObj
+    {
+        Color       aLineColor;
+        LineInfo    aLineInfo;
+        bool        bTransparent;
+
+        WinMtfLineStyle()
+            : aLineColor(COL_BLACK)
+            , bTransparent(false)
+        {}
+
+        WinMtfLineStyle(const Color& rColor, bool bTrans = false)
+            : aLineColor(rColor)
+            , bTransparent(bTrans)
+        {}
+
+        WinMtfLineStyle(const Color& rColor, const LineInfo& rStyle, bool bTrans)
+            : aLineColor(rColor)
+            , aLineInfo(rStyle)
+            , bTransparent(bTrans)
+        {}
+
+        bool operator==(const WinMtfLineStyle& rStyle) const
+        {
+            return aLineColor == rStyle.aLineColor
+                && bTransparent == rStyle.bTransparent
+                && aLineInfo == rStyle.aLineInfo;
+        }
+    };
+
+    struct XForm
+    {
+        float   eM11;
+        float   eM12;
+        float   eM21;
+        float   eM22;
+        float   eDx;
+        float   eDy;
+
+        XForm()
+            : eM11(1.0f)
+            , eM12(0.0f)
+            , eM21(0.0f)
+            , eM22(1.0f)
+            , eDx(0.0f)
+            , eDy(0.0f)
+        {}
+    };
+
+    SvStream& operator >> (SvStream& rInStream, XForm& rXForm);
+
+    struct SaveStruct
+    {
+        BkMode              nBkMode;
+        sal_uInt32          nMapMode, nGfxMode;
+        vcl::text::ComplexTextLayoutFlags nTextLayoutMode;
+        sal_Int32           nWinOrgX, nWinOrgY, nWinExtX, nWinExtY;
+        sal_Int32           nDevOrgX, nDevOrgY, nDevWidth, nDevHeight;
+
+        WinMtfLineStyle     aLineStyle;
+        WinMtfFillStyle     aFillStyle;
+
+        vcl::Font           aFont;
+        Color               aBkColor;
+        Color               aTextColor;
+        sal_uInt32          nTextAlign;
+        RasterOp            eRasterOp;
+
+        Point               aActPos;
+        WinMtfPathObj       maPathObj;
+        WinMtfClipPath      maClipPath;
+        XForm               aXForm;
+
+        bool                bClockWiseArcDirection;
+        bool                bFillStyleSelected;
+    };
+
+    struct BSaveStruct
+    {
+        BitmapEx            aBmpEx;
+        tools::Rectangle    aOutRect;
+        sal_uInt32          nWinRop;
+        bool m_bForceAlpha = false;
+
+        BSaveStruct(const Bitmap& rBmp, const tools::Rectangle& rOutRect, sal_uInt32 nRop)
+            : aBmpEx(rBmp)
+            , aOutRect(rOutRect)
+            , nWinRop(nRop)
+        {}
+
+        BSaveStruct(const BitmapEx& rBmpEx, const tools::Rectangle& rOutRect, sal_uInt32 nRop,
+                    bool bForceAlpha = false)
+            : aBmpEx(rBmpEx)
+            , aOutRect(rOutRect)
+            , nWinRop(nRop)
+            , m_bForceAlpha(bForceAlpha)
+        {}
+    };
+
+    // tdf#127471 implement detection and correction of wrongly scaled
+    // fonts in own-written, old (before this fix) EMF/WMF files
+    class ScaledFontDetectCorrectHelper
+    {
+    private:
+        rtl::Reference<MetaFontAction>                                  maCurrentMetaFontAction;
+        std::vector<double>                                             maAlternativeFontScales;
+        std::vector<std::pair<rtl::Reference<MetaFontAction>, double>>  maPositiveIdentifiedCases;
+        std::vector<std::pair<rtl::Reference<MetaFontAction>, double>>  maNegativeIdentifiedCases;
+
+    public:
+        ScaledFontDetectCorrectHelper();
+        void endCurrentMetaFontAction();
+        void newCurrentMetaFontAction(const rtl::Reference<MetaFontAction>& rNewMetaFontAction);
+        void evaluateAlternativeFontScale(OUString const & rText, tools::Long nImportedTextLength);
+        void applyAlternativeFontScale();
+    };
+
+    class MtfTools
+    {
+        MtfTools(MtfTools const &) = delete;
+        MtfTools& operator =(MtfTools const &) = delete;
+
+    protected:
+        WinMtfPathObj       maPathObj;
+        WinMtfClipPath      maClipPath;
+
+        WinMtfLineStyle     maLatestLineStyle;
+        WinMtfLineStyle     maLineStyle;
+        WinMtfLineStyle     maNopLineStyle;
+        WinMtfFillStyle     maLatestFillStyle;
+        WinMtfFillStyle     maFillStyle;
+        WinMtfFillStyle     maNopFillStyle;
+        WinMtfPalette       maPalette;
+
+        vcl::Font           maLatestFont;
+        vcl::Font           maFont;
+        sal_uInt32          mnLatestTextAlign;
+        sal_uInt32          mnTextAlign;
+        Color               maLatestTextColor;
+        Color               maTextColor;
+        Color               maLatestBkColor;
+        Color               maBkColor;
+        vcl::text::ComplexTextLayoutFlags  mnLatestTextLayoutMode;
+        vcl::text::ComplexTextLayoutFlags  mnTextLayoutMode;
+        BkMode              mnLatestBkMode;
+        BkMode              mnBkMode;
+        RasterOp            meLatestRasterOp;
+        RasterOp            meRasterOp;
+
+        std::vector< std::unique_ptr<GDIObj> > mvGDIObj;
+        Point               maActPos;
+        WMFRasterOp         mnRop;
+        std::vector< std::shared_ptr<SaveStruct> > mvSaveStack;
+
+        sal_uInt32          mnGfxMode;
+        sal_uInt32          mnMapMode;
+
+        XForm               maXForm;
+        sal_Int32           mnDevOrgX;
+        sal_Int32           mnDevOrgY;
+        sal_Int32           mnDevWidth;
+        sal_Int32           mnDevHeight;
+        sal_Int32           mnWinOrgX;
+        sal_Int32           mnWinOrgY;
+        sal_Int32           mnWinExtX;
+        sal_Int32           mnWinExtY;
+
+        sal_Int32           mnPixX;            // Reference Device in pixel
+        sal_Int32           mnPixY;            // Reference Device in pixel
+        sal_Int32           mnMillX;           // Reference Device in Mill
+        sal_Int32           mnMillY;           // Reference Device in Mill
+        tools::Rectangle    mrclFrame;
+        tools::Rectangle    mrclBounds;
+
+        GDIMetaFile*        mpGDIMetaFile;
+
+        SvStream*           mpInputStream;               // the WMF/EMF file to be read
+        sal_uInt32          mnStartPos;
+        sal_uInt32          mnEndPos;
+        std::vector<BSaveStruct> maBmpSaveList;
+
+        // tdf#127471 always try to detect - only used with ScaledText
+        ScaledFontDetectCorrectHelper maScaledFontHelper;
+
+        bool                mbNopMode : 1;
+        bool                mbClockWiseArcDirection : 1;
+        bool                mbFillStyleSelected : 1;
+        bool                mbClipNeedsUpdate : 1;
+        bool                mbComplexClip : 1;
+        bool                mbIsMapWinSet : 1;
+        bool                mbIsMapDevSet : 1;
+
+        void                UpdateLineStyle();
+        void                UpdateFillStyle();
+
+        Point               ImplMap(const Point& rPt);
+        Point               ImplScale(const Point& rPt);
+        Size                ImplMap(const Size& rSize, bool bDoWorldTransform = true);
+        tools::Rectangle    ImplMap(const tools::Rectangle& rRectangle);
+        void                ImplMap(vcl::Font& rFont);
+        tools::Polygon&     ImplMap(tools::Polygon& rPolygon);
+        tools::PolyPolygon& ImplMap(tools::PolyPolygon& rPolyPolygon);
+        void                ImplScale(tools::Polygon& rPolygon);
+        tools::PolyPolygon& ImplScale(tools::PolyPolygon& rPolyPolygon);
+        void                ImplResizeObjectArry(sal_uInt32 nNewEntry);
+        void                ImplSetNonPersistentLineColorTransparenz();
+        void                ImplDrawClippedPolyPolygon(const tools::PolyPolygon& rPolyPoly);
+        void                ImplDrawBitmap(const Point& rPos, const Size& rSize, const BitmapEx& rBitmap);
+
+    public:
+
+        void                SetDevByWin(); //Hack to set varying defaults for incompletely defined files.
+        void                SetDevOrg(const Point& rPoint);
+        void                SetDevOrgOffset(sal_Int32 nXAdd, sal_Int32 nYAdd);
+        void                SetDevExt(const Size& rSize, bool regular = true);
+        void                ScaleDevExt(double fX, double fY);
+
+        void                SetWinOrg(const Point& rPoint, bool bIsEMF = false);
+        void                SetWinOrgOffset(sal_Int32 nX, sal_Int32 nY);
+        void                SetWinExt(const Size& rSize, bool bIsEMF = false);
+        void                ScaleWinExt(double fX, double fY);
+
+        void                SetrclBounds(const tools::Rectangle& rRect);
+        void                SetrclFrame(const tools::Rectangle& rRect);
+        void                SetRefPix(const Size& rSize);
+        void                SetRefMill(const Size& rSize);
+
+        void                SetMapMode(sal_uInt32 mnMapMode);
+        void                SetWorldTransform(const XForm& rXForm);
+        void                ModifyWorldTransform(const XForm& rXForm, sal_uInt32 nMode);
+
+        void                Push();
+        void                Pop( const sal_Int32 nSavedDC = -1 );
+
+        WMFRasterOp         SetRasterOp(WMFRasterOp nRasterOp);
+        void                StrokeAndFillPath(bool bStroke, bool bFill);
+
+        void                SetGfxMode(sal_Int32 nGfxMode) { mnGfxMode = nGfxMode; };
+        sal_Int32           GetGfxMode() const { return mnGfxMode; };
+        void                SetArcDirection(bool bCounterClockWise);
+        bool                IsArcDirectionClockWise() { return mbClockWiseArcDirection; };
+        void                SetBkMode(BkMode nMode);
+        void                SetBkColor(const Color& rColor);
+        void                SetTextColor(const Color& rColor);
+        void                SetTextAlign(sal_uInt32 nAlign);
+
+        void                CreateObject(std::unique_ptr<GDIObj> pObject);
+        void                CreateObjectIndexed(sal_uInt32 nIndex, std::unique_ptr<GDIObj> pObject);
+        void                CreateObject();
+
+        void                DeleteObject(sal_uInt32 nIndex);
+        void                SelectObject(sal_uInt32 nIndex);
+        rtl_TextEncoding    GetCharSet() const { return maFont.GetCharSet(); };
+        const vcl::Font&    GetFont() const { return maFont; }
+        void                SetTextLayoutMode(vcl::text::ComplexTextLayoutFlags nLayoutMode);
+
+        void                ClearPath() { maPathObj.Init(); };
+        void                ClosePath() { maPathObj.ClosePath(); };
+        const tools::PolyPolygon& GetPathObj() const { return maPathObj; };
+
+        void                MoveTo(const Point& rPoint, bool bRecordPath = false);
+        void                LineTo(const Point& rPoint, bool bRecordPath = false);
+        void                DrawPixel(const Point& rSource, const Color& rColor);
+        void                DrawRect(const tools::Rectangle& rRect, bool bEdge = true);
+        void                DrawRectWithBGColor(const tools::Rectangle& rRect);
+        void                DrawRoundRect(const tools::Rectangle& rRect, const Size& rSize);
+        void                DrawEllipse(const tools::Rectangle& rRect);
+        void                DrawArc(
+            const tools::Rectangle& rRect,
+            const Point& rStartAngle,
+            const Point& rEndAngle,
+            bool bDrawTo = false
+        );
+        void                DrawPie(
+            const tools::Rectangle& rRect,
+            const Point& rStartAngle,
+            const Point& rEndAngle
+        );
+        void                DrawChord(
+            const tools::Rectangle& rRect,
+            const Point& rStartAngle,
+            const Point& rEndAngle
+        );
+        void                DrawPolygon(tools::Polygon rPolygon, bool bRecordPath);
+        void                DrawPolyPolygon(tools::PolyPolygon& rPolyPolygon, bool bRecordPath = false);
+        void                DrawPolyLine(tools::Polygon rPolygon,
+            bool bDrawTo = false,
+            bool bRecordPath = false
+        );
+        void                DrawPolyBezier(tools::Polygon rPolygon,
+            bool bDrawTo,
+            bool bRecordPath
+        );
+        void                DrawText(Point& rPosition,
+            OUString const & rString,
+            std::vector<sal_Int32>* pDXArry = nullptr,
+            tools::Long* pDYArry = nullptr,
+            bool bRecordPath = false,
+            sal_Int32 nGraphicsMode = GM_COMPATIBLE);
+
+        void                ResolveBitmapActions(std::vector<BSaveStruct>& rSaveList);
+
+        void                IntersectClipRect(const tools::Rectangle& rRect);
+        void                ExcludeClipRect(const tools::Rectangle& rRect);
+        void                MoveClipRegion(const Size& rSize);
+        void                SetClipPath(
+            const tools::PolyPolygon& rPolyPoly,
+            sal_Int32 nClippingMode,
+            bool bIsMapped
+        );
+        void                SetDefaultClipPath();
+        void                UpdateClipRegion();
+        void                AddFromGDIMetaFile(GDIMetaFile& rGDIMetaFile);
+
+        void                PassEMFPlus(void const * pBuffer, sal_uInt32 nLength);
+        void                PassEMFPlusHeaderInfo();
+
+        Color               ReadColor();
+
+        explicit            MtfTools(GDIMetaFile& rGDIMetaFile, SvStream& rStreamWMF);
+        ~MtfTools() COVERITY_NOEXCEPT_FALSE;
+    };
+}
+
+#endif
+
+/* vim:set shiftwidth=4 softtabstop=4 expandtab: */

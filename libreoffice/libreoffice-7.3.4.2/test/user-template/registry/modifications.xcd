@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * This file is part of the LibreOffice project.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+-->
+<oor:data xmlns:oor="http://openoffice.org/2001/registry">
+ <oor:component-data oor:name="Common" oor:package="org.openoffice.Office">
+  <node oor:name="Misc">
+    <prop oor:name="UseDocumentSystemFileLocking">
+      <value>false</value>
+    </prop>
+    <prop oor:name="UseDocumentOOoLockFile">
+      <value>false</value>
+    </prop>
+    <prop oor:name="UseLocking">
+      <value>false</value>
+    </prop>
+    <prop oor:name="ShowTipOfTheDay">
+      <value>false</value>
+    </prop>
+    <prop oor:name="LastTipOfTheDayShown">
+      <value>"32767"</value> <!-- some arbitrary high value (sal_Int32) -->
+    </prop>
+  </node>
+  <node oor:name="Filter">
+    <node oor:name="Graphic">
+      <node oor:name="Export">
+        <node oor:name="SVG">
+          <prop oor:name="EmbedFonts">
+            <value>false</value>
+          </prop>
+        </node>
+      </node>
+    </node>
+  </node>
+ </oor:component-data>
+ <oor:component-data oor:name="Jobs" oor:package="org.openoffice.Office">
+  <node oor:name="Events">
+   <node oor:name="onFirstVisibleTask" oor:op="fuse">
+    <node oor:name="JobList">
+     <node oor:name="UpdateCheck" oor:op="remove"/>
+    </node>
+   </node>
+  </node>
+ </oor:component-data>
+ <oor:component-data oor:name="Paths" oor:package="org.openoffice.Office">
+  <node oor:name="Paths">
+   <node oor:name="UIConfig" oor:op="replace">
+    <node oor:name="InternalPaths">
+     <node oor:name="$(userurl)/config" oor:op="fuse"/>
+    </node>
+   </node>
+  </node>
+ </oor:component-data>
+ <oor:component-data oor:name="Setup" oor:package="org.openoffice">
+  <node oor:name="L10N">
+    <prop oor:name="ooLocale">
+      <value>en-US</value>
+    </prop>
+    <prop oor:name="ooSetupSystemLocale">
+      <value>en-US</value>
+    </prop>
+  </node>
+ </oor:component-data>
+ <oor:component-data oor:name="Common" oor:package="org.openoffice.Office">
+  <node oor:name="Security">
+    <prop oor:name="LoadExoticFileFormats">
+      <value>2</value>
+    </prop>
+  </node>
+ </oor:component-data>
+</oor:data>

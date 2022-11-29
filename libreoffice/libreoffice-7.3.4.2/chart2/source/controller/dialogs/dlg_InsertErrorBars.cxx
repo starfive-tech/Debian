@@ -1,0 +1,101 @@
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/*
+ * This file is part of the LibreOffice project.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * This file incorporates work covered by the following license notice:
+ *
+ *   Licensed to the Apache Software Foundation (ASF) under one or more
+ *   contributor license agreements. See the NOTICE file distributed
+ *   with this work for additional information regarding copyright
+ *   ownership. The ASF licenses this file to you under the Apache
+ *   License, Version 2.0 (the "License"); you may not use this file
+ *   except in compliance with the License. You may obtain a copy of
+ *   the License at http://www.apache.org/licenses/LICENSE-2.0 .
+ */
+
+#include <dlg_InsertErrorBars.hxx>
+#include <res_ErrorBar.hxx>
+#include <chartview/ExplicitScaleValues.hxx>
+#include <chartview/ExplicitValueProvider.hxx>
+#include <ChartModelHelper.hxx>
+#include <ObjectIdentifier.hxx>
+#include <DiagramHelper.hxx>
+#include <AxisHelper.hxx>
+#include <ObjectNameProvider.hxx>
+
+#include <com/sun/star/frame/XModel.hpp>
+#include <comphelper/servicehelper.hxx>
+
+using ::com::sun::star::uno::Reference;
+using namespace ::com::sun::star;
+using namespace ::com::sun::star::chart2;
+
+namespace chart
+{
+
+InsertErrorBarsDialog::InsertErrorBarsDialog(
+    weld::Window* pParent, const SfxItemSet& rMyAttrs,
+    const uno::Reference< chart2::XChartDocument > & xChartDocument,
+    ErrorBarResources::tErrorBarType eType /* = ErrorBarResources::ERROR_BAR_Y */ )
+        : GenericDialogController(pParent, "modules/schart/ui/dlg_InsertErrorBars.ui", "dlg_InsertErrorBars")
+        , m_apErrorBarResources( new ErrorBarResources(
+                                   m_xBuilder.get(), this, rMyAttrs,
+                                   /* bNoneAvailable = */ true, eType ))
+{
+    ObjectType objType = eType == ErrorBarResources::ERROR_BAR_Y ? OBJECTTYPE_DATA_ERRORS_Y : OBJECTTYPE_DATA_ERRORS_X;
+
+    m_xDialog->set_title(ObjectNameProvider::getName_ObjectForAllSeries(objType));
+
+    m_apErrorBarResources->SetChartDocumentForRangeChoosing( xChartDocument );
+}
+
+void InsertErrorBarsDialog::FillItemSet(SfxItemSet& rOutAttrs)
+{
+    m_apErrorBarResources->FillItemSet(rOutAttrs);
+}
+
+void InsertErrorBarsDialog::SetAxisMinorStepWidthForErrorBarDecimals( double fMinorStepWidth )
+{
+    m_apErrorBarResources->SetAxisMinorStepWidthForErrorBarDecimals( fMinorStepWidth );
+}
+
+double InsertErrorBarsDialog::getAxisMinorStepWidthForErrorBarDecimals(
+    const Reference< frame::XModel >& xChartModel,
+    const Reference< uno::XInterface >& xChartView,
+    const OUString& rSelectedObjectCID )
+{
+    double fStepWidth = 0.001;
+
+    ExplicitValueProvider* pExplicitValueProvider( comphelper::getFromUnoTunnel<ExplicitValueProvider>(xChartView) );
+    if( pExplicitValueProvider )
+    {
+        Reference< XAxis > xAxis;
+        Reference< XDiagram > xDiagram( ChartModelHelper::findDiagram( xChartModel ) );
+        Reference< XDataSeries > xSeries = ObjectIdentifier::getDataSeriesForCID( rSelectedObjectCID, xChartModel );
+        xAxis = DiagramHelper::getAttachedAxis( xSeries, xDiagram );
+        if(!xAxis.is())
+            xAxis = AxisHelper::getAxis( 1/*nDimensionIndex*/, true/*bMainAxis*/, xDiagram );
+        if(xAxis.is())
+        {
+            ExplicitScaleData aExplicitScale;
+            ExplicitIncrementData aExplicitIncrement;
+            pExplicitValueProvider->getExplicitValuesForAxis( xAxis,aExplicitScale, aExplicitIncrement );
+
+            fStepWidth = aExplicitIncrement.Distance;
+            if( !aExplicitIncrement.SubIncrements.empty() && aExplicitIncrement.SubIncrements[0].IntervalCount>0 )
+                fStepWidth=fStepWidth/double(aExplicitIncrement.SubIncrements[0].IntervalCount);
+            else
+                fStepWidth/=10;
+        }
+    }
+
+    return fStepWidth;
+}
+
+} //namespace chart
+
+/* vim:set shiftwidth=4 softtabstop=4 expandtab: */

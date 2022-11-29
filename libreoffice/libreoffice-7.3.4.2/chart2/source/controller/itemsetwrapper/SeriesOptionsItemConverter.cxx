@@ -1,0 +1,438 @@
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/*
+ * This file is part of the LibreOffice project.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * This file incorporates work covered by the following license notice:
+ *
+ *   Licensed to the Apache Software Foundation (ASF) under one or more
+ *   contributor license agreements. See the NOTICE file distributed
+ *   with this work for additional information regarding copyright
+ *   ownership. The ASF licenses this file to you under the Apache
+ *   License, Version 2.0 (the "License"); you may not use this file
+ *   except in compliance with the License. You may obtain a copy of
+ *   the License at http://www.apache.org/licenses/LICENSE-2.0 .
+ */
+
+#include <SeriesOptionsItemConverter.hxx>
+#include "SchWhichPairs.hxx"
+
+#include <ChartModelHelper.hxx>
+#include <AxisHelper.hxx>
+#include <DiagramHelper.hxx>
+#include <ChartTypeHelper.hxx>
+#include <DataSeriesHelper.hxx>
+#include <ChartModel.hxx>
+
+#include <com/sun/star/chart2/XDataSeries.hpp>
+
+#include <svl/eitem.hxx>
+#include <svl/intitem.hxx>
+#include <svl/ilstitem.hxx>
+#include <svx/sdangitm.hxx>
+#include <tools/diagnose_ex.h>
+
+using namespace ::com::sun::star;
+using namespace ::com::sun::star::chart2;
+
+namespace chart::wrapper
+{
+
+SeriesOptionsItemConverter::SeriesOptionsItemConverter(
+        const uno::Reference< frame::XModel >& xChartModel
+        , const uno::Reference< uno::XComponentContext > & xContext
+        , const uno::Reference< beans::XPropertySet >& xPropertySet
+        , SfxItemPool& rItemPool )
+        : ItemConverter( xPropertySet, rItemPool )
+        , m_xChartModel(xChartModel)
+        , m_xCC(xContext)
+        , m_bAttachToMainAxis(true)
+        , m_bSupportingOverlapAndGapWidthProperties(false)
+        , m_bSupportingBarConnectors(false)
+        , m_nBarOverlap(0)
+        , m_nGapWidth(100)
+        , m_bConnectBars(false)
+        , m_bSupportingAxisSideBySide(false)
+        , m_bGroupBarsPerAxis(true)
+        , m_bSupportingStartingAngle(false)
+        , m_nStartingAngle(90)
+        , m_bClockwise(false)
+        , m_nMissingValueTreatment(0)
+        , m_bSupportingPlottingOfHiddenCells(false)
+        , m_bIncludeHiddenCells(true)
+        , m_bHideLegendEntry(false)
+{
+    try
+    {
+        uno::Reference< XDataSeries > xDataSeries( xPropertySet, uno::UNO_QUERY );
+
+        m_bAttachToMainAxis = DiagramHelper::isSeriesAttachedToMainAxis( xDataSeries );
+
+        uno::Reference< XDiagram > xDiagram( ChartModelHelper::findDiagram(xChartModel) );
+        uno::Reference< beans::XPropertySet > xDiagramProperties( xDiagram, uno::UNO_QUERY );
+        uno::Reference< XChartType > xChartType( DiagramHelper::getChartTypeOfSeries( xDiagram , xDataSeries ) );
+
+        m_xCooSys = DataSeriesHelper::getCoordinateSystemOfSeries( xDataSeries, xDiagram );
+        if( m_xCooSys.is() )
+        {
+            uno::Reference< chart2::XAxis > xAxis( AxisHelper::getAxis( 1, 0, m_xCooSys ) );
+            chart2::ScaleData aScale( xAxis->getScaleData() );
+            m_bClockwise = (aScale.Orientation == chart2::AxisOrientation_REVERSE);
+        }
+
+        sal_Int32 nDimensionCount = DiagramHelper::getDimension( xDiagram );
+        m_bSupportingOverlapAndGapWidthProperties = ChartTypeHelper::isSupportingOverlapAndGapWidthProperties( xChartType, nDimensionCount );
+
+        if( m_bSupportingOverlapAndGapWidthProperties )
+        {
+
+            sal_Int32 nAxisIndex = DataSeriesHelper::getAttachedAxisIndex(xDataSeries);
+
+            uno::Sequence< sal_Int32 > aBarPositionSequence;
+            uno::Reference< beans::XPropertySet > xChartTypeProps( xChartType, uno::UNO_QUERY );
+            if( xChartTypeProps.is() )
+            {
+                if( xChartTypeProps->getPropertyValue( "OverlapSequence" ) >>= aBarPositionSequence )
+                {
+                    if( nAxisIndex >= 0 && nAxisIndex < aBarPositionSequence.getLength() )
+                        m_nBarOverlap = aBarPositionSequence[nAxisIndex];
+                }
+                if( xChartTypeProps->getPropertyValue( "GapwidthSequence" ) >>= aBarPositionSequence )
+                {
+                    if( nAxisIndex >= 0 && nAxisIndex < aBarPositionSequence.getLength() )
+                        m_nGapWidth = aBarPositionSequence[nAxisIndex];
+                }
+            }
+        }
+
+        m_bSupportingBarConnectors = ChartTypeHelper::isSupportingBarConnectors( xChartType, nDimensionCount );
+        if( m_bSupportingBarConnectors && xDiagramProperties.is() )
+        {
+            xDiagramProperties->getPropertyValue( "ConnectBars" ) >>= m_bConnectBars;
+        }
+
+        m_bSupportingAxisSideBySide = ChartTypeHelper::isSupportingAxisSideBySide( xChartType, nDimensionCount );
+        if( m_bSupportingAxisSideBySide && xDiagramProperties.is() )
+        {
+            xDiagramProperties->getPropertyValue( "GroupBarsPerAxis" ) >>= m_bGroupBarsPerAxis;
+        }
+
+        m_bSupportingStartingAngle = ChartTypeHelper::isSupportingStartingAngle( xChartType );
+        if( m_bSupportingStartingAngle )
+        {
+            xDiagramProperties->getPropertyValue( "StartingAngle" ) >>= m_nStartingAngle;
+        }
+
+        m_aSupportedMissingValueTreatments = ChartTypeHelper::getSupportedMissingValueTreatments( xChartType );
+        m_nMissingValueTreatment = DiagramHelper::getCorrectedMissingValueTreatment(
+            ChartModelHelper::findDiagram(m_xChartModel), xChartType );
+
+        uno::Reference< XChartDocument > xChartDoc( m_xChartModel, uno::UNO_QUERY );
+        uno::Reference< beans::XPropertySet > xProp( xChartDoc->getDataProvider(), uno::UNO_QUERY );
+        if( xProp.is() )
+        {
+            try
+            {
+                //test whether the data provider offers this property
+                xProp->getPropertyValue( "IncludeHiddenCells" );
+                //if not exception is thrown the property is offered
+                m_bSupportingPlottingOfHiddenCells = true;
+                xDiagramProperties->getPropertyValue( "IncludeHiddenCells" ) >>= m_bIncludeHiddenCells;
+            }
+            catch( const beans::UnknownPropertyException& )
+            {
+            }
+        }
+
+        m_bHideLegendEntry = !xPropertySet->getPropertyValue("ShowLegendEntry").get<bool>();
+    }
+    catch( const uno::Exception & )
+    {
+        DBG_UNHANDLED_EXCEPTION("chart2");
+    }
+}
+
+SeriesOptionsItemConverter::~SeriesOptionsItemConverter()
+{
+}
+
+const WhichRangesContainer& SeriesOptionsItemConverter::GetWhichPairs() const
+{
+    // must span all used items!
+    return nSeriesOptionsWhichPairs;
+}
+
+bool SeriesOptionsItemConverter::GetItemProperty( tWhichIdType /*nWhichId*/, tPropertyNameWithMemberId & /*rOutProperty*/ ) const
+{
+    return false;
+}
+
+bool SeriesOptionsItemConverter::ApplySpecialItem( sal_uInt16 nWhichId, const SfxItemSet & rItemSet )
+{
+    bool bChanged = false;
+    switch( nWhichId )
+    {
+        case SCHATTR_AXIS:
+        {
+            sal_Int32 nItemValue = static_cast< const SfxInt32Item & >(
+                    rItemSet.Get( nWhichId )).GetValue();
+            bool bAttachToMainAxis = nItemValue == CHART_AXIS_PRIMARY_Y;
+            if( bAttachToMainAxis != m_bAttachToMainAxis )
+            {
+                //change model:
+                bChanged = DiagramHelper::attachSeriesToAxis( bAttachToMainAxis, uno::Reference< XDataSeries >::query( GetPropertySet() )
+                    , ChartModelHelper::findDiagram(m_xChartModel), m_xCC );
+
+                if( bChanged )
+                    m_bAttachToMainAxis = bAttachToMainAxis;
+            }
+        }
+        break;
+
+        case SCHATTR_BAR_OVERLAP:
+        case SCHATTR_BAR_GAPWIDTH:
+        {
+            if( m_bSupportingOverlapAndGapWidthProperties )
+            {
+                sal_Int32& rBarPosition = ( nWhichId == SCHATTR_BAR_OVERLAP ) ? m_nBarOverlap : m_nGapWidth;
+                rBarPosition = static_cast< const SfxInt32Item & >( rItemSet.Get( nWhichId )).GetValue();
+
+                OUString aPropName("GapwidthSequence" );
+                if( nWhichId == SCHATTR_BAR_OVERLAP )
+                    aPropName = "OverlapSequence";
+
+                uno::Reference< XDataSeries > xDataSeries( GetPropertySet(), uno::UNO_QUERY );
+                uno::Reference< XDiagram > xDiagram( ChartModelHelper::findDiagram(m_xChartModel) );
+                uno::Reference< beans::XPropertySet > xChartTypeProps( DiagramHelper::getChartTypeOfSeries( xDiagram , xDataSeries ), uno::UNO_QUERY );
+                if( xChartTypeProps.is() )
+                {
+                    sal_Int32 nAxisIndex = DataSeriesHelper::getAttachedAxisIndex(xDataSeries);
+                    uno::Sequence< sal_Int32 > aBarPositionSequence;
+                    if( xChartTypeProps.is() )
+                    {
+                        if( xChartTypeProps->getPropertyValue( aPropName ) >>= aBarPositionSequence )
+                        {
+                            bool bGroupBarsPerAxis =  rItemSet.Get( SCHATTR_GROUP_BARS_PER_AXIS ).GetValue();
+                            if(!bGroupBarsPerAxis)
+                            {
+                                //set the same value for all axes
+                                for( auto & pos : asNonConstRange(aBarPositionSequence) )
+                                    pos = rBarPosition;
+                            }
+                            else if( nAxisIndex >= 0 && nAxisIndex < aBarPositionSequence.getLength() )
+                                aBarPositionSequence.getArray()[nAxisIndex] = rBarPosition;
+
+                            xChartTypeProps->setPropertyValue( aPropName, uno::Any(aBarPositionSequence) );
+                            bChanged = true;
+                        }
+                    }
+                }
+            }
+        }
+        break;
+
+        case SCHATTR_BAR_CONNECT:
+        {
+            m_bConnectBars = static_cast< const SfxBoolItem & >(
+                rItemSet.Get( nWhichId )).GetValue();
+            if( m_bSupportingBarConnectors )
+            {
+                bool bOldConnectBars = false;
+                uno::Reference< beans::XPropertySet > xDiagramProperties( ChartModelHelper::findDiagram(m_xChartModel), uno::UNO_QUERY );
+                if( xDiagramProperties.is() &&
+                    (xDiagramProperties->getPropertyValue( "ConnectBars" ) >>= bOldConnectBars) &&
+                    bOldConnectBars != m_bConnectBars )
+                {
+                    xDiagramProperties->setPropertyValue( "ConnectBars" , uno::Any(m_bConnectBars) );
+                    bChanged = true;
+                }
+            }
+        }
+        break;
+
+        case SCHATTR_GROUP_BARS_PER_AXIS:
+        {
+            m_bGroupBarsPerAxis = static_cast< const SfxBoolItem & >(
+                rItemSet.Get( nWhichId )).GetValue();
+            if( m_bSupportingAxisSideBySide )
+            {
+                bool bOldGroupBarsPerAxis = true;
+                uno::Reference< beans::XPropertySet > xDiagramProperties( ChartModelHelper::findDiagram(m_xChartModel), uno::UNO_QUERY );
+                if( xDiagramProperties.is() &&
+                    (xDiagramProperties->getPropertyValue( "GroupBarsPerAxis" ) >>= bOldGroupBarsPerAxis) &&
+                    bOldGroupBarsPerAxis != m_bGroupBarsPerAxis )
+                {
+                    xDiagramProperties->setPropertyValue( "GroupBarsPerAxis" , uno::Any(m_bGroupBarsPerAxis) );
+                    bChanged = true;
+                }
+            }
+         }
+         break;
+
+         case SCHATTR_STARTING_ANGLE:
+         {
+            if( m_bSupportingStartingAngle )
+            {
+                m_nStartingAngle = static_cast< const SdrAngleItem & >( rItemSet.Get( nWhichId )).GetValue().get() / 100;
+                uno::Reference< beans::XPropertySet > xDiagramProperties( ChartModelHelper::findDiagram(m_xChartModel), uno::UNO_QUERY );
+                if( xDiagramProperties.is() )
+                {
+                    xDiagramProperties->setPropertyValue( "StartingAngle" , uno::Any(m_nStartingAngle) );
+                    bChanged = true;
+                }
+            }
+        }
+        break;
+
+        case SCHATTR_CLOCKWISE:
+        {
+            bool bClockwise = static_cast< const SfxBoolItem & >(
+                     rItemSet.Get( nWhichId )).GetValue();
+            if( m_xCooSys.is() )
+            {
+                uno::Reference< chart2::XAxis > xAxis( AxisHelper::getAxis( 1, 0, m_xCooSys ) );
+                if( xAxis.is() )
+                {
+                    chart2::ScaleData aScaleData( xAxis->getScaleData() );
+                    aScaleData.Orientation = bClockwise ? chart2::AxisOrientation_REVERSE : chart2::AxisOrientation_MATHEMATICAL;
+                    xAxis->setScaleData( aScaleData );
+                    bChanged = true;
+                }
+            }
+        }
+        break;
+
+        case SCHATTR_MISSING_VALUE_TREATMENT:
+        {
+            if( m_aSupportedMissingValueTreatments.hasElements() )
+            {
+                sal_Int32 nNew = static_cast< const SfxInt32Item & >( rItemSet.Get( nWhichId )).GetValue();
+                if( m_nMissingValueTreatment != nNew )
+                {
+                    try
+                    {
+                        uno::Reference< beans::XPropertySet > xDiagramProperties( ChartModelHelper::findDiagram(m_xChartModel), uno::UNO_QUERY );
+                        if( xDiagramProperties.is() )
+                        {
+                            xDiagramProperties->setPropertyValue( "MissingValueTreatment" , uno::Any( nNew ));
+                            bChanged = true;
+                        }
+                    }
+                    catch( const uno::Exception& )
+                    {
+                        TOOLS_WARN_EXCEPTION("chart2", "" );
+                    }
+                }
+            }
+        }
+        break;
+        case SCHATTR_INCLUDE_HIDDEN_CELLS:
+        {
+            if( m_bSupportingPlottingOfHiddenCells )
+            {
+                bool bIncludeHiddenCells = static_cast<const SfxBoolItem &>(rItemSet.Get(nWhichId)).GetValue();
+                if (bIncludeHiddenCells != m_bIncludeHiddenCells)
+                {
+                    ChartModel* pModel = dynamic_cast<ChartModel*>(m_xChartModel.get());
+                    if (pModel)
+                        bChanged = ChartModelHelper::setIncludeHiddenCells( bIncludeHiddenCells, *pModel );
+                }
+            }
+        }
+        break;
+        case SCHATTR_HIDE_LEGEND_ENTRY:
+        {
+            bool bHideLegendEntry = static_cast<const SfxBoolItem &>(rItemSet.Get(nWhichId)).GetValue();
+            if (bHideLegendEntry != m_bHideLegendEntry)
+            {
+                GetPropertySet()->setPropertyValue("ShowLegendEntry", css::uno::makeAny(!bHideLegendEntry));
+            }
+        }
+        break;
+    }
+    return bChanged;
+}
+
+void SeriesOptionsItemConverter::FillSpecialItem(
+    sal_uInt16 nWhichId, SfxItemSet & rOutItemSet ) const
+{
+    switch( nWhichId )
+    {
+        case SCHATTR_AXIS:
+        {
+            sal_Int32 nItemValue = m_bAttachToMainAxis ? CHART_AXIS_PRIMARY_Y : CHART_AXIS_SECONDARY_Y;
+            rOutItemSet.Put( SfxInt32Item(nWhichId,nItemValue ) );
+            break;
+        }
+        case SCHATTR_BAR_OVERLAP:
+        {
+            if( m_bSupportingOverlapAndGapWidthProperties )
+                rOutItemSet.Put( SfxInt32Item(nWhichId,m_nBarOverlap) );
+            break;
+        }
+        case SCHATTR_BAR_GAPWIDTH:
+        {
+            if( m_bSupportingOverlapAndGapWidthProperties )
+                rOutItemSet.Put( SfxInt32Item(nWhichId,m_nGapWidth) );
+            break;
+        }
+        case SCHATTR_BAR_CONNECT:
+        {
+            if( m_bSupportingBarConnectors )
+                rOutItemSet.Put( SfxBoolItem(nWhichId,m_bConnectBars));
+            break;
+        }
+        case SCHATTR_GROUP_BARS_PER_AXIS:
+        {
+            if( m_bSupportingAxisSideBySide )
+                rOutItemSet.Put( SfxBoolItem(nWhichId,m_bGroupBarsPerAxis) );
+            break;
+        }
+        case SCHATTR_AXIS_FOR_ALL_SERIES:
+        {
+            break;
+        }
+        case SCHATTR_STARTING_ANGLE:
+        {
+            if( m_bSupportingStartingAngle )
+                rOutItemSet.Put( SdrAngleItem(nWhichId, Degree100(m_nStartingAngle*100)) );
+            break;
+        }
+        case SCHATTR_CLOCKWISE:
+        {
+            rOutItemSet.Put( SfxBoolItem(nWhichId,m_bClockwise) );
+            break;
+        }
+        case SCHATTR_MISSING_VALUE_TREATMENT:
+        {
+            if( m_aSupportedMissingValueTreatments.hasElements() )
+                rOutItemSet.Put( SfxInt32Item( nWhichId, m_nMissingValueTreatment ));
+            break;
+        }
+        case SCHATTR_AVAILABLE_MISSING_VALUE_TREATMENTS:
+        {
+            rOutItemSet.Put( SfxIntegerListItem( nWhichId, m_aSupportedMissingValueTreatments ) );
+            break;
+        }
+        case SCHATTR_INCLUDE_HIDDEN_CELLS:
+        {
+            if( m_bSupportingPlottingOfHiddenCells )
+                rOutItemSet.Put( SfxBoolItem(nWhichId, m_bIncludeHiddenCells) );
+            break;
+        }
+        case SCHATTR_HIDE_LEGEND_ENTRY:
+        {
+            rOutItemSet.Put(SfxBoolItem(nWhichId, m_bHideLegendEntry));
+            break;
+        }
+        default:
+            break;
+   }
+}
+
+} //  namespace chart
+
+/* vim:set shiftwidth=4 softtabstop=4 expandtab: */

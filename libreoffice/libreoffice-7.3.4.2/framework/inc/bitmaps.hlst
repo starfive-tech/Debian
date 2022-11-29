@@ -1,0 +1,37 @@
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4; fill-column: 100 -*- */
+/*
+ * This file is part of the LibreOffice project.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+#pragma once
+
+#define BMP_SAVEMODIFIED_SMALL      "res/savemodified_small.png"
+#define BMP_SAVEMODIFIED_LARGE      "res/savemodified_large.png"
+#define BMP_SAVEMODIFIED_EXTRALARGE "res/savemodified_extralarge.png"
+
+#define RID_SVXBMP_BUTTON                           "res/sx10594.png"
+#define RID_SVXBMP_RADIOBUTTON                      "res/sx10595.png"
+#define RID_SVXBMP_CHECKBOX                         "res/sx10596.png"
+#define RID_SVXBMP_FIXEDTEXT                        "res/sx10597.png"
+#define RID_SVXBMP_GROUPBOX                         "res/sx10598.png"
+#define RID_SVXBMP_EDITBOX                          "res/sx10599.png"
+#define RID_SVXBMP_LISTBOX                          "res/sx10600.png"
+#define RID_SVXBMP_COMBOBOX                         "res/sx10601.png"
+#define RID_SVXBMP_IMAGEBUTTON                      "res/sx10604.png"
+#define RID_SVXBMP_IMAGECONTROL                     "res/sx10710.png"
+#define RID_SVXBMP_FILECONTROL                      "res/sx10605.png"
+#define RID_SVXBMP_DATEFIELD                        "res/sx10704.png"
+#define RID_SVXBMP_TIMEFIELD                        "res/sx10705.png"
+#define RID_SVXBMP_NUMERICFIELD                     "res/sx10706.png"
+#define RID_SVXBMP_CURRENCYFIELD                    "res/sx10707.png"
+#define RID_SVXBMP_PATTERNFIELD                     "res/sx10708.png"
+#define RID_SVXBMP_FORMATTEDFIELD                   "res/sx10728.png"
+#define RID_SVXBMP_SCROLLBAR                        "res/sx10768.png"
+#define RID_SVXBMP_SPINBUTTON                       "res/sx10769.png"
+#define RID_SVXBMP_NAVIGATIONBAR                    "res/sx10607.png"
+
+/* vim:set shiftwidth=4 softtabstop=4 expandtab cinoptions=b1,g0,N-s cinkeys+=0=break: */
