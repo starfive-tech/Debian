@@ -4,3 +4,6 @@
 [submodule "node/node"]
 	path = node/node
 	url = https://github.com/nodejs/node.git
+[submodule "firefox/firefox-105.0-1"]
+	path = firefox/firefox-105.0-1
+	url = https://salsa.debian.org/mozilla-team/firefox.git
