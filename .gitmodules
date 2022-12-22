@@ -1,3 +1,6 @@
 [submodule "libreoffice/libreoffice-7.5"]
 	path = libreoffice/libreoffice-7.5
 	url = https://github.com/LibreOffice/core.git
+[submodule "node/node"]
+	path = node/node
+	url = https://github.com/nodejs/node.git
