@@ -1,0 +1,20 @@
+// Copyright (C) 2020 Rick Waldron. All rights reserved.
+// This code is governed by the BSD license found in the LICENSE file.
+/*---
+path: language/statements/function/forbidden-ext/b1/cls-expr-meth-
+name: function declaration
+esid: sec-function-definitions-runtime-semantics-instantiatefunctionobject
+info: |
+    FunctionDeclaration :
+        function BindingIdentifier ( FormalParameters ) { FunctionBody }
+---*/
+
+var callCount = 0;
+function f() {
+  "use strict";
+  assert.sameValue(/*{ function-has-forbidden-property }*/, false);
+  callCount++;
+}
+
+f(/*{ args }*/);
+assert.sameValue(callCount, 1, 'function body evaluated');

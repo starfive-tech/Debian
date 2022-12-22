@@ -1,0 +1,25 @@
+// Copyright (C) 2020 Rick Waldron. All rights reserved.
+// This code is governed by the BSD license found in the LICENSE file.
+
+/*---
+path: language/statements/class/async-method-static/forbidden-ext/b1/cls-decl-async-meth-static-
+name: static class declaration async method
+esid: sec-runtime-semantics-bindingclassdeclarationevaluation
+info: |
+    ClassDeclaration : class BindingIdentifier ClassTail
+features: [arrow-function, async-functions, async-iteration, class]
+flags: [async]
+---*/
+
+var callCount = 0;
+class C {
+  static async method() {
+    assert.sameValue(/*{ method-has-forbidden-property }*/, false);
+    callCount++;
+  }
+}
+
+C.method(/*{ args }*/)
+  .then(() => {
+    assert.sameValue(callCount, 1, 'function body evaluated');
+  }, $DONE).then($DONE, $DONE);

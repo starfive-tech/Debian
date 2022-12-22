@@ -1,0 +1,26 @@
+// Copyright (C) 2017 the V8 project authors. All rights reserved.
+// This code is governed by the BSD license found in the LICENSE file.
+
+/*---
+path: language/expressions/async-generator/forbidden-ext/b1/async-gen-named-func-expr-
+name: async generator named function expression
+esid: sec-asyncgenerator-definitions-evaluation
+info: |
+    AsyncGeneratorExpression : async [no LineTerminator here] function * BindingIdentifier
+        ( FormalParameters ) { AsyncGeneratorBody }
+
+features: [arrow-function, async-functions, async-iteration]
+flags: [async]
+---*/
+
+var callCount = 0;
+var f;
+f = async function* g() {
+  assert.sameValue(/*{ function-has-forbidden-property }*/, false);
+  callCount++;
+};
+
+f(/*{ args }*/).next()
+  .then(() => {
+    assert.sameValue(callCount, 1, 'function body evaluated');
+  }, $DONE).then($DONE, $DONE);

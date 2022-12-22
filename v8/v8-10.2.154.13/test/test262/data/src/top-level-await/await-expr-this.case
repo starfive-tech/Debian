@@ -1,0 +1,26 @@
+// Copyright (C) 2019 Leo Balter. All rights reserved.
+// This code is governed by the BSD license found in the LICENSE file.
+
+/*---
+desc: >
+  AwaitExpression this
+info: |
+  PrimaryExpression[Yield, Await]:
+    this
+    IdentifierReference[?Yield, ?Await]
+    Literal
+    ArrayLiteral[?Yield, ?Await]
+    ObjectLiteral[?Yield, ?Await]
+    FunctionExpression
+    ClassExpression[?Yield, ?Await]
+    GeneratorExpression
+    AsyncFunctionExpression
+    AsyncGeneratorExpression
+    RegularExpressionLiteral
+    TemplateLiteral[?Yield, ?Await, ~Tagged]
+    CoverParenthesizedExpressionAndArrowParameterList[?Yield, ?Await]
+template: syntax
+---*/
+
+//- expr
+await this

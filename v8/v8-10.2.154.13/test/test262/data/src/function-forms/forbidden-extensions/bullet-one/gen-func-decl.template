@@ -1,0 +1,20 @@
+// Copyright (C) 2020 Rick Waldron. All rights reserved.
+// This code is governed by the BSD license found in the LICENSE file.
+/*---
+path: language/statements/generators/forbidden-ext/b1/gen-func-decl-
+name: generator function declaration
+esid: sec-generator-function-definitions-runtime-semantics-instantiatefunctionobject
+info: |
+    GeneratorDeclaration : function * ( FormalParameters ) { GeneratorBody }
+features: [generators]
+---*/
+
+var callCount = 0;
+function* f() {
+  assert.sameValue(/*{ function-has-forbidden-property }*/, false);
+  callCount++;
+}
+
+f(/*{ args }*/).next();
+assert.sameValue(callCount, 1, 'generator function body evaluated');
+

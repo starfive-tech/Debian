@@ -1,0 +1,20 @@
+// Copyright (C) 2020 Rick Waldron. All rights reserved.
+// This code is governed by the BSD license found in the LICENSE file.
+
+/*---
+desc: Computed property name from condition expression
+template: evaluation
+features: [computed-property-names, top-level-await]
+flags: [async, module]
+---*/
+//- setup
+try {
+//- ComputedPropertyName
+await 9
+//- value
+9
+//- teardown
+} catch (e) {
+  $DONE(e);
+}
+$DONE();

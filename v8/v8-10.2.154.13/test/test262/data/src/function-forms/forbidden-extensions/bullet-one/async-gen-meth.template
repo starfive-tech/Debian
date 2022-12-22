@@ -1,0 +1,27 @@
+// Copyright (C) 2020 Rick Waldron. All rights reserved.
+// This code is governed by the BSD license found in the LICENSE file.
+/*---
+path: language/expressions/object/method-definition/forbidden-ext/b1/async-gen-meth-
+name: async generator method
+esid: sec-asyncgenerator-definitions-propertydefinitionevaluation
+info: |
+    AsyncGeneratorMethod :
+        async [no LineTerminator here] * PropertyName ( UniqueFormalParameters )
+            { AsyncGeneratorBody }
+
+features: [arrow-function, async-iteration, generators]
+flags: [async]
+---*/
+
+var callCount = 0;
+var obj = {
+  async *method() {
+    assert.sameValue(/*{ method-has-forbidden-property }*/, false);
+    callCount++;
+  }
+};
+
+obj.method(/*{ args }*/).next()
+  .then(() => {
+    assert.sameValue(callCount, 1, 'function body evaluated');
+  }, $DONE).then($DONE, $DONE);

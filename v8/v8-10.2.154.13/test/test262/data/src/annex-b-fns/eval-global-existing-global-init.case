@@ -1,0 +1,39 @@
+// Copyright (C) 2016 the V8 project authors. All rights reserved.
+// This code is governed by the BSD license found in the LICENSE file.
+/*---
+desc: Variable binding is left in place by legacy function hoisting
+template: eval-global
+info: |
+    B.3.3.3 Changes to EvalDeclarationInstantiation
+
+    [...]
+    i. If varEnvRec is a global Environment Record, then
+       i. Perform ? varEnvRec.CreateGlobalVarBinding(F, true).
+    [...]
+
+includes: [fnGlobalObject.js, propertyHelper.js]
+---*/
+
+//- setup
+Object.defineProperty(fnGlobalObject(), 'f', {
+  value: 'x',
+  enumerable: true,
+  writable: true,
+  configurable: false
+});
+//- before
+var global = fnGlobalObject();
+assert.sameValue(f, 'x', "binding is not reinitialized");
+
+verifyProperty(global, "f", {
+  enumerable: true,
+  writable: true,
+  configurable: false
+}, { restore: true });
+//- teardown
+assert.sameValue(typeof f, "function");
+verifyProperty(global, "f", {
+  enumerable: true,
+  writable: true,
+  configurable: false
+});

@@ -1,0 +1,12 @@
+// Copyright (C) 2017 Valerie Young. All rights reserved.
+// This code is governed by the BSD license found in the LICENSE file.
+
+/*---
+desc: >
+  It's a SyntaxError if delete operator is applied to MemberExpression.PrivateName
+  private field
+template: delete-error
+---*/
+
+//- expression
+this.#x

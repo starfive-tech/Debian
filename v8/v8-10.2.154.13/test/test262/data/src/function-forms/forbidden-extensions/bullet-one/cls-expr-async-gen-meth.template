@@ -1,0 +1,24 @@
+// Copyright (C) 2020 Rick Waldron. All rights reserved.
+// This code is governed by the BSD license found in the LICENSE file.
+/*---
+path: language/expressions/class/async-gen-method/forbidden-ext/b1/cls-expr-async-gen-meth-
+name: class expression async generator method
+esid: sec-class-definitions-runtime-semantics-evaluation
+info: |
+    ClassExpression : class BindingIdentifieropt ClassTail
+features: [arrow-function, async-functions, async-iteration, class]
+flags: [async]
+---*/
+
+var callCount = 0;
+var C = class {
+  async *method() {
+    assert.sameValue(/*{ method-has-forbidden-property }*/, false);
+    callCount++;
+  }
+};
+
+C.prototype.method(/*{ args }*/).next()
+  .then(() => {
+    assert.sameValue(callCount, 1, 'function body evaluated');
+  }, $DONE).then($DONE, $DONE);

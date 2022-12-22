@@ -1,0 +1,23 @@
+// Copyright (C) 2019 Leo Balter. All rights reserved.
+// This code is governed by the BSD license found in the LICENSE file.
+
+/*---
+desc: >
+  AwaitExpression new MemberExpression
+info: |
+  LeftHandSideExpression[Yield, Await]:
+    NewExpression[?Yield, ?Await]
+    CallExpression[?Yield, ?Await]
+
+  NewExpression[Yield, Await]:
+    MemberExpression[?Yield, ?Await]
+    new NewExpression[?Yield, ?Await]
+
+  MemberExpression[Yield, Await]:
+    ...
+    new MemberExpression[?Yield, ?Await] Arguments[?Yield, ?Await]
+template: syntax
+---*/
+
+//- expr
+await new Promise(function(res, rej) { res(1); })

@@ -1,0 +1,22 @@
+// Copyright (C) 2018 Bloomberg LP. All rights reserved.
+// This code is governed by the BSD license found in the LICENSE file.
+
+/*---
+desc: >
+  It's a SyntaxError if delete operator is applied to CallExpression.PrivateName
+  private ordinary method
+template: delete-error
+features: [class-methods-private]
+---*/
+
+//- infieldsetup
+g = this.f;
+//- infunctionsetup
+var g = this.f;
+//- expression
+g().#m
+//- functiondeclaration
+f() {
+return this;
+}
+#m() {}

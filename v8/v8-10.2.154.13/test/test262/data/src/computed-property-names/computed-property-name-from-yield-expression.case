@@ -1,0 +1,19 @@
+// Copyright (C) 2020 Rick Waldron. All rights reserved.
+// This code is governed by the BSD license found in the LICENSE file.
+
+/*---
+desc: Computed property name from yield expression
+template: evaluation
+features: [computed-property-names]
+---*/
+
+//- setup
+function * g() {
+//- ComputedPropertyName
+yield 9
+//- value
+9
+//- teardown
+}
+var iter = g();
+while (iter.next().done === false) ;

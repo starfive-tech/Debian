@@ -1,0 +1,22 @@
+// Copyright (C) 2018 Bloomberg LP. All rights reserved.
+// This code is governed by the BSD license found in the LICENSE file.
+
+/*---
+desc: >
+  It's a SyntaxError if delete operator is applied to CallExpression.PrivateName
+  async generator
+template: delete-error
+features: [class-methods-private, async-iteration]
+---*/
+
+//- infieldsetup
+g = this.f;
+//- infunctionsetup
+var g = this.f;
+//- expression
+g().#m
+//- functiondeclaration
+f() {
+return this;
+}
+async *#m() {}

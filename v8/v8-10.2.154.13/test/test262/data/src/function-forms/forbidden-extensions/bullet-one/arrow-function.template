@@ -1,0 +1,21 @@
+// Copyright (C) 2020 Rick Waldron. All rights reserved.
+// This code is governed by the BSD license found in the LICENSE file.
+/*---
+path: language/expressions/arrow-function/forbidden-ext/b1/arrow-function-
+name: arrow function expression
+esid: sec-arrow-function-definitions-runtime-semantics-evaluation
+info: |
+    ArrowFunction : ArrowParameters => ConciseBody
+features: [arrow-function]
+---*/
+
+var callCount = 0;
+var f;
+f = (/*{ params }*/) => {
+  assert.sameValue(/*{ function-has-forbidden-property }*/, false);
+  callCount++;
+};
+
+
+  f(/*{ args }*/);
+assert.sameValue(callCount, 1, 'arrow function body evaluated');

@@ -1,0 +1,18 @@
+// Copyright (C) 2017 Valerie Young. All rights reserved.
+// This code is governed by the BSD license found in the LICENSE file.
+
+/*---
+esid: sec-class-definitions-static-semantics-early-errors
+path: language/expressions/class/elements/private-literal-name-
+name: ClassElementName PrivateName
+features: [class, class-fields-private]
+negative:
+  type: SyntaxError
+  phase: parse
+---*/
+
+$DONOTEVALUATE();
+
+var C = class {
+  #x = /*{ initializer }*/;
+}

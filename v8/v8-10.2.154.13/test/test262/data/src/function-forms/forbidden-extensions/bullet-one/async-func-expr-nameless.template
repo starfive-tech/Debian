@@ -1,0 +1,24 @@
+// Copyright (C) 2020 Rick Waldron. All rights reserved.
+// This code is governed by the BSD license found in the LICENSE file.
+
+/*---
+path: language/expressions/async-function/forbidden-ext/b1/async-func-expr-nameless-
+name: async function nameless expression
+esid: sec-async-function-definitions
+info: |
+  AsyncFunctionExpression :
+    async function ( FormalParameters ) { AsyncFunctionBody }
+flags: [async]
+features: [arrow-function, async-functions]
+---*/
+
+var callCount = 0;
+var f = async function() {
+  assert.sameValue(/*{ function-has-forbidden-property }*/, false);
+  callCount++;
+}
+
+f(/*{ args }*/)
+  .then(() => {
+    assert.sameValue(callCount, 1, 'function body evaluated');
+  }, $DONE).then($DONE, $DONE);

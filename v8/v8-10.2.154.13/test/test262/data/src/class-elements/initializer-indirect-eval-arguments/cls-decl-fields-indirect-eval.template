@@ -1,0 +1,17 @@
+// Copyright (C) 2017 Valerie Young. All rights reserved.
+// This code is governed by the BSD license found in the LICENSE file.
+
+/*---
+esid: sec-performeval-rules-in-initializer
+path: language/statements/class/elements/indirect-
+name: indirect eval
+features: [class, class-fields-public]
+flags: [noStrict]
+---*/
+
+var /*{ initializer }*/ = 1;
+class C {
+  x = (0, eval)('/*{ initializer }*/;');
+}
+
+assert.sameValue(new C().x, /*{ initializer }*/);
