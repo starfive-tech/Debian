@@ -1,9 +1,0 @@
----
-assumeFilename: xmlhelp/source/cxxhelp/provider/content.cxx
-excludelist:
-    xmlhelp/source/cxxhelp/provider/content.cxx:
-    # Needed for CPPU_TYPE_REF macro
-    - com/sun/star/ucb/XCommandInfo.hpp
-    xmlhelp/source/cxxhelp/provider/resultsetforquery.cxx:
-    # Needed for CLuceneError as a pass-through header
-    - CLucene.h

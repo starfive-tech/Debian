@@ -1,6 +1,0 @@
-#ifndef CONFIG_EOT_H
-#define CONFIG_EOT_H
-
-#define ENABLE_EOT 0
-
-#endif

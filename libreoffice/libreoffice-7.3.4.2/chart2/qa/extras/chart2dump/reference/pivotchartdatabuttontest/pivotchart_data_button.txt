@@ -1,2 +1,0 @@
-// static_cast<sal_Int32>( aButtonFillColor )
-16185078
