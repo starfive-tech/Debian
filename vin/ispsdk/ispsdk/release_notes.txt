@@ -1,0 +1,35 @@
+Internal Release 2.0.3
+========================
+New feature:
+------------
+Tidy up sensor impletementation code for libSensorApi open source.
+
+
+Internal Release 2.0.2
+========================
+Bug fix:
+--------
+1) Fix segment fault on exit process because of the uninitialized devices.
+2) Removed misunderstood log that is normal in single isp pipeline.
+3) Reduce the time cost on stf_isp_ctrl setup to avoid unstable preview at first.
+
+
+Internal Release 2.0.1
+========================
+New feature:
+------------
+1) Implement multiple resolution setting file support.
+
+Bug fix:
+--------
+1) Fixed the bug in I2C write register API for IMX219_MIPI and OV4689_MIPI sensors.
+
+Caution:
+--------
+1) Now only 1080p setting was tuned.
+
+
+
+Internel Release 2.0.0
+========================
+First internal release. 
