@@ -1,0 +1,32 @@
+From 7c64b3981f1fc12c47acd825831e0b633181bc63 Mon Sep 17 00:00:00 2001
+From: Andy Hu <andy.hu@starfivetech.com>
+Date: Thu, 19 Jan 2023 16:24:25 +0800
+Subject: [PATCH] wave511: fix the warning which treated as error
+
+---
+ wave511/wave511/sample_v2/helper/main_helper.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/wave511/wave511/sample_v2/helper/main_helper.c b/wave511/wave511/sample_v2/helper/main_helper.c
+index 4e3fb26..d812f8f 100644
+--- a/wave511/wave511/sample_v2/helper/main_helper.c
++++ b/wave511/wave511/sample_v2/helper/main_helper.c
+@@ -2158,13 +2158,13 @@ void GenRegionToQpMap(
+ int openRoiMapFile(TestEncConfig *encConfig)
+ {
+     if (encConfig->roi_enable) {
+-        if (encConfig->roi_file_name) {
++        // if (encConfig->roi_file_name) {
+             ChangePathStyle(encConfig->roi_file_name);
+             if ((encConfig->roi_file = osal_fopen(encConfig->roi_file_name, "r")) == NULL) {
+                 VLOG(ERR, "fail to open ROI file, %s\n", encConfig->roi_file_name);
+                 return FALSE;
+             }
+-        }
++        // }
+     }
+     return TRUE;
+ }
+-- 
+2.36.0
+

@@ -1,0 +1,238 @@
+From 888f1780682a6a73b4004bec4d51c450ddaac710 Mon Sep 17 00:00:00 2001
+From: "arvin.zhu" <arvin.zhu@starfivetech.com>
+Date: Wed, 23 Nov 2022 15:08:36 +0800
+Subject: [PATCH] FFmpeg:omxdec: set pts of avframe and fix some compilation
+ warnings
+
+set pts of avframe from video container and fix some compilation warnings
+
+Signed-off-by: arvin.zhu <arvin.zhu@starfivetech.com>
+---
+ libavcodec/omxdec.c | 129 +++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 116 insertions(+), 13 deletions(-)
+
+diff --git a/libavcodec/omxdec.c b/libavcodec/omxdec.c
+index 4974833..1bb08b1 100755
+--- a/libavcodec/omxdec.c
++++ b/libavcodec/omxdec.c
+@@ -96,13 +96,96 @@ typedef struct OMXContext {
+     void (*host_init)(void);
+ } OMXContext;
+ 
+-static const struct {
++typedef struct OMXDecodeQueueNode {
++    int64_t val;
++    struct OMXDecodeQueueNode* next;
++} OMXDecodeQueueNode;
++
++typedef struct OMXDecodeQueue {
++    OMXDecodeQueueNode* head;
++    OMXDecodeQueueNode* tail;
++} OMXDecodeQueue;
++
++static av_cold void OMXDecodeQueueInit(OMXDecodeQueue* pq)
++{
++    assert(pq);
++    pq->head = pq->tail = NULL;
++}
++
++static av_cold void OMXDecodeQueueDestory(OMXDecodeQueue* pq)
++{
++    OMXDecodeQueueNode* cur = pq->head;
++    assert(pq);
++    while (cur)
++    {
++        OMXDecodeQueueNode* next = cur->next;
++        av_free(cur);
++        cur = next;
++    }
++    pq->tail = pq->head = NULL;
++}
++
++static void OMXDecodeQueuePush(OMXDecodeQueue* pq, int64_t x)
++{
++    OMXDecodeQueueNode* newNode = (OMXDecodeQueueNode*)malloc(sizeof(OMXDecodeQueueNode));
++    if (NULL == newNode)
++    {
++        av_log(NULL, AV_LOG_ERROR, "malloc queue error\n");
++        exit(-1);
++    }
++    assert(pq);
++    newNode->val = x;
++    newNode->next = NULL;
++
++    if (pq->tail == NULL)
++    {
++        assert(pq->head == NULL);
++        pq->head = pq->tail = newNode;
++    }
++    else
++    {
++        pq->tail->next = newNode;
++        pq->tail = newNode;
++    }
+ 
++}
++
++static void OMXDecodeQueuePop(OMXDecodeQueue* pq)
++{
++    assert(pq);
++    assert(pq->head && pq->tail);
++    if (pq->head->next == NULL)
++    {
++        av_free(pq->head);
++        pq->head = pq->tail = NULL;
++    }
++    else
++    {
++        OMXDecodeQueueNode* next = pq->head->next;
++        av_free(pq->head);
++        pq->head = next;
++    }
++}
++
++static int OMXDecodeQueueEmpty(OMXDecodeQueue* pq)
++{
++    assert(pq);
++
++    return pq->head == NULL;
++}
++
++static int64_t OMXDecodeQueueFront(OMXDecodeQueue* pq)
++{
++    assert(pq);
++    assert(pq->head);
++
++    return pq->head->val;
++}
++
++static const struct {
+     int color_format;
+     enum AVPixelFormat pix_fmt;
+-
+ } color_formats[] = {
+-
+     { OMX_COLOR_FormatYUV420Planar,                           AV_PIX_FMT_YUV420P },
+     { OMX_COLOR_FormatYUV420SemiPlanar,                       AV_PIX_FMT_NV12    },
+     { OMX_COLOR_FormatYVU420SemiPlanar,                       AV_PIX_FMT_NV21    },
+@@ -286,6 +369,8 @@ typedef struct OMXCodecContext {
+         int h;
+     } crop;
+ 
++    OMXDecodeQueue decode_pts_queue;
++    int decode_flag;
+     int input_zerocopy;
+     int profile;
+     char *pixel_format;     /**< Set by a private option. */
+@@ -491,6 +576,10 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+     //OMX_VIDEO_PARAM_PORTFORMATTYPE video_port_format = { 0 };
+     //OMX_VIDEO_PARAM_BITRATETYPE vid_param_bitrate = { 0 };
+     OMX_ERRORTYPE err;
++    OMX_CONFIG_SCALEFACTORTYPE ScaleConfig;
++    OMX_CONFIG_MIRRORTYPE MirrorConfig;
++    OMX_CONFIG_ROTATIONTYPE RotatConfig;
++    OMX_CONFIG_RECTTYPE RectConfig;
+     int i;
+     s->version.s.nVersionMajor = 1;
+     s->version.s.nVersionMinor = 1;
+@@ -594,7 +683,6 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+         /* Set Scale config setting*/
+         if (s->scale_width || s->scale_height) {
+             av_log(avctx, AV_LOG_TRACE, "mjpeg decoder: scaling width: %d scaling height: %d .\n", s->scale_width, s->scale_height);
+-            OMX_CONFIG_SCALEFACTORTYPE ScaleConfig;
+             INIT_STRUCT(ScaleConfig);
+             ScaleConfig.nPortIndex = 1;
+             OMX_GetConfig(s->handle, OMX_IndexConfigCommonScale, &ScaleConfig);
+@@ -665,7 +753,6 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+                 return AVERROR_INVALIDDATA;
+             }
+             av_log(avctx, AV_LOG_TRACE, "mjpeg decoder: mirror\n");
+-            OMX_CONFIG_MIRRORTYPE MirrorConfig;
+             INIT_STRUCT(MirrorConfig);
+             MirrorConfig.nPortIndex = 1;
+             OMX_GetConfig(s->handle, OMX_IndexConfigCommonMirror, &MirrorConfig);
+@@ -680,7 +767,6 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+                 return AVERROR_INVALIDDATA;
+             }
+             av_log(avctx, AV_LOG_TRACE, "mjpeg decoder: rotation\n");
+-            OMX_CONFIG_ROTATIONTYPE RotatConfig;
+             INIT_STRUCT(RotatConfig);
+             RotatConfig.nPortIndex = 1;
+             OMX_GetConfig(s->handle, OMX_IndexConfigCommonRotate, &RotatConfig);
+@@ -726,7 +812,6 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+                 return AVERROR_INVALIDDATA;
+             }
+ 
+-            OMX_CONFIG_RECTTYPE RectConfig; 
+             INIT_STRUCT(RectConfig);
+             RectConfig.nPortIndex = 1;
+             OMX_GetConfig(s->handle, OMX_IndexConfigCommonOutputCrop, &RectConfig);
+@@ -869,6 +954,8 @@ static av_cold void cleanup(OMXCodecContext *s)
+         pthread_mutex_destroy(&s->output_mutex);
+         s->mutex_cond_inited = 0;
+     }
++    OMXDecodeQueueDestory(&s->decode_pts_queue);
++    av_freep(&s->decode_pts_queue);
+     av_freep(&s->in_buffer_headers);
+     av_freep(&s->out_buffer_headers);
+     av_freep(&s->free_in_buffers);
+@@ -883,7 +970,10 @@ static av_cold int omx_decode_init(AVCodecContext *avctx)
+     const char *role;
+     //OMX_BUFFERHEADERTYPE *buffer;
+     //OMX_ERRORTYPE err;
++    OMXDecodeQueueInit(&s->decode_pts_queue);
+ 
++    av_log(avctx, AV_LOG_VERBOSE, "avctx->time_base: %d/%d \n", avctx->time_base.num, avctx->time_base.den);
++    av_log(avctx, AV_LOG_VERBOSE, "avctx->framerate: %d/%d \n", avctx->framerate.num, avctx->framerate.den);
+     s->omx_context = omx_init(avctx, s->libname, s->libprefix);
+     if (!s->omx_context)
+         return AVERROR_ENCODER_NOT_FOUND;
+@@ -898,6 +988,7 @@ static av_cold int omx_decode_init(AVCodecContext *avctx)
+     s->avctx = avctx;
+     s->state = OMX_StateLoaded;
+     s->error = OMX_ErrorNone;
++    s->decode_flag = 0;
+ 
+     switch (avctx->codec->id) {
+     case AV_CODEC_ID_MPEG4:
+@@ -990,6 +1081,15 @@ static int omx_decode_frame(AVCodecContext *avctx, void *data,
+     uint8_t *dst[4];
+     int linesize[4];
+ 
++    av_log(avctx, AV_LOG_VERBOSE, "s->decode_flag: %d\n", s->decode_flag);
++    av_log(avctx, AV_LOG_VERBOSE, "avctx->time_base: %d/%d \n", avctx->time_base.num, avctx->time_base.den);
++    av_log(avctx, AV_LOG_VERBOSE, "avctx->pkt_timebase: %d/%d \n", avctx->pkt_timebase.num, avctx->pkt_timebase.den);
++    av_log(avctx, AV_LOG_VERBOSE, "avctx->framerate: %d/%d \n", avctx->framerate.num, avctx->framerate.den);
++    av_log(avctx, AV_LOG_VERBOSE, "avpkt->size: %d avpkt->pts: %ld avpkt->dts: %ld avpkt->duration: %ld\n",
++                                     pkt->size, pkt->pts, pkt->dts, pkt->duration);
++    av_log(avctx, AV_LOG_VERBOSE, "avctx->pts_correction_last_pts: %ld avctx->pts_correction_last_dts: %ld\n",
++                                     avctx->pts_correction_last_pts, avctx->pts_correction_last_dts);
++    OMXDecodeQueuePush(&s->decode_pts_queue, pkt->dts);
+     if (pkt->size) {
+ 
+         //VPU init and fill buffer slow, so empty buf sleep to send before get vpu fill buf.
+@@ -1107,12 +1207,15 @@ static int omx_decode_frame(AVCodecContext *avctx, void *data,
+ 
+         av_image_copy(avframe->data, avframe->linesize, (const uint8_t**)dst, linesize, 
+                             avctx->pix_fmt, avctx->width, avctx->height);
+-
+-        //avframe->pts     = buffer->nTimeStamp;
+-        //avframe->pkt_dts = AV_NOPTS_VALUE;
+-        //avframe->pict_type= AV_PICTURE_TYPE_I;
+-        //avframe->key_frame= 1;
+-
++        if (pkt->pts) {
++            if (OMXDecodeQueueEmpty(&s->decode_pts_queue) != 0){
++                av_log(avctx, AV_LOG_ERROR, "The queue of decode pts is empty.\n");
++                return AVERROR_INVALIDDATA;
++            }
++            avframe->pts = OMXDecodeQueueFront(&s->decode_pts_queue);
++            OMXDecodeQueuePop(&s->decode_pts_queue);
++        }
++        s->decode_flag += 1;
+         *got_packet = 1;
+ 
+         /*
+-- 
+2.17.1
+

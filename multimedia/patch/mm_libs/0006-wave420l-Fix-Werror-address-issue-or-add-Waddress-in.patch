@@ -1,0 +1,105 @@
+From 5178b06a922d9ee5e9688329cd4f3ba38e7f5143 Mon Sep 17 00:00:00 2001
+From: Andy Hu <andy.hu@starfivetech.com>
+Date: Thu, 19 Jan 2023 16:35:56 +0800
+Subject: [PATCH] wave420l: Fix -Werror=address issue or add Waddress in
+ Makefile
+
+---
+ wave420l/code/sample/helper/main_helper.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/wave420l/code/sample/helper/main_helper.c b/wave420l/code/sample/helper/main_helper.c
+index dc6e90e..e1b4a1c 100644
+--- a/wave420l/code/sample/helper/main_helper.c
++++ b/wave420l/code/sample/helper/main_helper.c
+@@ -1229,7 +1229,7 @@ Int32 writeVuiRbsp(int coreIdx, TestEncConfig *encConfig, EncOpenParam *encOP, v
+         }
+         encOP->vuiRbspDataAddr = vbVuiRbsp->phys_addr;
+ 
+-        if (encConfig->vui_rbsp_file_name) {
++        // if (encConfig->vui_rbsp_file_name) {
+             Uint8   *pVuiRbspBuf;
+             Int32   rbspSizeInByte = (encOP->vuiRbspDataSize+7)>>3;
+             ChangePathStyle(encConfig->vui_rbsp_file_name);
+@@ -1246,7 +1246,7 @@ Int32 writeVuiRbsp(int coreIdx, TestEncConfig *encConfig, EncOpenParam *encOP, v
+             osal_fread(pVuiRbspBuf, 1, rbspSizeInByte, encConfig->vui_rbsp_fp);
+             vdi_write_memory(coreIdx, encOP->vuiRbspDataAddr, pVuiRbspBuf,  rbspSizeInByte, encOP->streamEndian);
+             osal_free(pVuiRbspBuf);
+-        }
++        // }
+     }
+     return TRUE;
+ }
+@@ -1263,7 +1263,7 @@ Int32 writeHrdRbsp(int coreIdx, TestEncConfig *encConfig, EncOpenParam *encOP, v
+ 
+         encOP->hrdRbspDataAddr = vbHrdRbsp->phys_addr;
+ 
+-        if (encConfig->hrd_rbsp_file_name) {
++        // if (encConfig->hrd_rbsp_file_name) {
+             Uint8   *pHrdRbspBuf;
+             Int32   rbspSizeInByte = (encOP->hrdRbspDataSize+7)>>3;
+             ChangePathStyle(encConfig->hrd_rbsp_file_name);
+@@ -1280,7 +1280,7 @@ Int32 writeHrdRbsp(int coreIdx, TestEncConfig *encConfig, EncOpenParam *encOP, v
+             osal_fread(pHrdRbspBuf, 1, rbspSizeInByte, encConfig->hrd_rbsp_fp);
+             vdi_write_memory(coreIdx, encOP->hrdRbspDataAddr, pHrdRbspBuf,  rbspSizeInByte, encOP->streamEndian);
+             osal_free(pHrdRbspBuf);
+-        }
++        // }
+     }
+     return TRUE;
+ }
+@@ -1505,7 +1505,7 @@ int setRoiMap(int coreIdx, TestEncConfig *encConfig, EncOpenParam encOP, Physica
+         // sample code to convert ROI coordinate to ROI map.
+         osal_memset(&encConfig->region[0], 0, sizeof(VpuRect)*MAX_ROI_NUMBER);
+         osal_memset(&encConfig->roiLevel[0], 0, sizeof(int)*MAX_ROI_NUMBER);
+-        if (encConfig->roi_file_name) {
++        // if (encConfig->roi_file_name) {
+             char lineStr[256] = {0, };
+             int  val;
+             fgets(lineStr, 256, encConfig->roi_file);
+@@ -1525,7 +1525,7 @@ int setRoiMap(int coreIdx, TestEncConfig *encConfig, EncOpenParam encOP, Physica
+                     VLOG(ERR, "CFG file error : %s value is not available. \n", encConfig->roi_file_name);
+                 }
+             }
+-        }
++        // }
+         encParam->ctuOptParam.addrRoiCtuMap = addrRoiMap;
+         encParam->ctuOptParam.mapEndian     = VDI_LITTLE_ENDIAN;
+         encParam->ctuOptParam.mapStride     = ((encOP.picWidth+63)&~63)>>6;
+@@ -1580,13 +1580,13 @@ int checkParamRestriction(Uint32 productId, TestEncConfig *encConfig)
+ int openRoiMapFile(TestEncConfig *encConfig) 
+ {
+     if (encConfig->roi_enable) {
+-        if (encConfig->roi_file_name) {
++        // if (encConfig->roi_file_name) {
+             ChangePathStyle(encConfig->roi_file_name);
+             if ((encConfig->roi_file = osal_fopen(encConfig->roi_file_name, "r")) == NULL) {
+                 VLOG(ERR, "fail to open ROI file, %s\n", encConfig->roi_file_name);
+                 return FALSE;
+             }
+-        }
++        // }
+     }
+     return TRUE;
+ }
+@@ -1617,7 +1617,7 @@ int setCtuQpMap(int coreIdx, TestEncConfig *encConfig, EncOpenParam encOP, Physi
+         // sample code to convert CTU coordinate to CTU MODE map.
+         osal_memset(&encConfig->region[0], 0, sizeof(VpuRect)*MAX_ROI_NUMBER);
+         osal_memset(&encConfig->ctuQp[0], 0, sizeof(int)*MAX_ROI_NUMBER);
+-        if (encConfig->ctuqp_file_name) {
++        // if (encConfig->ctuqp_file_name) {
+             char lineStr[256] = {0, };
+             int  val;
+             fgets(lineStr, 256, encConfig->ctuqp_file);
+@@ -1637,7 +1637,7 @@ int setCtuQpMap(int coreIdx, TestEncConfig *encConfig, EncOpenParam encOP, Physi
+                     VLOG(ERR, "CFG file error : %s value is not available. \n", encConfig->ctuqp_file_name);
+                 }
+             }
+-        }
++        // }
+         encParam->ctuOptParam.addrCtuQpMap  = addrCtuQpMap;
+         encParam->ctuOptParam.mapEndian     = VDI_LITTLE_ENDIAN;
+         encParam->ctuOptParam.mapStride     = ((encOP.picWidth+63)&~63)>>6;
+-- 
+2.36.0
+

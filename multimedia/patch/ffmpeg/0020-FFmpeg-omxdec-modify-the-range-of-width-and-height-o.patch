@@ -1,0 +1,63 @@
+From e29c31f71f4a2cf28142d2440c715a43672b08e8 Mon Sep 17 00:00:00 2001
+From: "arvin.zhu" <arvin.zhu@starfivetech.com>
+Date: Wed, 16 Nov 2022 11:19:47 +0800
+Subject: [PATCH] FFmpeg:omxdec: modify the range of width and height of scale
+
+modify the range of width and height of scale for omx decoder
+
+Signed-off-by: arvin.zhu <arvin.zhu@starfivetech.com>
+---
+ libavcodec/omxdec.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/libavcodec/omxdec.c b/libavcodec/omxdec.c
+index 019db2e..4974833 100755
+--- a/libavcodec/omxdec.c
++++ b/libavcodec/omxdec.c
+@@ -361,7 +361,7 @@ static OMX_ERRORTYPE event_handler(OMX_HANDLETYPE component, OMX_PTR app_data, O
+         }
+         break;
+     case OMX_EventPortSettingsChanged:
+-        av_log(s->avctx, AV_LOG_ERROR, "OMX port %"PRIu32" settings changed\n", (uint32_t) data1);
++        av_log(s->avctx, AV_LOG_VERBOSE, "OMX port %"PRIu32" settings changed\n", (uint32_t) data1);
+         INIT_STRUCT(video_port_params);
+         err = OMX_GetParameter(s->handle, OMX_IndexParamVideoInit, &video_port_params);
+         if(err != OMX_ErrorNone){
+@@ -742,15 +742,23 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
+     if (avctx->codec->id == AV_CODEC_ID_H264 || avctx->codec->id == AV_CODEC_ID_HEVC) {
+         /* Set Scale config setting*/
+         if ((s->scale_width != 0) && ((s->scale_width < avctx->width/8) ||
+-             (s->scale_width > avctx->width) || (s->scale_width % 8 != 0))) {
++             (s->scale_width > avctx->width) || (s->scale_width % 2 != 0))) {
+             av_log(avctx, AV_LOG_ERROR, "scale_width: Invalid scale parameter\n");
+             return AVERROR_INVALIDDATA;
+         }
++        if (s->scale_width == avctx->width/8 && (s->scale_width % 8 != 0)) {
++            av_log(avctx, AV_LOG_ERROR, "When scale_width is width/8, scale_width must be a multiple of 8(ceil 8).\n");
++            return AVERROR_INVALIDDATA;
++        }
+         if ((s->scale_height != 0) && ((s->scale_height < avctx->height/8) ||
+-             (s->scale_height > avctx->height) || (s->scale_height % 8 != 0))) {
++             (s->scale_height > avctx->height) || (s->scale_height % 2 != 0))) {
+             av_log(avctx, AV_LOG_ERROR, "scale_height: Invalid scale parameter\n");
+             return AVERROR_INVALIDDATA;
+         }
++        if (s->scale_height == avctx->height/8 && (s->scale_height % 8 != 0)) {
++            av_log(avctx, AV_LOG_ERROR, "When scale_height is height/8, scale_height must be a multiple of 8(ceil 8).\n");
++            return AVERROR_INVALIDDATA;
++        }
+         out_port_params.format.video.nFrameWidth   = s->scale_width ? s->scale_width : avctx->width;
+         out_port_params.format.video.nFrameHeight  = s->scale_height ? s->scale_height : avctx->height;
+ 
+@@ -1072,7 +1080,7 @@ static int omx_decode_frame(AVCodecContext *avctx, void *data,
+         //     s->first_get_outbuffer = 1;
+ 
+         if(!buffer->nFilledLen){
+-            av_log(avctx, AV_LOG_ERROR, "buffer->nFilledLen %d\n",(int)buffer->nFilledLen);
++            av_log(avctx, AV_LOG_VERBOSE, "buffer->nFilledLen %d\n",(int)buffer->nFilledLen);
+             goto end;
+         }
+ 
+-- 
+2.17.1
+

@@ -1,0 +1,212 @@
+From 1764dcc4a161e44e822029b1cc5c3bbc40f052e5 Mon Sep 17 00:00:00 2001
+From: Andy Hu <andy.hu@starfivetech.com>
+Date: Fri, 18 Nov 2022 12:49:12 +0800
+Subject: [PATCH] wave511: fix building issue and support the vendor code
+ building
+
+---
+ wave511/wave511/WaveDecDriver.mak            |  3 +-
+ wave511/wave511/WaveDecode-ffmpeg.mak        |  2 +-
+ wave511/wave511/WaveDecode.mak               |  2 +-
+ wave511/wave511/WaveDecodeMult.mak           |  2 +-
+ wave511/wave511/WaveDecode_buildroot.mak     | 46 +++++++++++++++++++-
+ wave511/wave511/build_for_vdec.sh            | 12 +++--
+ wave511/wave511/sample_v2/helper/vpuhelper.c | 19 +++++---
+ 7 files changed, 72 insertions(+), 14 deletions(-)
+
+diff --git a/wave511/wave511/WaveDecDriver.mak b/wave511/wave511/WaveDecDriver.mak
+index 2323cd7..a2dc1e5 100644
+--- a/wave511/wave511/WaveDecDriver.mak
++++ b/wave511/wave511/WaveDecDriver.mak
+@@ -27,7 +27,8 @@ obj-m	:= vdec.o
+ 
+ else
+ 
+-KERNELDIR := ../../../work/linux
++#KERNELDIR := ../../../work/linux
++KERNELDIR := /lib/modules/$(shell uname -r)/build
+ 
+ PWD	  := $(shell pwd)
+ 
+diff --git a/wave511/wave511/WaveDecode-ffmpeg.mak b/wave511/wave511/WaveDecode-ffmpeg.mak
+index 05e642d..b19dd3e 100644
+--- a/wave511/wave511/WaveDecode-ffmpeg.mak
++++ b/wave511/wave511/WaveDecode-ffmpeg.mak
+@@ -59,7 +59,7 @@ ifeq ("$(BUILD_CONFIGURATION)", "EmbeddedLinux")
+ endif
+ 
+ ifeq ("$(BUILD_CONFIGURATION)", "EmbeddedRiscvLinux")
+-    CROSS_CC_PREFIX = riscv64-buildroot-linux-gnu-
++    CROSS_CC_PREFIX = 
+     PLATFORM        = riscvlinux
+ endif
+ CC  = $(CROSS_CC_PREFIX)gcc
+diff --git a/wave511/wave511/WaveDecode.mak b/wave511/wave511/WaveDecode.mak
+index 46cf8ab..3d0fb78 100644
+--- a/wave511/wave511/WaveDecode.mak
++++ b/wave511/wave511/WaveDecode.mak
+@@ -57,7 +57,7 @@ ifeq ("$(BUILD_CONFIGURATION)", "EmbeddedLinux")
+ endif
+ 
+ ifeq ("$(BUILD_CONFIGURATION)", "EmbeddedRiscvLinux")
+-    CROSS_CC_PREFIX = riscv64-buildroot-linux-gnu-
++    CROSS_CC_PREFIX =
+     PLATFORM        = riscvlinux
+ endif
+ CC  = $(CROSS_CC_PREFIX)gcc
+diff --git a/wave511/wave511/WaveDecodeMult.mak b/wave511/wave511/WaveDecodeMult.mak
+index f882100..ea3b06e 100644
+--- a/wave511/wave511/WaveDecodeMult.mak
++++ b/wave511/wave511/WaveDecodeMult.mak
+@@ -69,7 +69,7 @@ ifeq ("$(BUILD_CONFIGURATION)", "EmbeddedLinux")
+ endif
+ 
+ ifeq ("$(BUILD_CONFIGURATION)", "EmbeddedRiscvLinux")
+-    CROSS_CC_PREFIX = riscv64-buildroot-linux-gnu-
++    CROSS_CC_PREFIX = 
+     PLATFORM        = riscvlinux
+ endif
+ 
+diff --git a/wave511/wave511/WaveDecode_buildroot.mak b/wave511/wave511/WaveDecode_buildroot.mak
+index 4343925..4af9c88 100644
+--- a/wave511/wave511/WaveDecode_buildroot.mak
++++ b/wave511/wave511/WaveDecode_buildroot.mak
+@@ -11,6 +11,10 @@ PRODUCT := WAVE511
+ 
+ $(shell cp sample_v2/component_list_decoder.h sample_v2/component/component_list.h)
+ 
++TARGET_DIR=../../target
++STAGING_DIR=$(TARGET_DIR)
++INSTALL=install
++
+ USE_PTHREAD = yes
+ USE_RTL_SIM = no
+ LINT_HOME   = etc/lint
+@@ -57,7 +61,8 @@ ifeq ("$(BUILD_CONFIGURATION)", "EmbeddedLinux")
+ endif
+ 
+ ifeq ("$(BUILD_CONFIGURATION)", "EmbeddedRiscvLinux")
+-    CROSS_CC_PREFIX = riscv64-buildroot-linux-gnu-
++#    CROSS_CC_PREFIX = riscv64-buildroot-linux-gnu-
++    CROSS_CC_PREFIX =
+     PLATFORM        = riscvlinux
+ endif
+ CC  = $(CROSS_CC_PREFIX)gcc
+@@ -166,3 +171,42 @@ obj/%.o: %.c $(MAKEFILE)
+ lint:
+ 	"$(LINT_HOME)/flint" -i"$(LINT_HOME)" $(DEFINES) $(INCLUDES) $(VPATH2) linux_std.lnt $(HAPS_RULE) $(NONOS_RULE)  $(SOURCES_COMMON)
+ 
++install:
++	@echo install ...
++	$(INSTALL) -D -m 0777 vdi/linux/driver/load.sh $(TARGET_DIR)/root/wave511/vdec_load.sh
++	$(INSTALL) -D -m 0777 vdi/linux/driver/unload.sh $(TARGET_DIR)/root/wave511/vdec_unload.sh
++	$(INSTALL) -D -m 0644 libsfdec.so $(TARGET_DIR)/usr/lib/libsfdec.so
++	$(INSTALL) -D -m 0644 ../firmware/chagall.bin $(TARGET_DIR)/lib/firmware/chagall.bin
++	@echo "install STAGING_DIR ..."
++	$(INSTALL) -D -m 0644 sample_v2/component_list_decoder.h                           $(STAGING_DIR)/usr/include/wave511/sample_v2/component_list_decoder.h
++	$(INSTALL) -D -m 0644 sample_v2/component_list_encoder.h                           $(STAGING_DIR)/usr/include/wave511/sample_v2/component_list_encoder.h
++	$(INSTALL) -D -m 0644 sample_v2/helper/misc/pbu.h                                  $(STAGING_DIR)/usr/include/wave511/sample_v2/helper/misc/pbu.h
++	$(INSTALL) -D -m 0644 sample_v2/helper/misc/header_struct.h                        $(STAGING_DIR)/usr/include/wave511/sample_v2/helper/misc/header_struct.h
++	$(INSTALL) -D -m 0644 sample_v2/helper/misc/json_output.h                          $(STAGING_DIR)/usr/include/wave511/sample_v2/helper/misc/json_output.h
++	$(INSTALL) -D -m 0644 sample_v2/helper/misc/debug.h                                $(STAGING_DIR)/usr/include/wave511/sample_v2/helper/misc/debug.h
++	$(INSTALL) -D -m 0644 sample_v2/helper/misc/bw_monitor.h                           $(STAGING_DIR)/usr/include/wave511/sample_v2/helper/misc/bw_monitor.h
++	$(INSTALL) -D -m 0644 sample_v2/helper/main_helper.h                               $(STAGING_DIR)/usr/include/wave511/sample_v2/helper/main_helper.h
++	$(INSTALL) -D -m 0644 sample_v2/component/component.h                              $(STAGING_DIR)/usr/include/wave511/sample_v2/component/component.h
++	$(INSTALL) -D -m 0644 sample_v2/component/cnm_app_internal.h                       $(STAGING_DIR)/usr/include/wave511/sample_v2/component/cnm_app_internal.h
++	$(INSTALL) -D -m 0644 sample_v2/component/cnm_app.h                                $(STAGING_DIR)/usr/include/wave511/sample_v2/component/cnm_app.h
++	$(INSTALL) -D -m 0644 sample_v2/component/component_list.h                         $(STAGING_DIR)/usr/include/wave511/sample_v2/component/component_list.h
++	$(INSTALL) -D -m 0644 sample_v2/component_list_all.h                               $(STAGING_DIR)/usr/include/wave511/sample_v2/component_list_all.h
++	$(INSTALL) -D -m 0644 sample_v2/component_encoder/encoder_listener.h               $(STAGING_DIR)/usr/include/wave511/sample_v2/component_encoder/encoder_listener.h
++	$(INSTALL) -D -m 0644 sample_v2/component_decoder/decoder_listener.h               $(STAGING_DIR)/usr/include/wave511/sample_v2/component_decoder/decoder_listener.h
++	$(INSTALL) -D -m 0644 vdi/vdi_osal.h                                               $(STAGING_DIR)/usr/include/wave511/vdi/vdi_osal.h
++	$(INSTALL) -D -m 0644 vdi/linux/driver/vmm.h                                       $(STAGING_DIR)/usr/include/wave511/vdi/linux/driver/vmm.h
++	$(INSTALL) -D -m 0644 vdi/linux/driver/vpu.h                                       $(STAGING_DIR)/usr/include/wave511/vdi/linux/driver/vpu.h
++	$(INSTALL) -D -m 0644 vdi/mm.h                                                     $(STAGING_DIR)/usr/include/wave511/vdi/mm.h
++	$(INSTALL) -D -m 0644 vdi/vdi.h                                                    $(STAGING_DIR)/usr/include/wave511/vdi/vdi.h
++	$(INSTALL) -D -m 0644 config.h                                                     $(STAGING_DIR)/usr/include/wave511/config.h
++	$(INSTALL) -D -m 0644 vpuapi/product.h                                             $(STAGING_DIR)/usr/include/wave511/vpuapi/product.h
++	$(INSTALL) -D -m 0644 vpuapi/coda9/coda9_vpuconfig.h                               $(STAGING_DIR)/usr/include/wave511/vpuapi/coda9/coda9_vpuconfig.h
++	$(INSTALL) -D -m 0644 vpuapi/coda9/coda9.h                                         $(STAGING_DIR)/usr/include/wave511/vpuapi/coda9/coda9.h
++	$(INSTALL) -D -m 0644 vpuapi/coda9/coda9_regdefine.h                               $(STAGING_DIR)/usr/include/wave511/vpuapi/coda9/coda9_regdefine.h
++	$(INSTALL) -D -m 0644 vpuapi/vpuapi.h                                              $(STAGING_DIR)/usr/include/wave511/vpuapi/vpuapi.h
++	$(INSTALL) -D -m 0644 vpuapi/vpuconfig.h                                           $(STAGING_DIR)/usr/include/wave511/vpuapi/vpuconfig.h
++	$(INSTALL) -D -m 0644 vpuapi/wave/wave5.h                                          $(STAGING_DIR)/usr/include/wave511/vpuapi/wave/wave5.h
++	$(INSTALL) -D -m 0644 vpuapi/wave/wave5_regdefine.h                                $(STAGING_DIR)/usr/include/wave511/vpuapi/wave/wave5_regdefine.h
++	$(INSTALL) -D -m 0644 vpuapi/vpuerror.h                                            $(STAGING_DIR)/usr/include/wave511/vpuapi/vpuerror.h
++	$(INSTALL) -D -m 0644 vpuapi/vputypes.h                                            $(STAGING_DIR)/usr/include/wave511/vpuapi/vputypes.h
++	$(INSTALL) -D -m 0644 vpuapi/vpuapifunc.h                                          $(STAGING_DIR)/usr/include/wave511/vpuapi/vpuapifunc.h
+diff --git a/wave511/wave511/build_for_vdec.sh b/wave511/wave511/build_for_vdec.sh
+index b23aba7..8e00d12 100755
+--- a/wave511/wave511/build_for_vdec.sh
++++ b/wave511/wave511/build_for_vdec.sh
+@@ -1,5 +1,9 @@
+ #!/bin/bash
+-source set_env.sh
++#source set_env.sh
++export ARCH=riscv
++export SUBARCH=riscv
++export CROSS_COMPILE=
++
+ CP="cp -rdvp"
+ OUTPUT=vdec_driver
+ DRI_OPT=$OUTPUT/driver
+@@ -19,9 +23,9 @@ make -f WaveDecode-ffmpeg.mak
+ $CP $DEC_FFMPEG_BIN $OUTPUT
+ make -f WaveDecode-ffmpeg.mak clean
+ 
+-make -f WaveDecDriver.mak
+-$CP $DRI_SRC/vdec.ko $DRI_OPT
+-make -f WaveDecDriver.mak clean
++#make -f WaveDecDriver.mak
++#$CP $DRI_SRC/vdec.ko $DRI_OPT
++#make -f WaveDecDriver.mak clean
+ 
+ make -f WaveDecode.mak
+ $CP $DEC_BIN $OUTPUT
+diff --git a/wave511/wave511/sample_v2/helper/vpuhelper.c b/wave511/wave511/sample_v2/helper/vpuhelper.c
+index d655562..8c8e888 100644
+--- a/wave511/wave511/sample_v2/helper/vpuhelper.c
++++ b/wave511/wave511/sample_v2/helper/vpuhelper.c
+@@ -1418,9 +1418,12 @@ Int32 GetEncOpenParam(EncOpenParam *pEncOP, TestEncConfig *pEncConfig, ENC_CFG *
+                 return 0;
+             if (pEncCfg)
+                 strcpy(pEncConfig->yuvFileName, pCfg->SrcFileName);
+-            else
+-                sprintf(pEncConfig->yuvFileName,  "%s%s", yuvDir, pCfg->SrcFileName);
+-
++            else {
++                if (snprintf(pEncConfig->yuvFileName, sizeof(pEncConfig->yuvFileName), "%s%s", yuvDir, pCfg->SrcFileName) >= 
++                        sizeof(pEncConfig->yuvFileName)) {
++                    fprintf(stderr, "yuvFileName overflow -- string is truncated\n");
++                }
++            }
+             if (pCfg->waveCfg.roiEnable) {
+                 strcpy(pEncConfig->roi_file_name, pCfg->waveCfg.roiFileName);
+                 if (!strcmp(pCfg->waveCfg.roiQpMapFile, "0") || pCfg->waveCfg.roiQpMapFile[0] == 0) {
+@@ -1487,7 +1490,10 @@ Int32 GetEncOpenParam(EncOpenParam *pEncOP, TestEncConfig *pEncConfig, ENC_CFG *
+             if (parseAvcCfgFile(pCfg, pEncConfig->cfgFileName) == 0)
+                 return 0;
+             pEncConfig->picQpY = pCfg->PicQpY;	
+-            sprintf(pEncConfig->yuvFileName,  "%s/%s", yuvDir, pCfg->SrcFileName);
++            if (snprintf(pEncConfig->yuvFileName, sizeof(pEncConfig->yuvFileName), "%s/%s", yuvDir, pCfg->SrcFileName) >= 
++                    sizeof(pEncConfig->yuvFileName)) {
++                fprintf(stderr, "yuvFileName overflow -- string is truncated\n");
++            }
+ 
+             if(pCfg->frameCropLeft || pCfg->frameCropRight || pCfg->frameCropTop || pCfg->frameCropBottom)
+                 pCfg->frameCroppingFlag = 1;
+@@ -1497,7 +1503,10 @@ Int32 GetEncOpenParam(EncOpenParam *pEncOP, TestEncConfig *pEncConfig, ENC_CFG *
+             if (parseMp4CfgFile(pCfg, pEncConfig->cfgFileName) == 0)
+                 return 0;
+             pEncConfig->picQpY = pCfg->VopQuant;
+-            sprintf(pEncConfig->yuvFileName,  "%s/%s", yuvDir, pCfg->SrcFileName);
++            if (snprintf(pEncConfig->yuvFileName, sizeof(pEncConfig->yuvFileName), "%s/%s", yuvDir, pCfg->SrcFileName) >= 
++                    sizeof(pEncConfig->yuvFileName)) {
++                fprintf(stderr, "yuvFileName overflow -- string is truncated\n");
++            }
+             if (pCfg->ShortVideoHeader == 1) {
+                 pEncOP->bitstreamFormat = STD_H263;
+                 bitFormat = STD_H263;
+-- 
+2.36.0
+

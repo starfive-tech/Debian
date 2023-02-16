@@ -1,0 +1,34 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+    ],
+    "settings": {
+        "files.associations": {
+            "*.mak": "makefile",
+        },
+        "files.exclude1": {
+            "**/build": true,
+            "**/gst*": true,
+            "**/target*": true,
+            "**/*.tar.xz": true,
+            "**/.tmp_versions": true,
+            "**/*.dwo": true,
+            "**/*.ko.cmd": true,
+            "**/*.o": true,
+            "**/*.o.cmd": true,
+            "**/doc": true,
+            "**/nonos": true,
+            "**/venc_driver*": true,
+            "**/coda9": true,
+            "**/output": true,
+            "**/obj": true,
+            "**/ffmpeg": true,
+            "**/stream": true,
+            "**/temp": true,
+            "**/log": true,
+            "**/code/yuv": true
+        }
+    }
+}
