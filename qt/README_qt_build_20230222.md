@@ -37,7 +37,7 @@ On Linux, the `xcb` QPA (Qt Platform Abstraction) platform plugin is used. It pr
 ```
 # apt-get install build-essential bash-completion net-tools tmux vim tree strace gdb file
 
-# apt-get install libgl1-mesa-dev libicu-dev \
+# apt-get install libgles2-mesa-dev libicu-dev \
 xcb xcb-proto libxcb-util-dev \
 libxcb-xinerama0 libxcb-xinerama0-dev \
 libxrender1 libxrender-dev \
@@ -59,7 +59,9 @@ libx11-6 libx11-dev libx11-xcb1 libx11-xcb-dev  \
 libxcb1 libxcb1-dev \
 libsm6 libsm-dev libice6 libice-dev \
 libxcb-xinput0 libxcb-xinput-dev \
-libpcre2-dev libxfixes-dev libxi-dev libxcb-glx0-dev
+libpcre2-dev libxfixes-dev libxi-dev libxcb-glx0-dev \
+libwayland-dev libwayland-egl1-mesa libwayland-server0 libgles2-mesa-dev \
+libxkbcommon-dev libxcb-xinput-dev libmtdev-dev libgbm-dev 
 
 # apt install libglib2.0-dev libglib2.0-dev-bin libudev-dev libzstd-dev libdbus-1-dev libharfbuzz-dev libjpeg-dev libvulkan-dev
 libevdev-dev libinput-dev libcups2-dev libsdl2-dev libwebp-dev libtiff-dev libopenal-dev libpulse-dev flite1-dev libatspi2.0-dev
@@ -70,7 +72,7 @@ libevdev-dev libinput-dev libcups2-dev libsdl2-dev libwebp-dev libtiff-dev libop
 
 ### The File Struct in Current Path
 
-├── out_0929.tar.xz                 ---- the build install target
+├── out_wayland_20230222.tar.xz                 ---- the build install target
 ├── patch                                   ---- qt patch fix building issue
 │   ├── 0001-qtbase-apply-buildroot-patch.patch
 │   ├── 0002-qtbase-fix-building-issue.patch
@@ -79,7 +81,7 @@ libevdev-dev libinput-dev libcups2-dev libsdl2-dev libwebp-dev libtiff-dev libop
 │   ├── 0005-qtwayland-fix-building-issue.patch
 │   └── 0006-qt3d-fix-building-issue.patch
 ├── qt-everywhere-src-5.15.2.tar.xz    ---- official source code 
-└── README_qt_build_20220929.md  ---- this document
+└── README_qt_build_20230222.md  ---- this document
 
 ### Extrac and Patch Code
 
@@ -129,10 +131,15 @@ There are below enviroment variable could be used to debug the qt:
 
 The qt examples could be found under the building install target, runing these examples could verify the qt and qt modules.
 
+```
+# ./examples/widgets/widgets/analogclock/analogclock
+```
+
 Also we can run qt test, this need the building environment are ready on board, then run
 
 ```
 # make check
 ```
 
-This will take a long time
+This will take a long time about several hours
+
