@@ -43,7 +43,7 @@ if false; then
     apt install build-essential flex bison  git make cmake autoconf automake \
         libtool pkg-config ninja-build meson bash-completion net-tools \
         tmux vim tree strace gdb file htop nfs-common psmisc lm-sensors \
-        v4l-utils pciutils usbutils
+        v4l-utils pciutils usbutils wget
 
     # disable libchromaprint-dev for it depend on the newest ffmpeg 5.1.2
     apt install  libaom-dev liblilv-dev libiec61883-dev libass-dev \
@@ -59,6 +59,9 @@ if false; then
         libjack-dev libcdio-dev libcdparanoia-dev libcdio-paranoia-dev librsvg2-dev libzmq3-dev \
         libasound2-dev libflac-dev libudev-dev libgudev-1.0-dev libjpeg-dev libdrm-dev \
         libx11-dev libxext-dev libxv-dev libxfixes-dev libxdamage-dev libpulse-dev liba52-0.7.4-dev
+
+    # for wayland
+    apt install libwayland-dev libgles2-mesa-dev libx11-xcb-dev wayland-protocols
 
     # apt purge libgstreamer1.0-0 libgstreamer-plugins-base1.0-0 gstreamer1.0-plugins-base
 
@@ -145,7 +148,7 @@ popd
 
 ##################################################################
 ## build ffmpeg
-## to support gdb: --enable-debug --disable-stripping --disable-optimizations
+## to support gdb: --disable-stripping --enable-debug --disable-optimizations
 ## remove --enable-chromaprint for the new glibc issue, libchromaprint depend on the libavcodec.so.59
 if [ "$Building_FFmpeg"X = "enable"X ]; then
     ffmpeg_src=ffmpeg-4.4.1
@@ -153,7 +156,7 @@ if [ "$Building_FFmpeg"X = "enable"X ]; then
     pushd $ffmpeg_src/build
     echo "Building ffmpeg start..."
     ../configure --prefix=$CURDIR/target/usr  --arch="riscv64" --target-os="linux" \
-    --enable-gpl --disable-stripping --disable-static --enable-shared --enable-avfilter \
+    --enable-gpl --disable-stripping --disable-static --enable-shared --enable-avfilter --enable-debug --disable-optimizations \
     --disable-version3 --enable-logging --disable-extra-warnings --enable-avdevice \
     --enable-avcodec --enable-avformat --enable-network --disable-gray --enable-swscale-alpha \
     --disable-small --enable-dct --enable-fft --enable-mdct --enable-rdft --enable-libv4l2 \
@@ -167,7 +170,7 @@ if [ "$Building_FFmpeg"X = "enable"X ]; then
     --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libsrt --enable-libssh \
     --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis \
     --enable-libvpx --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid \
-    --enable-libzimg --enable-libzmq --enable-libzvbi --enable-lv2 --enable-openal \
+    --enable-libzimg --enable-libzmq --disable-libzvbi --enable-lv2 --enable-openal \
     --enable-opencl --enable-opengl --enable-sdl2 --enable-pocketsphinx --enable-librsvg \
     --enable-libdc1394 --enable-libdrm   --enable-libx264 \
     --disable-frei0r --disable-gnutls --disable-ladspa --disable-libiec61883 --enable-omx \
