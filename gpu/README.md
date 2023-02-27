@@ -1,3 +1,5 @@
+
+```none
 .
 ├── IMG_GPU-wayland.tar.gz
 │   ├── IMG_GPU-wayland
@@ -9,8 +11,8 @@
     ├── IMG_GPU-xorg
         ├── etc
         ├── lib
-        └── usr
-   
+        └── usr
+```
 
 Above is the file structure for gpu binaries in Visionfive V2
 
