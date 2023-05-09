@@ -12,13 +12,13 @@ Consider the QT version in the buildroot of the usdk, to be consistent with it, 
 
 `Single`: include qtbase and all qt modules source code in one package
 
-e.g. 5.15.2 single:  [qt-everywhere-opensource-src-5.15.2.tar.xz](https://download.qt.io/archive/qt/5.15/5.15.2/single/qt-everywhere-opensource-src-5.15.2.tar.xz)
+e.g. 5.15.2 single:  [qt-everywhere-opensource-src-5.15.2.tar.xz](https://download.qt.io/archive/qt/5.15/5.15.2/single/qt-everywhere-src-5.15.2.tar.xz)
 
 `Submodules`: can be download and built the qtbase and other qt models separated
 
-e.g. 5.15.2 qtbase: [qtbase-everywhere-opensource-src-5.15.2.tar.xz](https://download.qt.io/archive/qt/5.15/5.15.2/submodules/qtbase-everywhere-opensource-src-5.15.2.tar.xz)
+e.g. 5.15.2 qtbase: [qtbase-everywhere-opensource-src-5.15.2.tar.xz](https://download.qt.io/archive/qt/5.15/5.15.2/submodules/qtbase-everywhere-src-5.15.2.tar.xz)
 
-The other qt modules could be downloaded: https://download.qt.io/archive/qt/5.15/5.15.2/submodules/
+The other qt modules could be downloaded: [https://download.qt.io/archive/qt/5.15/5.15.2/submodules/](https://download.qt.io/archive/qt/5.15/5.15.2/submodules/)
 
 Currently we choose the single package **`qt-everywhere-src-5.15.2`** to build
 
