@@ -1,0 +1,6 @@
+Origin: . sid
+Label: . sid
+Archive: sid
+Suite: sid
+Architecture: riscv64
+Component: main

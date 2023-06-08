@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>main.qml</file>
-        <file alias="LongPolyline.qml">../mappolyline_tester/LongPolyline.qml</file>
-    </qresource>
-</RCC>

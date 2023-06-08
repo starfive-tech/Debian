@@ -1,0 +1,2329 @@
+Package: LibreOffice
+Maintainer: The Document Foundation
+Architecture: riscv64
+Version: 7.5
+Depends: libxslt1.1, openjdk-11-jdk
+Filename: pool/main/L/LibreOffice/libreoffice_7.5_riscv64.deb
+Size: 344832268
+MD5sum: 83898dc01fb01ecca49265ddf6547dd9
+SHA1: 1fa9f28ca9ba79f7fbb0f4f62b80ef15e011c4c0
+SHA256: 48fdbd3cb4007ebe84ee17db9e95009647235fb4f938f0ca0b24659766b08ed9
+SHA512: c4d0aba33f34fadc4e8d24da31d4382146738114e664f071cc6daa523b16cac51698b68db0506b4c1b4ee626d014e2af5b726f12b3b5f097cb1f5ca34c111971
+Description: All modules for LibreOffice 7.5
+
+Package: chromium
+Maintainer: Starfive Debian
+Architecture: riscv64
+Version: 103.0.5060.114
+Depends: libre2-9, libminizip-dev
+Filename: pool/main/c/chromium/chromium-103.0.5060.114.deb
+Size: 121536448
+MD5sum: bb07e5d4b4e8a68e9e9d6cb453fec47d
+SHA1: 5f06b8909cd20994aa8d2ca680c7fbd655b9efe8
+SHA256: 676d242680fe139915ec46eededd02f6e8a505867ebf986956edb36669b10738
+SHA512: f445a0136dcd4705cc9ee898147fbfa99802287f3b89c39eb1e64cdacb5c6fdbe00da1dce38b03b7d719ff35d612e00169ba2e01a6137c380d4ef65e5f2c3d8a
+Description: Chromium Browser
+
+Package: codaj12
+Priority: optional
+Section: libs
+Installed-Size: 106
+Maintainer: StarFive Debian
+Architecture: riscv64
+Version: 1.0-1
+Depends: libc6 (>= 2.34)
+Filename: pool/main/c/codaj12/codaj12_1.0-1_riscv64.deb
+Size: 42872
+MD5sum: 623ef14e8d0c009bd18901da1def45eb
+SHA1: f9114f5731a49038037a16bd6aea12800a8e5d20
+SHA256: d929d61c37611f8320ad812a16943926dd654cf6c9a9625234a75e1b0ec398ee
+SHA512: 257e5679622888c2814a5ab7e14032ea463763c16a444d6d45be09a40a66e5a298d99df43f70e6bc264eed83176270194b49683b8bdf4a368621b7325215f7be
+Description: JPU Decoder Library.
+Homepage: <insert the upstream URL, if relevant>
+
+Package: codaj12-dev
+Priority: optional
+Section: libdevel
+Installed-Size: 184
+Maintainer: StarFive Debian
+Architecture: riscv64
+Source: codaj12
+Version: 1.0-1
+Depends: codaj12
+Filename: pool/main/c/codaj12/codaj12-dev_1.0-1_riscv64.deb
+Size: 28496
+MD5sum: 99db9de3e69cb1472deb684bd6cc5ba0
+SHA1: e21bdb67db353f96e6656f895e6829a92a4de344
+SHA256: 8bba15e5c11ea6278f490925212f73ef23f943e1c140934b3e2a19610ace558a
+SHA512: bf37ce00fea5f383ebc381f55589d4082c5d0fccfc6e3cf7b9d43fa1a4fc07f43217ad534a5a3d250d0892e00c50d720e2bf4d6b3e3deb1ee1eb73392d8e65a7
+Description: JPU Decoder Development Package.
+Homepage: <insert the upstream URL, if relevant>
+
+Package: ffmpeg
+Priority: optional
+Section: video
+Installed-Size: 2247
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Version: 7:5.1.2-1.1
+Depends: libavcodec59 (= 7:5.1.2-1.1), libavdevice59 (= 7:5.1.2-1.1), libavfilter8 (= 7:5.1.2-1.1), libavformat59 (= 7:5.1.2-1.1), libavutil57 (= 7:5.1.2-1.1), libc6 (>= 2.34), libpostproc56 (= 7:5.1.2-1.1), libsdl2-2.0-0 (>= 2.0.12), libswresample4 (= 7:5.1.2-1.1), libswscale6 (= 7:5.1.2-1.1)
+Suggests: ffmpeg-doc
+Filename: pool/main/f/ffmpeg/ffmpeg_5.1.2-1.1_riscv64.deb
+Size: 1794688
+MD5sum: ad06f7a10c9f7c9d7a3b7c42bb5827a0
+SHA1: e9dc7d8c60d8aec5d2e6f1aa9937a758f329e6af
+SHA256: ea9845a8dcc1869c2925889b0f3960d2f7d96238451f252a1081df148e00aa88
+SHA512: c2be8f3fb263f28b38a775e5311f5ffd278c96abeafb52c906b2b1ec0f6c3fbfd970aca7bd0d1a0c8bb12a0c9cbdaeccd18700140454a12e6e2e462e36f24b80
+Description: Tools for transcoding, streaming and playing of multimedia files
+ FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
+ mux, demux, stream, filter and play pretty much anything that humans and
+ machines have created. It supports the most obscure ancient formats up to the
+ cutting edge.
+ .
+ This package contains:
+  * ffmpeg: a command line tool to convert multimedia files between formats
+  * ffplay: a simple media player based on SDL and the FFmpeg libraries
+  * ffprobe: a simple multimedia stream analyzer
+  * qt-faststart: a utility to rearrange Quicktime files
+Homepage: https://ffmpeg.org/
+Multi-Arch: foreign
+
+Package: firefox
+Maintainer: Mozilla
+Architecture: riscv64
+Version: 105.0
+Depends: libevent-dev, libdbus-glib-1-dev
+Filename: pool/main/f/firefox/firefox_105.0_202305_riscv64.deb
+Size: 58515784
+MD5sum: 555060b0b718646c9f3a9bf198336a29
+SHA1: 3da521960be47055df548437f71bf4fbaa6c2e7b
+SHA256: 2d15bfb55b8b2955a84b8a40f29d9949f3f95f40e02a8e2619b6485a5ce4c8d0
+SHA512: 2cce222fe2232b03de42dc8ce45630980f4c9eeb0e27b51502d01667e28f31b90c0b3dcf43633bb9decffd61aab02e5d7d27d2485a1834f61c76f6928580f4d3
+Description: Safe and easy web browser from Mozilla
+
+Package: gstreamer1.0-clutter-3.0
+Priority: optional
+Section: libs
+Installed-Size: 27
+Maintainer: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: clutter-gst-3.0
+Version: 3.0.27-3
+Depends: libc6 (>= 2.27), libclutter-1.0-0 (>= 1.20.0), libclutter-gst-3.0-0 (>= 3.0.4), libglib2.0-0 (>= 2.37.3), libgstreamer1.0-0 (>= 1.4.0), libx11-6
+Filename: pool/main/c/clutter-gst-3.0/gstreamer1.0-clutter-3.0_3.0.27-3_riscv64.deb
+Size: 6936
+MD5sum: c15ca65c0430c66d7426e5d6e35c84fb
+SHA1: d8c9bafa868adad59b9280b836f1ca45cdf6f89a
+SHA256: 3d0ce92db494464442000af4ac0e3343b6e525d4bd96cb9b3a658d875768bc66
+SHA512: 077153d9250cb59c0d37b231901e48a8bd15907e45899471c82fb65019438d8553a4d052b14780aabdc25b470072cfa96f4bc9b093afde569c9e331a3afb7433
+Description: Clutter PLugin for GStreamer 1.0
+ Clutter is an Open GL based interactive canvas library, designed for creating
+ fast, mainly 2D single window applications such as media box UIs,
+ presentations, kiosk style applications and so on.
+Homepage: http://www.clutter-project.org/
+Multi-Arch: same
+
+Package: gstreamer1.0-omx-sf
+Priority: optional
+Section: libs
+Installed-Size: 343
+Maintainer: Ying-Chun Liu (PaulLiu) <paulliu@debian.org>
+Architecture: riscv64
+Source: gst-omx
+Version: 1.20.4-1.1
+Depends: libc6 (>= 2.27), libglib2.0-0 (>= 2.44.0), libgstreamer-gl1.0-0 (>= 1.18), libgstreamer-plugins-base1.0-0 (>= 1.20.0), libgstreamer1.0-0 (>= 1.18)
+Filename: pool/main/g/gst-omx/gstreamer1.0-omx-sf_1.20.4-1.1_riscv64.deb
+Size: 170848
+MD5sum: 7be3b53dc54ccdb9bf54b09fd21bf5a8
+SHA1: 48cc77fdd9d96d6763465e2a0b33679e9aabaafa
+SHA256: b2712468bb475ab893b0b084ab7e8d654bfa4b7251e299112808e46654e5ee57
+SHA512: 3128b00ef1094661fa55ed6db84979de219b7ff3f1c90061ff23fa72dbaf2c418cdc962ec8407c81d0fdc347950c5dd285bd372c48a6f8d514c90ce43251b9e0
+Description: OpenMax plugins for GStreamer
+ This plugin wraps available OpenMAX IL components and makes them available as
+ standard GStreamer elements.
+Homepage: https://gstreamer.freedesktop.org/modules/gst-omx.html
+
+Package: gstreamer1.0-omx-sf-config
+Priority: optional
+Section: misc
+Installed-Size: 83
+Maintainer: Ying-Chun Liu (PaulLiu) <paulliu@debian.org>
+Architecture: riscv64
+Source: gst-omx
+Version: 1.20.4-1.1
+Depends: gstreamer1.0-omx-sf
+Filename: pool/main/g/gst-omx/gstreamer1.0-omx-sf-config_1.20.4-1.1_riscv64.deb
+Size: 70608
+MD5sum: 60797eda88b18447881b3b0df5b780a0
+SHA1: c51cfbec0a73cc89c9b1c39cd14c5a8e5324c7d7
+SHA256: bbcc1b10fb99193abb3397f95eedcf43b206922e8cbc24cf97e820d7b6d9fa2a
+SHA512: b0955969db951d2d1fd777a2932d85af4091ec5f4a00e0450b01306884d6754f19d51577c99926664e7feee2b2fb886786f7d5faf86b1013b3b1382daee2249f
+Description: OpenMax plugins for GStreamer
+ This plugin wraps available OpenMAX IL components and makes them available as
+ standard GStreamer elements.
+ This package contains the config for gstreamer1.0-omx-sf.
+Homepage: https://gstreamer.freedesktop.org/modules/gst-omx.html
+
+Package: libavcodec59
+Priority: optional
+Section: libs
+Installed-Size: 11958
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Source: ffmpeg
+Version: 7:5.1.2-1.1
+Depends: libaom3 (>= 3.2.0), libavutil57 (= 7:5.1.2-1.1), libc6 (>= 2.34), libcairo2 (>= 1.2.4), libcodec2-1.0 (>= 1.0.5), libdav1d6 (>= 0.9.0), libglib2.0-0 (>= 2.12.0), libgsm1 (>= 1.0.18), liblzma5 (>= 5.1.1alpha+20120614), libmp3lame0 (>= 3.100), libopenjp2-7 (>= 2.0.0), libopus0 (>= 1.1), librsvg2-2 (>= 2.14.4), libshine3 (>= 3.1.0), libsnappy1v5 (>= 1.1.9), libspeex1 (>= 1.2~), libsvtav1enc1 (>= 1.4.1+dfsg), libswresample4 (= 7:5.1.2-1.1), libtheora0 (>= 1.0), libtwolame0 (>= 0.3.10), libva2 (>= 2.9.0), libvorbis0a (>= 1.1.2), libvorbisenc2 (>= 1.1.2), libvpx7 (>= 1.12.0), libwebp7, libwebpmux3, libx264-164 (>= 2:0.164.3095+gitbaee400), libx265-199 (>= 3.5), libxvidcore4 (>= 1.2.2), libzvbi0 (>= 0.2.35), zlib1g (>= 1:1.2.0)
+Filename: pool/main/f/ffmpeg/libavcodec59_5.1.2-1.1_riscv64.deb
+Size: 5339048
+MD5sum: 4eade735443320fbcabdd0e3dc73f478
+SHA1: 7f9423556de90b7c9f3a7f67112a19a29e6a29f3
+SHA256: e7e4b8ee430b227403ea176c8354ec0881dc9aa3126dd83fa0f30be8513d6f97
+SHA512: 2d15f5582f8323b92d065cb88b283672bc387850f6b46688540bd69170c2f9b53a3f7f8df70c19bc3a83a0a26fee537f7eda20573b5793ebbcab995cb6939004
+Description: FFmpeg library with de/encoders for audio/video codecs - runtime files
+ FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
+ mux, demux, stream, filter and play pretty much anything that humans and
+ machines have created. It supports the most obscure ancient formats up to the
+ cutting edge.
+ .
+ This library provides a generic encoding/decoding framework and
+ contains multiple decoders and encoders for audio, video and subtitle streams,
+ and several bitstream filters.
+ .
+ The shared architecture provides various services ranging from bit stream I/O
+ to DSP optimizations, and makes it suitable for implementing robust and fast
+ codecs as well as for experimentation.
+ .
+ This package contains the runtime files.
+Homepage: https://ffmpeg.org/
+Multi-Arch: same
+
+Package: libavdevice59
+Priority: optional
+Section: libs
+Installed-Size: 248
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Source: ffmpeg
+Version: 7:5.1.2-1.1
+Depends: libasound2 (>= 1.0.16), libavc1394-0 (>= 0.5.3), libavcodec59 (= 7:5.1.2-1.1), libavfilter8 (= 7:5.1.2-1.1), libavformat59 (= 7:5.1.2-1.1), libavutil57 (= 7:5.1.2-1.1), libc6 (>= 2.34), libcaca0 (>= 0.99.beta20), libcdio-cdda2 (>= 10.2+2.0.0), libcdio-paranoia2 (>= 10.2+2.0.0), libdc1394-25 (>= 2.2.6), libdrm2 (>= 2.4.101), libgl1, libiec61883-0 (>= 1.2.0), libjack-jackd2-0 (>= 1.9.10+20150825) | libjack-0.125, libopenal1 (>= 1.14), libpulse0 (>= 0.99.1), libraw1394-11 (>= 2.1.2), libsdl2-2.0-0 (>= 2.0.12), libx11-6, libxcb-shape0, libxcb-shm0, libxcb-xfixes0, libxcb1, libxext6, libxv1
+Filename: pool/main/f/ffmpeg/libavdevice59_5.1.2-1.1_riscv64.deb
+Size: 100888
+MD5sum: 5f9fd7f27499c55e46ea1e276ae42c2e
+SHA1: 9cae0b6393a6448e8bd26f2f8cfda4ec539808ef
+SHA256: 7b717fc4e2d741faac9cf538022ebab1b53bb8bc182e0abdd68a9f33c322ebcc
+SHA512: ffce5c3c8038cd1eb69af01f34747963b1fb943e59c8e265085f19743bd2cc612d296f01030a2fc13cf75e08310098aecd056f0ab340acf4ba40a6017f003ef3
+Description: FFmpeg library for handling input and output devices - runtime files
+ FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
+ mux, demux, stream, filter and play pretty much anything that humans and
+ machines have created. It supports the most obscure ancient formats up to the
+ cutting edge.
+ .
+ This library provides a generic framework for grabbing from and rendering to
+ many common multimedia input/output devices, and supports several input and
+ output devices, including Video4Linux2, VfW, DShow, and ALSA.
+ .
+ This package contains the runtime files.
+Homepage: https://ffmpeg.org/
+Multi-Arch: same
+
+Package: libavfilter8
+Priority: optional
+Section: libs
+Installed-Size: 8980
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Source: ffmpeg
+Version: 7:5.1.2-1.1
+Depends: libass9 (>= 1:0.13.6), libavcodec59 (= 7:5.1.2-1.1), libavformat59 (= 7:5.1.2-1.1), libavutil57 (= 7:5.1.2-1.1), libbs2b0 (>= 3.1.0+dfsg), libc6 (>= 2.34), libflite1 (>= 1.4-release-9~), libfontconfig1 (>= 2.12.6), libfreetype6 (>= 2.2.1), libfribidi0 (>= 0.19.2), liblilv-0-0 (>= 0.14.2~dfsg0), libmysofa1 (>= 0.7~), libplacebo208 (>= 4.208.0), libpocketsphinx3 (>= 0.8+5prealpha+1), libpostproc56 (= 7:5.1.2-1.1), librubberband2 (>= 3.1.2+dfsg0), libsphinxbase3 (>= 0.8+5prealpha), libstdc++6 (>= 11), libswresample4 (= 7:5.1.2-1.1), libswscale6 (= 7:5.1.2-1.1), libva2 (>= 1.7.3), libvidstab1.1, libzimg2 (>= 0.3.1), libzmq5 (>= 3.2.3+dfsg), ocl-icd-libopencl1 | libopencl1, ocl-icd-libopencl1 (>= 1.0) | libopencl-1.2-1
+Filename: pool/main/f/ffmpeg/libavfilter8_5.1.2-1.1_riscv64.deb
+Size: 3253976
+MD5sum: 24ce5f554e70f3dc07b7a3e4b75cdf60
+SHA1: 0f06fa33c240342bef1e1d0d426ce77d9e199588
+SHA256: dbc0432cacecdbda0f6f31901ab4be6aaa11bed25481b0d4150449f3bf3f3d07
+SHA512: 3277d794959aa75189c9a9d5d173263a6d7dd54b6f3ce4abe69709a4f093d553dca96169aaa079c5713c0b452b8a2cd11a6c5e16a1c3b19108580f2038cb4f49
+Description: FFmpeg library containing media filters - runtime files
+ FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
+ mux, demux, stream, filter and play pretty much anything that humans and
+ machines have created. It supports the most obscure ancient formats up to the
+ cutting edge.
+ .
+ This library provides a generic audio/video filtering framework containing
+ several filters, sources and sinks.
+ .
+ This package contains the runtime files.
+Homepage: https://ffmpeg.org/
+Multi-Arch: same
+
+Package: libavformat59
+Priority: optional
+Section: libs
+Installed-Size: 2289
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Source: ffmpeg
+Version: 7:5.1.2-1.1
+Depends: libavcodec59 (= 7:5.1.2-1.1), libavutil57 (= 7:5.1.2-1.1), libbluray2 (>= 1:0.2.2), libbz2-1.0, libc6 (>= 2.34), libchromaprint1 (>= 1.3.2), libgme0 (>= 0.5.5), libgnutls30 (>= 3.7.5), libopenmpt0 (>= 0.3.0), librabbitmq4 (>= 0.6.0), librist4 (>= 0.2.6+dfsg), libsrt1.5-gnutls (>= 1.5.1), libssh-gcrypt-4 (>= 0.8.0), libxml2 (>= 2.7.4), libzmq5 (>= 4.0.1+dfsg), zlib1g (>= 1:1.2.0.2)
+Filename: pool/main/f/ffmpeg/libavformat59_5.1.2-1.1_riscv64.deb
+Size: 1068192
+MD5sum: 3635cd8c567b7a278fb5a35ef4b90feb
+SHA1: 154b85dfece78adca217a45807818ab61e445f3b
+SHA256: 9e6ddd54b52548a5a444db00c3c7a57e3b6752933aadbecc70dd9e9dab06c479
+SHA512: 9f291144ac9f485b1c489d61ed125bcdd958ea361c9d5682a58f3a1dc38e8cdcdecfbf4f1762cbd207a2a8228398d8dcdf574f103b343642ff8206409cd8e824
+Description: FFmpeg library with (de)muxers for multimedia containers - runtime files
+ FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
+ mux, demux, stream, filter and play pretty much anything that humans and
+ machines have created. It supports the most obscure ancient formats up to the
+ cutting edge.
+ .
+ This library provides a generic framework for multiplexing and demultiplexing
+ (muxing and demuxing) audio, video and subtitle streams. It encompasses
+ multiple muxers and demuxers for multimedia container formats. It also
+ supports several input and output protocols to access a media resource.
+ .
+ This package contains the runtime files.
+Homepage: https://ffmpeg.org/
+Multi-Arch: same
+
+Package: libavutil57
+Priority: optional
+Section: libs
+Installed-Size: 753
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Source: ffmpeg
+Version: 7:5.1.2-1.1
+Depends: libc6 (>= 2.34), libdrm2 (>= 2.4.66), libva-drm2 (>= 1.3), libva-x11-2 (>= 1.3), libva2 (>= 2.1.0), libvdpau1 (>= 0.2), libx11-6, ocl-icd-libopencl1 | libopencl1, ocl-icd-libopencl1 (>= 1.0) | libopencl-1.2-1
+Filename: pool/main/f/ffmpeg/libavutil57_5.1.2-1.1_riscv64.deb
+Size: 360236
+MD5sum: a2f56f13d0be5d679761acffc36f8a2a
+SHA1: 1785f6fe5eb0278e8733fa3c1999ac689f9e5914
+SHA256: 81269b9a50018ba622ac68a0f56859c9ba4e3029a211e44baf96d4b062400a67
+SHA512: d80d1e6d67be95cc0ea78a09d5a2565f02360ca689516175010c40c6bfa62a3cd94043d117c31139031677b2e25b01816fac026272c1f9d97b65eded42572559
+Description: FFmpeg library with functions for simplifying programming - runtime files
+ FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
+ mux, demux, stream, filter and play pretty much anything that humans and
+ machines have created. It supports the most obscure ancient formats up to the
+ cutting edge.
+ .
+ This library is a utility library to aid portable multimedia programming.
+ It contains safe portable string functions, random number generators, data
+ structures, additional mathematics functions, cryptography and multimedia
+ related functionality (like enumerations for pixel and sample formats).
+ It is not a library for code needed by both libavcodec and libavformat.
+ The goal for this library is to be modular, small, efficient and useful.
+ .
+ This package contains the runtime files.
+Homepage: https://ffmpeg.org/
+Multi-Arch: same
+
+Package: libclutter-1.0-0
+Priority: optional
+Section: libs
+Installed-Size: 1222
+Maintainer: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: clutter-1.0
+Version: 1.26.4+dfsg-4
+Depends: libatk1.0-0 (>= 2.5.3), libc6 (>= 2.27), libcairo-gobject2 (>= 1.14.0), libcairo2 (>= 1.14.0), libcogl-pango20 (>= 1.17.4), libcogl-path20 (>= 1.17.4), libcogl20 (>= 1.21.2), libfontconfig1 (>= 2.12.6), libglib2.0-0 (>= 2.53.4), libgtk-3-0 (>= 3.16.2), libinput10 (>= 0.21.0), libjson-glib-1.0-0 (>= 1.5.2), libpango-1.0-0 (>= 1.30), libpangocairo-1.0-0 (>= 1.30), libpangoft2-1.0-0 (>= 1.30), libudev1 (>= 183), libwayland-client0 (>= 1.9.91), libwayland-cursor0 (>= 1.0.2), libwayland-server0 (>= 1.2.0), libx11-6 (>= 2:1.2.99.901), libxcomposite1 (>= 1:0.4.5), libxdamage1 (>= 1:1.1), libxi6 (>= 2:1.2.99.4), libxkbcommon0 (>= 0.5.0)
+Recommends: libclutter-1.0-common
+Breaks: cinnamon-session (<< 2.6.2)
+Filename: pool/main/c/clutter-1.0/libclutter-1.0-0_1.26.4+dfsg-4_riscv64.deb
+Size: 506472
+MD5sum: b466e6d88b0e8ba97dfc9b33cc52dd10
+SHA1: 2bfaa6ec6688617ed35388027e23579511ed0193
+SHA256: c32650b8affa6851efe537d8b07f47b1c876f534d35e480354a9245acb90aa0c
+SHA512: 80dc7bbf8d76a5e7a0fdecd0287ed21d3506c7fce0bcb70e54e70f44c524c1fe2355e28287ffc71a8f1cbf88e2d41dc1e493abade3557fe783fdba0d30a8d89e
+Description: Open GL based interactive canvas library
+ Clutter is an Open GL based interactive canvas library, designed for creating
+ fast, mainly 2D single window applications such as media box UIs,
+ presentations, kiosk style applications and so on.
+Homepage: https://blogs.gnome.org/clutter/
+Multi-Arch: same
+
+Package: libclutter-1.0-common
+Priority: optional
+Section: libs
+Installed-Size: 3006
+Maintainer: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>
+Architecture: all
+Source: clutter-1.0
+Version: 1.26.4+dfsg-4
+Filename: pool/main/c/clutter-1.0/libclutter-1.0-common_1.26.4+dfsg-4_all.deb
+Size: 411032
+MD5sum: 80ce0922b01962fb5f583f302565133b
+SHA1: 596149885f2ebd3e66aed26b7bd2d348657ddcbb
+SHA256: ed16a465253900b14ea3b6c56659e27b9e5e8e8a41e5878fd7c96d5a2b9d4e75
+SHA512: da2ecf0bdd856fd9400cc489338f60fc34f1f2bdb637f4e879aca435e2f9497244ffb28189a2818f4f30b50f64314738f2a1f7ac5297b53002cf3c1e9f70e5c7
+Description: Open GL based interactive canvas library (common files)
+ Clutter is an Open GL based interactive canvas library, designed for creating
+ fast, mainly 2D single window applications such as media box UIs,
+ presentations, kiosk style applications and so on.
+ .
+ This package contains the common files, such as translations.
+Homepage: https://blogs.gnome.org/clutter/
+Multi-Arch: foreign
+
+Package: libclutter-gst-3.0-0
+Priority: optional
+Section: libs
+Installed-Size: 155
+Maintainer: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: clutter-gst-3.0
+Version: 3.0.27-3
+Depends: libc6 (>= 2.27), libclutter-1.0-0 (>= 1.20.0), libcogl20 (>= 1.17.4), libgdk-pixbuf-2.0-0 (>= 2.22.0), libglib2.0-0 (>= 2.37.3), libgstreamer-plugins-base1.0-0 (>= 1.6.0), libgstreamer1.0-0 (>= 1.4.0), libgudev-1.0-0 (>= 146), libx11-6
+Filename: pool/main/c/clutter-gst-3.0/libclutter-gst-3.0-0_3.0.27-3_riscv64.deb
+Size: 50424
+MD5sum: 10d2b4b881e133b85826faaebc6219e7
+SHA1: 74c487e3344e465383e0c096224816842220c4bb
+SHA256: 7ab6ca20afdadcc0a3db0067708c7a6200e9c143c7e8a7ebf12be9e0e6cf8d30
+SHA512: 7515dc4355e5d7e7b0315e3326290ff0391d7a30ecdf8b73e9c6b2fb22d5a13d0c5af8e15972f33c4dec3d6e8e76a8088022c05351e7c3e94ddcabca1540a1ee
+Description: Open GL based interactive canvas library GStreamer elements
+ Clutter is an Open GL based interactive canvas library, designed for creating
+ fast, mainly 2D single window applications such as media box UIs,
+ presentations, kiosk style applications and so on.
+Homepage: http://www.clutter-project.org/
+Multi-Arch: same
+
+Package: libcogl-common
+Priority: optional
+Section: libs
+Installed-Size: 812
+Maintainer: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>
+Architecture: all
+Source: cogl
+Version: 1.22.8-3.1
+Filename: pool/main/c/cogl/libcogl-common_1.22.8-3.1_all.deb
+Size: 251580
+MD5sum: 3e4705ab01b25166fbd36e934838cc56
+SHA1: 232d36955fbfa65abf61dfc311094b2b78093a90
+SHA256: 7349247233133cdadd9a2cb559268b56cf1a0c132c107e01b5b4f27936b7fded
+SHA512: d5b5dadcb218887682692365234e4b35a6ebfff929d80e81aa289b03077a37b2ab8586330ed09919adfedbcefed1caa1188a4bae4fb96dcedd83d403c051e379
+Description: Object oriented GL/GLES Abstraction/Utility Layer (common files)
+ Cogl is a small open source library for using 3D graphics hardware to draw
+ pretty pictures. The API departs from the flat state machine style of
+ OpenGL and is designed to make it easy to write orthogonal components that
+ can render without stepping on each others toes.
+ .
+ This package contains the common files, such as translations.
+Multi-Arch: foreign
+
+Package: libcogl-pango20
+Priority: optional
+Section: libs
+Installed-Size: 56
+Maintainer: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: cogl
+Version: 1.22.8-3.1
+Depends: libc6 (>= 2.27), libcairo2 (>= 1.10), libcogl20 (= 1.22.8-3.1), libglib2.0-0 (>= 2.37.3), libpango-1.0-0 (>= 1.28.3-5), libpangocairo-1.0-0 (>= 1.28.3-5)
+Recommends: libcogl-common
+Filename: pool/main/c/cogl/libcogl-pango20_1.22.8-3.1_riscv64.deb
+Size: 17628
+MD5sum: 5dd3d26e6b73e5bb4b017d7442b3ad17
+SHA1: 6aa267ac957f9b37281697d04b40b6b7b966b65b
+SHA256: 5cc7d0430b44d6b4c1cb417fbd4c985c6017e299b858b16509680abb8cb99770
+SHA512: 6717172a3130afd60116eeacf3e91d01bd8ba787897f1076559b89f4a10c27fe2039cb443357455deaa7d1829d8138b23ef26d2cc2f927b7110eaacc393c9e0c
+Description: Object oriented GL/GLES Abstraction/Utility Layer
+ Cogl is a small open source library for using 3D graphics hardware to draw
+ pretty pictures. The API departs from the flat state machine style of
+ OpenGL and is designed to make it easy to write orthogonal components that
+ can render without stepping on each others toes.
+Multi-Arch: same
+
+Package: libcogl-path20
+Priority: optional
+Section: libs
+Installed-Size: 77
+Maintainer: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: cogl
+Version: 1.22.8-3.1
+Depends: libc6 (>= 2.27), libcogl20 (= 1.22.8-3.1), libglib2.0-0 (>= 2.32.0)
+Recommends: libcogl-common
+Filename: pool/main/c/cogl/libcogl-path20_1.22.8-3.1_riscv64.deb
+Size: 31264
+MD5sum: 107531b66b68e6ac55e311c08f47e2e8
+SHA1: 8db9b538e702786d3053e6f3eea718dc92ea8027
+SHA256: fbd7e1b8254270066a37848235115789c3698eeca2eaf31cda9e52dff3955463
+SHA512: 867e326facf6ab2070229a4da62c208389e48cc9051dc20654c565820e0e04162e7c92e77fdd61e37d275a7db3864bac17a589e90443b73345203c107e5ff694
+Description: Object oriented GL/GLES Abstraction/Utility Layer
+ Cogl is a small open source library for using 3D graphics hardware to draw
+ pretty pictures. The API departs from the flat state machine style of
+ OpenGL and is designed to make it easy to write orthogonal components that
+ can render without stepping on each others toes.
+Multi-Arch: same
+
+Package: libcogl20
+Priority: optional
+Section: libs
+Installed-Size: 659
+Maintainer: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: cogl
+Version: 1.22.8-3.1
+Depends: libgl1, libc6 (>= 2.27), libcairo2 (>= 1.10), libdrm2 (>= 2.4.17), libegl1, libgbm1 (>= 8.1~0), libgdk-pixbuf-2.0-0 (>= 2.22.0), libglib2.0-0 (>= 2.32.0), libwayland-client0 (>= 1.20.0), libwayland-egl1 (>= 1.15.0), libwayland-server0 (>= 1.2.0), libx11-6, libxdamage1 (>= 1:1.1), libxext6, libxfixes3, libxrandr2 (>= 2:1.2.0)
+Recommends: libcogl-common
+Suggests: libgles2
+Breaks: libclutter-1.0-0 (<< 1.17)
+Filename: pool/main/c/cogl/libcogl20_1.22.8-3.1_riscv64.deb
+Size: 260420
+MD5sum: af9a7eb35dd48d5a5717881e668fa9e3
+SHA1: fa3bffce5ebe8564a20979b28c6ca6a1a0edc908
+SHA256: ef353aa048da31b22187963eaeb381c5a7e1decaee5e92cabc5bb7b21b5db356
+SHA512: 5161c0aa225087059905a77ddd9e3ea26bfdde2ce82d520c2b52cb9626f572b5f1f168540eb388b71008dea032bd20b4b06ba49528a6a644adf97da864b1e34d
+Description: Object oriented GL/GLES Abstraction/Utility Layer
+ Cogl is a small open source library for using 3D graphics hardware to draw
+ pretty pictures. The API departs from the flat state machine style of
+ OpenGL and is designed to make it easy to write orthogonal components that
+ can render without stepping on each others toes.
+Multi-Arch: same
+
+Package: libegl-mesa0
+Priority: optional
+Section: libs
+Installed-Size: 244
+Maintainer: Debian X Strike Force <debian-x@lists.debian.org>
+Architecture: riscv64
+Source: mesa
+Version: 22.3.5-1.1
+Provides: libegl-vendor
+Depends: libc6 (>= 2.34), libdrm2 (>= 2.4.109), libexpat1 (>= 2.0.1), libgbm1 (= 22.3.5-1.1), libgcc-s1 (>= 3.4), libglapi-mesa (= 22.3.5-1.1), libwayland-client0 (>= 1.20.0), libwayland-server0 (>= 1.15.0), libx11-xcb1 (>= 2:1.8.3), libxcb-dri2-0 (>= 1.8), libxcb-dri3-0 (>= 1.13), libxcb-present0, libxcb-randr0 (>= 1.3), libxcb-sync1, libxcb-xfixes0, libxcb1 (>= 1.9.2), libxshmfence1
+Filename: pool/main/m/mesa/libegl-mesa0_22.3.5-1.1_riscv64.deb
+Size: 95604
+MD5sum: f4e91caf7a23787384f23a554be66c53
+SHA1: 6d378751934c10b300f3beb6fe07e6648e313f7b
+SHA256: 4d86c298583a9da6d8ec8e1c9f4db8f551a7d0e2615ce40e93b97ab1aa79db22
+SHA512: bf2af1e691d6e78187848dbb8d5685dcb4a2673da3ba6a945ad47cc64bde8583ef0aad2f871f34847b9fd356f78f084f47ce4be6106ac33b0696177fdd72344e
+Description: free implementation of the EGL API -- Mesa vendor library
+ This package contains the EGL native platform graphics interface library.
+ EGL provides a platform-agnostic mechanism for creating rendering surfaces
+ for use with other graphics libraries, such as OpenGL|ES.
+ .
+ This package contains the Mesa vendor library for EGL.
+Homepage: https://mesa3d.org/
+Multi-Arch: same
+
+Package: libegl1-mesa
+Priority: optional
+Section: oldlibs
+Installed-Size: 33
+Maintainer: Debian X Strike Force <debian-x@lists.debian.org>
+Architecture: riscv64
+Source: mesa
+Version: 22.3.5-1.1
+Depends: libegl1
+Filename: pool/main/m/mesa/libegl1-mesa_22.3.5-1.1_riscv64.deb
+Size: 14540
+MD5sum: fbf8833638555371290b7ee883aa0aa0
+SHA1: 9c2c127f8c4ea7afc84994075f8559c2c4c973ed
+SHA256: ccbdf5697a995c2498d0db233ae86589b526470dd33b6b7a18a71c3188d40843
+SHA512: 20d046719abc36264dd43f56f0c4f84736185002b042ddbfd6c27936970eb6bcb2323bb123e965ab2a6bec453cded78a8897dce46de184fc38c33f497469099e
+Description: transitional dummy package
+ This is a transitional dummy package, it can be safely removed.
+Homepage: https://mesa3d.org/
+Multi-Arch: same
+
+Package: libgbm-dev
+Priority: optional
+Section: libdevel
+Installed-Size: 57
+Maintainer: Debian X Strike Force <debian-x@lists.debian.org>
+Architecture: riscv64
+Source: mesa
+Version: 22.3.5-1.1
+Depends: libgbm1 (= 22.3.5-1.1)
+Filename: pool/main/m/mesa/libgbm-dev_22.3.5-1.1_riscv64.deb
+Size: 18604
+MD5sum: 54cce584d5d30ea755dc3543ac8bb102
+SHA1: ee9060a1198f09867e4a448b1c1949916c46e8cf
+SHA256: 18e5a83b96847c321aff6d624d1471157254164c5a195250e6435cf945c69130
+SHA512: b65232a22d9327b74fb17286571180f83e2f849624844079f1748c7d12afe9787b05d5a5e2431424380584b6bec1ab32a98dd3b04f6377957c430731ad31aacf
+Description: generic buffer management API -- development files
+ This package contains the GBM buffer management library.  It provides a
+ mechanism for allocating buffers for graphics rendering tied to Mesa.
+ .
+ GBM is intended to be used as a native platform for EGL on drm or openwfd.
+ .
+ This package provides the development environment for compiling programs
+ against the GBM library.
+Homepage: https://mesa3d.org/
+Multi-Arch: same
+
+Package: libgbm1
+Priority: optional
+Section: libs
+Installed-Size: 94
+Maintainer: Debian X Strike Force <debian-x@lists.debian.org>
+Architecture: riscv64
+Source: mesa
+Version: 22.3.5-1.1
+Depends: libc6 (>= 2.34), libdrm2 (>= 2.4.75), libexpat1 (>= 2.0.1), libwayland-server0 (>= 1.15.0)
+Filename: pool/main/m/mesa/libgbm1_22.3.5-1.1_riscv64.deb
+Size: 37248
+MD5sum: 455484bbf0c2e52b40031b82bb64dab4
+SHA1: 48ef17dc8920294e2266a9d69738f79334f9851f
+SHA256: 485e6881075c2cf39cb3289bc09e432e8ffac71310153d7a965f7d7dd09a8eca
+SHA512: b4e2f80ea15e17180f53eb08e042157b33b0b1181e148136ce5f70028d6fa8702b4bd0f11eff821d0f936c825cf7cede345d87ff2b4393d2b18dcf2338baeaaf
+Description: generic buffer management API -- runtime
+ This package contains the GBM buffer management library.  It provides a
+ mechanism for allocating buffers for graphics rendering tied to Mesa.
+ .
+ GBM is intended to be used as a native platform for EGL on drm or openwfd.
+Homepage: https://mesa3d.org/
+Multi-Arch: same
+
+Package: libgl1-mesa-dri
+Priority: optional
+Section: libs
+Installed-Size: 15592
+Maintainer: Debian X Strike Force <debian-x@lists.debian.org>
+Architecture: riscv64
+Source: mesa
+Version: 22.3.5-1.1
+Depends: libc6 (>= 2.34), libdrm-amdgpu1 (>= 2.4.110), libdrm-nouveau2 (>= 2.4.66), libdrm-radeon1 (>= 2.4.31), libdrm2 (>= 2.4.84), libelf1 (>= 0.142), libexpat1 (>= 2.0.1), libgcc-s1 (>= 4.4), libglapi-mesa (= 22.3.5-1.1), libllvm15, libsensors5 (>= 1:3.5.0), libstdc++6 (>= 11), libxcb-dri3-0 (>= 1.13), libzstd1 (>= 1.5.2), zlib1g (>= 1:1.1.4)
+Filename: pool/main/m/mesa/libgl1-mesa-dri_22.3.5-1.1_riscv64.deb
+Size: 4114756
+MD5sum: 378aac803d639f7c3c6bf5a51f3f4f06
+SHA1: 9cea8429b16dc270b5b93e41e474d6fc7ddacd2b
+SHA256: fed2bc067e0896d357cec6181d8eb030ae687739cfc46ee54812484ea4cc2b50
+SHA512: fdb2f10aea915bb4cc2d93b9934e0a3413fcd6fd92398720399613ca44ac83350254744a8afab415e2613369174f512ae48e8a11314a79b82be6fb87a5377e46
+Description: free implementation of the OpenGL API -- DRI modules
+ This version of Mesa provides GLX and DRI capabilities: it is capable of
+ both direct and indirect rendering.  For direct rendering, it can use DRI
+ modules from the libgl1-mesa-dri package to accelerate drawing.
+ .
+ This package does not include the OpenGL library itself, only the DRI
+ modules for accelerating direct rendering.
+ .
+ For a complete description of Mesa, please look at the
+ libglx-mesa0 package.
+Homepage: https://mesa3d.org/
+Multi-Arch: same
+
+Package: libgl1-mesa-glx
+Priority: optional
+Section: oldlibs
+Installed-Size: 33
+Maintainer: Debian X Strike Force <debian-x@lists.debian.org>
+Architecture: riscv64
+Source: mesa
+Version: 22.3.5-1.1
+Depends: libgl1, libglx-mesa0
+Filename: pool/main/m/mesa/libgl1-mesa-glx_22.3.5-1.1_riscv64.deb
+Size: 14564
+MD5sum: 4218bc151396049e9ac5cd360bb9b4fd
+SHA1: 03667500ea65dc99deff5577d535a1bcf65c4915
+SHA256: 9b3cc9777f8e0bd5661286d67ff62c48d5830df2b7c646a5252fd925c8f19232
+SHA512: 111e5b0c7b27fb8bc34207bd461b5bed6f1b6dabedf34a4c1c38a15f45ac1761b40c00375711121b9ad22e56c9a3af2a3742b30bc2f526781ec71cbefc5929d5
+Description: transitional dummy package
+ This is a transitional dummy package, it can be safely removed.
+Homepage: https://mesa3d.org/
+Multi-Arch: same
+
+Package: libglapi-mesa
+Priority: optional
+Section: libs
+Installed-Size: 316
+Maintainer: Debian X Strike Force <debian-x@lists.debian.org>
+Architecture: riscv64
+Source: mesa
+Version: 22.3.5-1.1
+Depends: libc6 (>= 2.34)
+Filename: pool/main/m/mesa/libglapi-mesa_22.3.5-1.1_riscv64.deb
+Size: 41936
+MD5sum: 3433ced0a87fe99657240785e8100ebf
+SHA1: ea7d9bca3a4ed6ea27d3562b53a00da891317def
+SHA256: 60613ad5de41b5e89de13ee271c9e850b8ed3a5a626a8b58d6d8dfa3ffc8bd35
+SHA512: aa6e636d472ad1619796bbcd7c6aa15dac8690a816b876224ab97a2f82ac9922ef56e1aa9f6df5ed84c6ffe00604dfcd5b8007a2aca241e0da54789a47a63b62
+Description: free implementation of the GL API -- shared library
+ The Mesa GL API module is responsible for dispatching all the gl*
+ functions. It is intended to be mainly used by both the libgles1-mesa
+ and libgles2-mesa packages.
+Homepage: https://mesa3d.org/
+Multi-Arch: same
+
+Package: libgles2-mesa
+Priority: optional
+Section: oldlibs
+Installed-Size: 33
+Maintainer: Debian X Strike Force <debian-x@lists.debian.org>
+Architecture: riscv64
+Source: mesa
+Version: 22.3.5-1.1
+Depends: libgles2
+Filename: pool/main/m/mesa/libgles2-mesa_22.3.5-1.1_riscv64.deb
+Size: 14548
+MD5sum: 7e6aa79ee2e2cd925aa32c2545fa08e1
+SHA1: 9b6c247a84347edb2328f6ebe9fc93fd02969bea
+SHA256: 66db0bf35a2d6cdc7db35649c201a9fb260b580a26c9a1ddece0314f2f65dd50
+SHA512: 0a02657cbe069ed1c9e4b1543a438a3019e3abb6f379cbe0ec8210d88d937e4608c5dea86f737eb845aca9920e39dd0ec49954498ec51decb1cacfeb51224b48
+Description: transitional dummy package
+ This is a transitional dummy package, it can be safely removed.
+Homepage: https://mesa3d.org/
+Multi-Arch: same
+
+Package: libglx-mesa0
+Priority: optional
+Section: libs
+Installed-Size: 466
+Maintainer: Debian X Strike Force <debian-x@lists.debian.org>
+Architecture: riscv64
+Source: mesa
+Version: 22.3.5-1.1
+Provides: libglx-vendor
+Depends: libc6 (>= 2.34), libdrm2 (>= 2.4.75), libexpat1 (>= 2.0.1), libglapi-mesa (= 22.3.5-1.1), libx11-6 (>= 2:1.4.99.1), libx11-xcb1 (>= 2:1.8.3), libxcb-dri2-0 (>= 1.8), libxcb-dri3-0 (>= 1.13), libxcb-glx0 (>= 1.8), libxcb-present0, libxcb-randr0, libxcb-shm0, libxcb-sync1, libxcb-xfixes0, libxcb1 (>= 1.9.2), libxext6, libxfixes3, libxshmfence1, libxxf86vm1, libgl1-mesa-dri
+Breaks: glx-diversions (<< 0.8.4~), libopengl-perl (<< 0.6704+dfsg-2)
+Filename: pool/main/m/mesa/libglx-mesa0_22.3.5-1.1_riscv64.deb
+Size: 134816
+MD5sum: d6ddccc821c114f67d1c2b721b62f691
+SHA1: de966969fbd38ffbc7ede30c3fc5e2f96a7f6f57
+SHA256: d15f6150be829de6bf7a942e5c735c4392a60c1b13db459c12efb24533e1940e
+SHA512: 82858e108d2ef5bc591eb4423f8e19039bf72f490f895597e573422876afa0380f32b1cb4d8c038890cd24ac634320b4372c8f15aea5941750343dda7d5c6688
+Description: free implementation of the OpenGL API -- GLX vendor library
+ Mesa is a 3-D graphics library with an API which is very similar to
+ that of OpenGL.  To the extent that Mesa utilizes the OpenGL command
+ syntax or state machine, it is being used with authorization from
+ Silicon Graphics, Inc.  However, the authors make no claim that Mesa
+ is in any way a compatible replacement for OpenGL or associated with
+ Silicon Graphics, Inc.
+ .
+ This version of Mesa provides GLX and DRI capabilities: it is capable of
+ both direct and indirect rendering.  For direct rendering, it can use DRI
+ modules from the libgl1-mesa-dri package to accelerate drawing.
+ .
+ This package does not include the modules themselves: these can be found
+ in the libgl1-mesa-dri package.
+Homepage: https://mesa3d.org/
+Multi-Arch: same
+
+Package: libopencv-calib3d406
+Priority: optional
+Section: libs
+Installed-Size: 1496
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: opencv
+Version: 4.6.0+dfsg-10.3
+Filename: pool/main/o/opencv/libopencv-calib3d406_4.6.0+dfsg-10.3_riscv64.deb
+Size: 648096
+MD5sum: 0b9d5c8b494cfd037bc607a93cecaf69
+SHA1: ab092f41b0142c17944d13e0c70a009c6efadcaf
+SHA256: eef897537a7f90c31470426a6d282f72d3c1838ec691d17b3d48e48df705687d
+SHA512: b16a14cc65071b68acfeae129c3da1b9de7287498caca277634fe69ff57064a7129ab96a88da057bdd328a21920fe72f33f2a9b82118947d3eb2d988a0cd83c4
+Description: computer vision Camera Calibration library
+ This package contains the OpenCV (Open Computer Vision) Camera Calibration
+ runtime libraries.
+ .
+ The Open Computer Vision Library is a collection of algorithms and sample
+ code for various computer vision problems. The library is compatible with
+ IPL (Intel's Image Processing Library) and, if available, can use IPP
+ (Intel's Integrated Performance Primitives) for better performance.
+ .
+ OpenCV provides low level portable data types and operators, and a set
+ of high level functionalities for video acquisition, image processing and
+ analysis, structural analysis, motion analysis and object tracking, object
+ recognition, camera calibration and 3D reconstruction.
+Homepage: https://opencv.org
+Multi-Arch: same
+
+Package: libopencv-contrib406
+Priority: optional
+Section: libs
+Installed-Size: 8757
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: opencv
+Version: 4.6.0+dfsg-10.3
+Filename: pool/main/o/opencv/libopencv-contrib406_4.6.0+dfsg-10.3_riscv64.deb
+Size: 3627148
+MD5sum: a0fba0cc015b2bf3faf4529c2fa4db6b
+SHA1: d0bc1c245fb0b1ddac23b066c5c4327123b601b0
+SHA256: 49f47f2e80e99caa4fef20763a86cb96a2eec4e12a66a915244b335918c6d7ff
+SHA512: 053f3e1b8ac6351c43831fa9c36607d15039e23f9b689f95447e72d3c21bc3706034b2d821bf3ac5f4f992de722979b67044b8c0426845e98c071f65cd612015
+Description: computer vision contrlib library
+ This package contains the OpenCV (Open Computer Vision) opencv_contrib runtime
+ libraries. This package contain following contrlib libraries:
+ .
+   - aruco
+   - barcode
+   - bgsegm
+   - bioinspired
+   - ccalib
+   - cnn_3dobj
+   - cvv
+   - datasets
+   - dpm
+   - face
+   - freetype
+   - fuzzy
+   - hdf
+   - hfs
+   - img_hash
+   - line_descriptor
+   - matlab
+   - optflow
+   - ovis
+   - phase_unwrapping
+   - plot
+   - reg
+   - rgbd
+   - saliency
+   - sfm
+   - stereo
+   - structured_light
+   - surface_matching
+   - tracking
+   - ximgproc
+   - xobjdetect
+   - xphoto
+   - wechat-qrcode
+ .
+ The Open Computer Vision Library is a collection of algorithms and sample
+ code for various computer vision problems. The library is compatible with
+ IPL (Intel's Image Processing Library) and, if available, can use IPP
+ (Intel's Integrated Performance Primitives) for better performance.
+ .
+ OpenCV provides low level portable data types and operators, and a set
+ of high level functionalities for video acquisition, image processing and
+ analysis, structural analysis, motion analysis and object tracking, object
+ recognition, camera calibration and 3D reconstruction.
+Homepage: https://opencv.org
+Multi-Arch: same
+
+Package: libopencv-core406
+Priority: optional
+Section: libs
+Installed-Size: 2507
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: opencv
+Version: 4.6.0+dfsg-10.3
+Filename: pool/main/o/opencv/libopencv-core406_4.6.0+dfsg-10.3_riscv64.deb
+Size: 894936
+MD5sum: d8ae67eac32b5a47cce06ac58cb85d7b
+SHA1: e0f337c070f85e5ae1c50469135876e79eb8ee3d
+SHA256: add537cf82c80867eb69d2969d0734729a6ba4def0b9e3ef5b9a39ad78c81477
+SHA512: 2359f17f4a5da98e56f41259a7d4171c3749684e840a122aa6548f24a918c1409bbdb1ac6647a246a3fd76ecc66692dc9a24bd4104960e5b5cc7acc975b469f3
+Description: computer vision core library
+ This package contains the OpenCV (Open Computer Vision) core runtime libraries.
+ .
+ The Open Computer Vision Library is a collection of algorithms and sample
+ code for various computer vision problems. The library is compatible with
+ IPL (Intel's Image Processing Library) and, if available, can use IPP
+ (Intel's Integrated Performance Primitives) for better performance.
+ .
+ OpenCV provides low level portable data types and operators, and a set
+ of high level functionalities for video acquisition, image processing and
+ analysis, structural analysis, motion analysis and object tracking, object
+ recognition, camera calibration and 3D reconstruction.
+Homepage: https://opencv.org
+Multi-Arch: same
+
+Package: libopencv-dnn406
+Priority: optional
+Section: libs
+Installed-Size: 3482
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: opencv
+Version: 4.6.0+dfsg-10.3
+Filename: pool/main/o/opencv/libopencv-dnn406_4.6.0+dfsg-10.3_riscv64.deb
+Size: 1060132
+MD5sum: bcb2cc0924ff1ab9ccc579090cd053cb
+SHA1: 66e5c3397dfbd53eb46de4ef6f86fce49586bd4e
+SHA256: 62d6462c4abd35cb5bde697753cb196edc450166273482acfeee0cb50243295d
+SHA512: d7a30f85f5cead530b18515c5cf88dcf9d28391c716665d3f58ccb71d4e74396a97aaea732753d621c6c80dd4d3c6e3ace907e8e95cdff704cb3bf88129047f9
+Description: computer vision Deep neural network module
+ This package contains the OpenCV (Open Computer Vision) deep neural network
+ module.
+ .
+ The Open Computer Vision Library is a collection of algorithms and sample
+ code for various computer vision problems. The library is compatible with
+ IPL (Intel's Image Processing Library) and, if available, can use IPP
+ (Intel's Integrated Performance Primitives) for better performance.
+ .
+ OpenCV provides low level portable data types and operators, and a set
+ of high level functionalities for video acquisition, image processing and
+ analysis, structural analysis, motion analysis and object tracking, object
+ recognition, camera calibration and 3D reconstruction.
+Homepage: https://opencv.org
+Multi-Arch: same
+
+Package: libopencv-features2d406
+Priority: optional
+Section: libs
+Installed-Size: 556
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: opencv
+Version: 4.6.0+dfsg-10.3
+Filename: pool/main/o/opencv/libopencv-features2d406_4.6.0+dfsg-10.3_riscv64.deb
+Size: 218368
+MD5sum: b75f935a5588ee247b0c6e7ef8cc0d4d
+SHA1: 5eb7de643add7c8c8e4d3400f05d87910d2e965e
+SHA256: 6b559efb6437bde02ab59c2aeefb6c72d842723d74d6e5b24aca8d934a839d36
+SHA512: 4624cf19ae7586d5c3d55afda7f4580945f835c034c38662e1cd62e83f5294ade89d3549e061883c7148271d5fac7e4f6227405c1b5b92d8b0b76a6cc7eca130
+Description: computer vision Feature Detection and Descriptor Extraction library
+ This package contains the OpenCV (Open Computer Vision) Feature Detection
+ and Descriptor Extraction runtime libraries.
+ .
+ The Open Computer Vision Library is a collection of algorithms and sample
+ code for various computer vision problems. The library is compatible with
+ IPL (Intel's Image Processing Library) and, if available, can use IPP
+ (Intel's Integrated Performance Primitives) for better performance.
+ .
+ OpenCV provides low level portable data types and operators, and a set
+ of high level functionalities for video acquisition, image processing and
+ analysis, structural analysis, motion analysis and object tracking, object
+ recognition, camera calibration and 3D reconstruction.
+Homepage: https://opencv.org
+Multi-Arch: same
+
+Package: libopencv-flann406
+Priority: optional
+Section: libs
+Installed-Size: 382
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: opencv
+Version: 4.6.0+dfsg-10.3
+Filename: pool/main/o/opencv/libopencv-flann406_4.6.0+dfsg-10.3_riscv64.deb
+Size: 120276
+MD5sum: 1a7e827272ccfc075f2f6b08f01b4dcd
+SHA1: 6ec5f54bd61891c836d28f1f0456094fd49e2869
+SHA256: acf9e5fd91423054cbfab5dbc00326924e732ebed79f7f332e036bf17a206b52
+SHA512: 8167229b84e67f12146138f93bd20bd13811eec761e063518deb4744923b494e17bd79f27a2eb23cbe9c3ad3adf4af0223102c7d29b01554d52151f810e06446
+Description: computer vision Clustering and Search in Multi-Dimensional spaces library
+ This package contains the OpenCV (Open Computer Vision) clustering and
+ search in Multi-Dimensional spaces runtime libraries.
+ .
+ The Open Computer Vision Library is a collection of algorithms and sample
+ code for various computer vision problems. The library is compatible with
+ IPL (Intel's Image Processing Library) and, if available, can use IPP
+ (Intel's Integrated Performance Primitives) for better performance.
+ .
+ OpenCV provides low level portable data types and operators, and a set
+ of high level functionalities for video acquisition, image processing and
+ analysis, structural analysis, motion analysis and object tracking, object
+ recognition, camera calibration and 3D reconstruction.
+Homepage: https://opencv.org
+Multi-Arch: same
+
+Package: libopencv-highgui406
+Priority: optional
+Section: libs
+Installed-Size: 340
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: opencv
+Version: 4.6.0+dfsg-10.3
+Filename: pool/main/o/opencv/libopencv-highgui406_4.6.0+dfsg-10.3_riscv64.deb
+Size: 116548
+MD5sum: 3cbedd472481b857d0c9160246ba2b9c
+SHA1: 826b17c1b0d3be501e1b7ed6b11f6a34042b6bbf
+SHA256: 491076dd020b6886f979b495ae3e3c702d6f6e30fc946ce7e571c0b44a894b98
+SHA512: 2fd64e58fa5828f5a12c0dca28d3ca9af009eeb0e6edd7e67f77fb25af9f98713d147061593eae0c443a011a85e10d745e0a3e96412303d84fb50b9de3a7bbf9
+Description: computer vision High-level GUI and Media I/O library
+ This package contains the OpenCV (Open Computer Vision) High-level GUI
+ and Media I/O runtime libraries.
+ .
+ The Open Computer Vision Library is a collection of algorithms and sample
+ code for various computer vision problems. The library is compatible with
+ IPL (Intel's Image Processing Library) and, if available, can use IPP
+ (Intel's Integrated Performance Primitives) for better performance.
+ .
+ OpenCV provides low level portable data types and operators, and a set
+ of high level functionalities for video acquisition, image processing and
+ analysis, structural analysis, motion analysis and object tracking, object
+ recognition, camera calibration and 3D reconstruction.
+Homepage: https://opencv.org
+Multi-Arch: same
+
+Package: libopencv-imgcodecs406
+Priority: optional
+Section: libs
+Installed-Size: 327
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: opencv
+Version: 4.6.0+dfsg-10.3
+Filename: pool/main/o/opencv/libopencv-imgcodecs406_4.6.0+dfsg-10.3_riscv64.deb
+Size: 120228
+MD5sum: d64edd78cee8c6f55d8912c6a4e2feb1
+SHA1: 7bc45cf502b3978182fbd89421108b965afc56af
+SHA256: e5fb475747663f4c26e55bc6c6bbf26fa8bc3ce5e96d76d67fe5890064417441
+SHA512: 7adfd58a484d276965595f57aa77aa6cf7a7fc7bcb8bcc88844ec7f76e9175b85a2d7e32b015185efd215b4b70e7272065d8a2f55442bca0db6c5a7a6b0f784a
+Description: computer vision Image Codecs library
+ This package contains the OpenCV (Open Computer Vision) Image Codecs
+ runtime libraries.
+ .
+ The Open Computer Vision Library is a collection of algorithms and sample
+ code for various computer vision problems. The library is compatible with
+ IPL (Intel's Image Processing Library) and, if available, can use IPP
+ (Intel's Integrated Performance Primitives) for better performance.
+ .
+ OpenCV provides low level portable data types and operators, and a set
+ of high level functionalities for video acquisition, image processing and
+ analysis, structural analysis, motion analysis and object tracking, object
+ recognition, camera calibration and 3D reconstruction.
+Homepage: https://opencv.org
+Multi-Arch: same
+
+Package: libopencv-imgproc406
+Priority: optional
+Section: libs
+Installed-Size: 2590
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: opencv
+Version: 4.6.0+dfsg-10.3
+Filename: pool/main/o/opencv/libopencv-imgproc406_4.6.0+dfsg-10.3_riscv64.deb
+Size: 907396
+MD5sum: 2becd2c5c98f17597727db7665359764
+SHA1: e9860ed9fc2da9c6e51859f8be3ec9c8a842301e
+SHA256: c8b2b10dd2f3a55996d88042b65bd40780e612f614953f7e23d95a7d0e855807
+SHA512: 058604c48eced5d7e1bc6318c9e287c2ed0c358d626a069cd740fa6c9c31ebf95ca14b94c339b577730837e358db773403b2d2e1fdab1350a44da7774539358b
+Description: computer vision Image Processing library
+ This package contains the OpenCV (Open Computer Vision) Image Processing
+ runtime libraries.
+ .
+ The Open Computer Vision Library is a collection of algorithms and sample
+ code for various computer vision problems. The library is compatible with
+ IPL (Intel's Image Processing Library) and, if available, can use IPP
+ (Intel's Integrated Performance Primitives) for better performance.
+ .
+ OpenCV provides low level portable data types and operators, and a set
+ of high level functionalities for video acquisition, image processing and
+ analysis, structural analysis, motion analysis and object tracking, object
+ recognition, camera calibration and 3D reconstruction.
+Homepage: https://opencv.org
+Multi-Arch: same
+
+Package: libopencv-java
+Priority: optional
+Section: java
+Installed-Size: 1079
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: opencv
+Version: 4.6.0+dfsg-10.3
+Replaces: libopencv4.5-java
+Depends: libopencv406-jni (>= 4.6.0+dfsg-10.3)
+Breaks: libopencv4.5-java
+Filename: pool/main/o/opencv/libopencv-java_4.6.0+dfsg-10.3_riscv64.deb
+Size: 1014892
+MD5sum: 199692ae5e0cc27311676882afa2acf9
+SHA1: 49bf2b4191ad2ab7c115e46f35df9db93d85443a
+SHA256: 987ae19e0a6b1fb841a3592216b1be739f7bae963e21de0cff731cdcdde9cb72
+SHA512: 1053341d6b5a7544d8ac7dd990cac5262c2be9dab3fedabe40f843a27b1a9c8845756a0afb127a2a83eda2b87a30e856f788bb9d2e668820d54f926ae53da14f
+Description: Java bindings for the computer vision library
+ This package contains Java bindings for the OpenCV (Open Computer Vision)
+ library.
+ .
+ The Open Computer Vision Library is a collection of algorithms and sample
+ code for various computer vision problems. The library is compatible with
+ IPL (Intel's Image Processing Library) and, if available, can use IPP
+ (Intel's Integrated Performance Primitives) for better performance.
+ .
+ OpenCV provides low level portable data types and operators, and a set
+ of high level functionalities for video acquisition, image processing and
+ analysis, structural analysis, motion analysis and object tracking, object
+ recognition, camera calibration and 3D reconstruction.
+Homepage: https://opencv.org
+
+Package: libopencv-ml406
+Priority: optional
+Section: libs
+Installed-Size: 431
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: opencv
+Version: 4.6.0+dfsg-10.3
+Filename: pool/main/o/opencv/libopencv-ml406_4.6.0+dfsg-10.3_riscv64.deb
+Size: 186152
+MD5sum: 22470782281938c0f5ca2c6d35fd0004
+SHA1: b2d4ccf0c3ff93a690945476d65ad5daef2765c1
+SHA256: dde9441fbf950cb1c039a54a1a4a04448f16d45a3717389cfaa3fe9ce20af581
+SHA512: a94b415d240f94b8bd9798eceaba567fb3697fbd659f8ea85ceea7fbd3f60c860d31dc6ed47b8e00bf5e41168eb3fbb54d49274b49d7753566768826933ddc1d
+Description: computer vision Machine Learning library
+ This package contains the OpenCV (Open Computer Vision) Machine Learning
+ runtime libraries.
+ .
+ The Open Computer Vision Library is a collection of algorithms and sample
+ code for various computer vision problems. The library is compatible with
+ IPL (Intel's Image Processing Library) and, if available, can use IPP
+ (Intel's Integrated Performance Primitives) for better performance.
+ .
+ OpenCV provides low level portable data types and operators, and a set
+ of high level functionalities for video acquisition, image processing and
+ analysis, structural analysis, motion analysis and object tracking, object
+ recognition, camera calibration and 3D reconstruction.
+Homepage: https://opencv.org
+Multi-Arch: same
+
+Package: libopencv-objdetect406
+Priority: optional
+Section: libs
+Installed-Size: 455
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: opencv
+Version: 4.6.0+dfsg-10.3
+Filename: pool/main/o/opencv/libopencv-objdetect406_4.6.0+dfsg-10.3_riscv64.deb
+Size: 205048
+MD5sum: f1fea45594606e62ea7b256032a32edf
+SHA1: 82d9407b5f2829165bf56747f7d72369d8a92c7d
+SHA256: 84b1969b23ada135dae61d1b976d6e8f9d0cae9901080bb192efdbc97975075e
+SHA512: 43e6e277508cc22660919ec2e1008d0cc55b6ac62c21f7e7b0375be5fae942c68b08ade3bde891c8db7bb43141a7586db1ef344f3763e10cd3a776ed25639728
+Description: computer vision Object Detection library
+ This package contains the OpenCV (Open Computer Vision) Object Detection
+ runtime libraries.
+ .
+ The Open Computer Vision Library is a collection of algorithms and sample
+ code for various computer vision problems. The library is compatible with
+ IPL (Intel's Image Processing Library) and, if available, can use IPP
+ (Intel's Integrated Performance Primitives) for better performance.
+ .
+ OpenCV provides low level portable data types and operators, and a set
+ of high level functionalities for video acquisition, image processing and
+ analysis, structural analysis, motion analysis and object tracking, object
+ recognition, camera calibration and 3D reconstruction.
+Homepage: https://opencv.org
+Multi-Arch: same
+
+Package: libopencv-photo406
+Priority: optional
+Section: libs
+Installed-Size: 470
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: opencv
+Version: 4.6.0+dfsg-10.3
+Filename: pool/main/o/opencv/libopencv-photo406_4.6.0+dfsg-10.3_riscv64.deb
+Size: 174388
+MD5sum: 9a2442d61e490385424e42dba2e449b1
+SHA1: 114402c1766592db6da6a821a855bca5cec572d2
+SHA256: 6499b0d87d40a3e9c489a8b477a13e9df46d8feee567cbea3f4c4a31faacb5a7
+SHA512: 7e90c784e59e8f19060fd56f9f39e84c1b1c78e380f93ef368b25607bee2572184c3bdeef5daaa8c6d25d72409fc31857f006fb7d9956e6686540bcc2a05c64e
+Description: computer vision computational photography library
+ This package contains the OpenCV (Open Computer Vision) computational
+ photography runtime libraries.
+ .
+ The Open Computer Vision Library is a collection of algorithms and sample
+ code for various computer vision problems. The library is compatible with
+ IPL (Intel's Image Processing Library) and, if available, can use IPP
+ (Intel's Integrated Performance Primitives) for better performance.
+ .
+ OpenCV provides low level portable data types and operators, and a set
+ of high level functionalities for video acquisition, image processing and
+ analysis, structural analysis, motion analysis and object tracking, object
+ recognition, camera calibration and 3D reconstruction.
+Homepage: https://opencv.org
+Multi-Arch: same
+
+Package: libopencv-shape406
+Priority: optional
+Section: libs
+Installed-Size: 133
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: opencv
+Version: 4.6.0+dfsg-10.3
+Filename: pool/main/o/opencv/libopencv-shape406_4.6.0+dfsg-10.3_riscv64.deb
+Size: 51752
+MD5sum: ab6f4215fd6dc1c15c96caabb6274235
+SHA1: 5e99fd2be1d090ad0e76370fdfd647a703364411
+SHA256: d9eebf3100e2d842cf989853e7564ed0f7b22955e562d8a8dee6be98e57379a7
+SHA512: 3bdc4b631191a8dddc9d3114fcb6fc87c709995cf8c66e1f673e1e1fa1fdb9cd5ea688f5d4f04ff6100993a044965008e697f3d0f7848c1add0414056690fda3
+Description: computer vision shape descriptors and matchers library
+ This package contains the OpenCV (Open Computer Vision) shape descriptors
+ and matchers runtime libraries.
+ .
+ The Open Computer Vision Library is a collection of algorithms and sample
+ code for various computer vision problems. The library is compatible with
+ IPL (Intel's Image Processing Library) and, if available, can use IPP
+ (Intel's Integrated Performance Primitives) for better performance.
+ .
+ OpenCV provides low level portable data types and operators, and a set
+ of high level functionalities for video acquisition, image processing and
+ analysis, structural analysis, motion analysis and object tracking, object
+ recognition, camera calibration and 3D reconstruction.
+Homepage: https://opencv.org
+Multi-Arch: same
+
+Package: libopencv-stitching406
+Priority: optional
+Section: libs
+Installed-Size: 496
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: opencv
+Version: 4.6.0+dfsg-10.3
+Filename: pool/main/o/opencv/libopencv-stitching406_4.6.0+dfsg-10.3_riscv64.deb
+Size: 179604
+MD5sum: 00a4f2dcbbdaae952402a99a913d72b9
+SHA1: 8caf501f5d5d067b471c8b55a1938a32cae20452
+SHA256: 8c2b0995ef2eca0f1591cbf8462025a13ba9f59a73c700b8fee0d8c7434f84c8
+SHA512: c8417ef2c24a6f3cc8d2d803e95a286fe3c31dd4a5e278e1c3b80af4a8142cac77ff5456c57383411167190878ac9a462622779718c48e5a510373a926ca90cc
+Description: computer vision image stitching library
+ This package contains the OpenCV (Open Computer Vision) image stitching
+ runtime libraries.
+ .
+ The Open Computer Vision Library is a collection of algorithms and sample
+ code for various computer vision problems. The library is compatible with
+ IPL (Intel's Image Processing Library) and, if available, can use IPP
+ (Intel's Integrated Performance Primitives) for better performance.
+ .
+ OpenCV provides low level portable data types and operators, and a set
+ of high level functionalities for video acquisition, image processing and
+ analysis, structural analysis, motion analysis and object tracking, object
+ recognition, camera calibration and 3D reconstruction.
+Homepage: https://opencv.org
+Multi-Arch: same
+
+Package: libopencv-superres406
+Priority: optional
+Section: libs
+Installed-Size: 134
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: opencv
+Version: 4.6.0+dfsg-10.3
+Filename: pool/main/o/opencv/libopencv-superres406_4.6.0+dfsg-10.3_riscv64.deb
+Size: 46140
+MD5sum: afb6c20fbb8f1fb7c9ddedd47b701df3
+SHA1: 461e48213a0db840c0b0a96b82e1c1832339d45b
+SHA256: 06453200aaaa9dc766723e0ced77fe15d6cb10e9510c3d37688312c90981d90c
+SHA512: e07b39cb5f1330b887b6ea2cb8c2e0110c866fe1245d4f16ef26cea1ff34c8289034310598b7b46c2738f1dad54498e6da8f27e32505f754b5d9ad7b5df57b80
+Description: computer vision Super Resolution library
+ This package contains the OpenCV (Open Computer Vision) Super Resolution
+ runtime libraries.
+ .
+ The Open Computer Vision Library is a collection of algorithms and sample
+ code for various computer vision problems. The library is compatible with
+ IPL (Intel's Image Processing Library) and, if available, can use IPP
+ (Intel's Integrated Performance Primitives) for better performance.
+ .
+ OpenCV provides low level portable data types and operators, and a set
+ of high level functionalities for video acquisition, image processing and
+ analysis, structural analysis, motion analysis and object tracking, object
+ recognition, camera calibration and 3D reconstruction.
+Homepage: https://opencv.org
+Multi-Arch: same
+
+Package: libopencv-video406
+Priority: optional
+Section: libs
+Installed-Size: 428
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: opencv
+Version: 4.6.0+dfsg-10.3
+Filename: pool/main/o/opencv/libopencv-video406_4.6.0+dfsg-10.3_riscv64.deb
+Size: 166044
+MD5sum: 6996cf3915166a772854f9c78ce9c083
+SHA1: 5d36b082854a364ae378ea548251488a0b2c094a
+SHA256: 7fbe1551abfadc51c97588951bc8d51417a9a5cbd1f504665bb22f241a387c5c
+SHA512: d926d926cdde70dc93217622b13fd06a7eb4f1f9ad72ab18c134365e1aba92248494be33111e1da46c57623cda7c2b6e7bc8430cba5e35c86bf67d851be13649
+Description: computer vision Video analysis library
+ This package contains the OpenCV (Open Computer Vision) Video analysis
+ runtime libraries.
+ .
+ The Open Computer Vision Library is a collection of algorithms and sample
+ code for various computer vision problems. The library is compatible with
+ IPL (Intel's Image Processing Library) and, if available, can use IPP
+ (Intel's Integrated Performance Primitives) for better performance.
+ .
+ OpenCV provides low level portable data types and operators, and a set
+ of high level functionalities for video acquisition, image processing and
+ analysis, structural analysis, motion analysis and object tracking, object
+ recognition, camera calibration and 3D reconstruction.
+Homepage: https://opencv.org
+Multi-Arch: same
+
+Package: libopencv-videoio406
+Priority: optional
+Section: libs
+Installed-Size: 530
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: opencv
+Version: 4.6.0+dfsg-10.3
+Filename: pool/main/o/opencv/libopencv-videoio406_4.6.0+dfsg-10.3_riscv64.deb
+Size: 203596
+MD5sum: db4e1b95e362c072bb434563bdcc0694
+SHA1: 0de03154e26307657e34b04672d0c7ef4ceb2895
+SHA256: 92997036f2a7e1894692e15b0c1678a0792fd9413376762e6e8ac67177d344cc
+SHA512: ca04b1a6d8683f6cd823783429cf7996192498528996968abbd983129bcda07262de77b5cd9295fff681bc4b1907dd4327a211a3070306140a2e35cbbf6e3e87
+Description: computer vision Video I/O library
+ This package contains the OpenCV (Open Computer Vision) Video I/O
+ runtime libraries.
+ .
+ The Open Computer Vision Library is a collection of algorithms and sample
+ code for various computer vision problems. The library is compatible with
+ IPL (Intel's Image Processing Library) and, if available, can use IPP
+ (Intel's Integrated Performance Primitives) for better performance.
+ .
+ OpenCV provides low level portable data types and operators, and a set
+ of high level functionalities for video acquisition, image processing and
+ analysis, structural analysis, motion analysis and object tracking, object
+ recognition, camera calibration and 3D reconstruction.
+Homepage: https://opencv.org
+Multi-Arch: same
+
+Package: libopencv-videostab406
+Priority: optional
+Section: libs
+Installed-Size: 202
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: opencv
+Version: 4.6.0+dfsg-10.3
+Filename: pool/main/o/opencv/libopencv-videostab406_4.6.0+dfsg-10.3_riscv64.deb
+Size: 75744
+MD5sum: 6b74fa39a37d8390debc11bf43315c5c
+SHA1: 68ca7b28a604a4d6e379bdebc2bc80027926f3ce
+SHA256: 1ab0183a2754f70b55d9d4d82c95e31ff1319aa3c5c31c5b8e9e786024487814
+SHA512: 56e29c3e6cb5219236cd37f204fe6edb77b4f2184ed4b3cb2b6849205be75c576597ee260b460be8b80e723da91b0a64132e49fc3ba7bc0d8de1c2044c56045a
+Description: computer vision video stabilization library
+ This package contains the OpenCV (Open Computer Vision) video stabilization
+ runtime libraries.
+ .
+ The Open Computer Vision Library is a collection of algorithms and sample
+ code for various computer vision problems. The library is compatible with
+ IPL (Intel's Image Processing Library) and, if available, can use IPP
+ (Intel's Integrated Performance Primitives) for better performance.
+ .
+ OpenCV provides low level portable data types and operators, and a set
+ of high level functionalities for video acquisition, image processing and
+ analysis, structural analysis, motion analysis and object tracking, object
+ recognition, camera calibration and 3D reconstruction.
+Homepage: https://opencv.org
+Multi-Arch: same
+
+Package: libopencv-viz406
+Priority: optional
+Section: libs
+Installed-Size: 348
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: opencv
+Version: 4.6.0+dfsg-10.3
+Filename: pool/main/o/opencv/libopencv-viz406_4.6.0+dfsg-10.3_riscv64.deb
+Size: 117052
+MD5sum: 69f8d33ffc92b7ad055c339901e9835d
+SHA1: b1ae6d5f59f537cc3df5d034910518e460425874
+SHA256: 8627ef67f9c369831c88b5e274d939f5550d91ebbf9470d9a2ec223ed44b0040
+SHA512: df72b50cdb0d82e260de8240c8144efbfe80d55e2d426afefbca24cbba0d4c6d9ddc9344af732f143deb941b76635fff13b6f126bfb33b21bc05c9ff8437af36
+Description: computer vision 3D data visualization library
+ This package contains the OpenCV (Open Computer Vision) 3D data visualization
+ runtime libraries.
+ .
+ The Open Computer Vision Library is a collection of algorithms and sample
+ code for various computer vision problems. The library is compatible with
+ IPL (Intel's Image Processing Library) and, if available, can use IPP
+ (Intel's Integrated Performance Primitives) for better performance.
+ .
+ OpenCV provides low level portable data types and operators, and a set
+ of high level functionalities for video acquisition, image processing and
+ analysis, structural analysis, motion analysis and object tracking, object
+ recognition, camera calibration and 3D reconstruction.
+Homepage: https://opencv.org
+Multi-Arch: same
+
+Package: libopencv406-jni
+Priority: optional
+Section: java
+Installed-Size: 1818
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: opencv
+Version: 4.6.0+dfsg-10.3
+Filename: pool/main/o/opencv/libopencv406-jni_4.6.0+dfsg-10.3_riscv64.deb
+Size: 393196
+MD5sum: 5a5bc66097ecdc4c4dcf5a25e06403a5
+SHA1: 206cf0f572412d2681baa8d09601718f58f457a0
+SHA256: 673906d3ab4fd052877af3d2f1f5c885eb957fac36102f60e3bcdbe9d57cbec7
+SHA512: 3c67f1f384df3a1fc38395dc4d3170839675b697e02b053d0cd3a0134e4e371e63000fd5743799290932c2a298a3f6bdaaa5eafe7540a1451d9ad0549d43d1d8
+Description: Java jni library for the computer vision library
+ This package contains Java jni library for the OpenCV (Open Computer Vision)
+ library.
+ .
+ The Open Computer Vision Library is a collection of algorithms and sample
+ code for various computer vision problems. The library is compatible with
+ IPL (Intel's Image Processing Library) and, if available, can use IPP
+ (Intel's Integrated Performance Primitives) for better performance.
+ .
+ OpenCV provides low level portable data types and operators, and a set
+ of high level functionalities for video acquisition, image processing and
+ analysis, structural analysis, motion analysis and object tracking, object
+ recognition, camera calibration and 3D reconstruction.
+Homepage: https://opencv.org
+
+Package: libosmesa6
+Priority: optional
+Section: libs
+Installed-Size: 8893
+Maintainer: Debian X Strike Force <debian-x@lists.debian.org>
+Architecture: riscv64
+Source: mesa
+Version: 22.3.5-1.1
+Depends: libc6 (>= 2.34), libgcc-s1 (>= 4.4), libglapi-mesa (= 22.3.5-1.1), libstdc++6 (>= 5), libzstd1 (>= 1.5.2), zlib1g (>= 1:1.1.4)
+Filename: pool/main/m/mesa/libosmesa6_22.3.5-1.1_riscv64.deb
+Size: 2074440
+MD5sum: 02e1a54f283466cfe525d68813be2244
+SHA1: 1755a14a0d9fda2814ea56c00d203c5992751b5f
+SHA256: 07fa2a67a8e0d61fc1988e17e46315e8c5917605f23b495d967cc5392a1ee89b
+SHA512: ab51b42ed003165bb5ec5658067d3586a9aa9cb9ecb3e0d749dff99cab43b17aa47c0ea58bbbda3c0be81852fd5edf3cd90841eb0432d1d1d1b6427adfbe11b4
+Description: Mesa Off-screen rendering extension
+ OSmesa is a Mesa extension that allows programs to render to an
+ off-screen buffer using the OpenGL API without having to create a
+ rendering context on an X Server.  It uses a pure software renderer.
+ .
+ This package provides both 16-bit and 32-bit versions of the off-screen
+ renderer which do not require external libraries to work.
+Homepage: https://mesa3d.org/
+Multi-Arch: same
+
+Package: libpostproc56
+Priority: optional
+Section: libs
+Installed-Size: 136
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Source: ffmpeg
+Version: 7:5.1.2-1.1
+Depends: libavutil57 (= 7:5.1.2-1.1), libc6 (>= 2.27)
+Filename: pool/main/f/ffmpeg/libpostproc56_5.1.2-1.1_riscv64.deb
+Size: 67984
+MD5sum: 1a9ecbdabe74c9ac2bc044782a14d54a
+SHA1: 3e0cecf3b2d410b9c0e03f253965d85880669bd4
+SHA256: d0a440273a5e709e12899eeb37d0a614f33e793eb3c2abeacf7cac04a5166036
+SHA512: 1bb859387a4a3669daaea367945cfb6ab9b303a9cbc5c2f69294f621a9ddf3b35598ca80df231afe5ced1c78a30c15aae5d1d9355a837905e087d1db96007232
+Description: FFmpeg library for post processing - runtime files
+ FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
+ mux, demux, stream, filter and play pretty much anything that humans and
+ machines have created. It supports the most obscure ancient formats up to the
+ cutting edge.
+ .
+ This library provides video post processing.
+ .
+ This package contains the runtime files.
+Homepage: https://ffmpeg.org/
+Multi-Arch: same
+
+Package: libsdl2-2.0-0
+Priority: optional
+Section: libs
+Installed-Size: 1442
+Maintainer: Debian SDL packages maintainers <pkg-sdl-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: libsdl2
+Version: 2.26.1+dfsg-1
+Replaces: libsdl-1.3-0
+Depends: libasound2 (>= 1.0.27), libc6 (>= 2.34), libdecor-0-0 (>= 0.1.0), libdrm2 (>= 2.4.47), libgbm1 (>= 8.1~0), libpulse0 (>= 0.99.1), libsamplerate0 (>= 0.1.7), libwayland-client0 (>= 1.20.0), libwayland-cursor0 (>= 1.18), libwayland-egl1 (>= 1.18), libx11-6 (>= 2:1.2.99.901), libxcursor1 (>> 1.1.2), libxext6, libxfixes3 (>= 1:5.0), libxi6 (>= 2:1.6.99.1), libxkbcommon0 (>= 0.5.0), libxrandr2 (>= 2:1.2.99.3), libxss1
+Suggests: xdg-utils
+Conflicts: libsdl-1.3-0
+Filename: pool/main/libs/libsdl2/libsdl2-2.0-0_2.26.1+dfsg-1_riscv64.deb
+Size: 540248
+MD5sum: c41f4a2e99bd4dee12b48b9378fd6c7c
+SHA1: cbedbf893903bd710c62844f0ad1dd1913f0bc88
+SHA256: 7e78f96e52da1f17861f8459b950af69b3c0f58b27c39efc29ec3e19856a5db5
+SHA512: a502cecdee6b2d99db58ddba3c51839b8ff61bb09d5385e43d89a91c13130b29e2cf9dd094593567088d2308b4c130bd165131280fbe837d406ef5ec06ad94a7
+Description: Simple DirectMedia Layer
+ SDL is a library that allows programs portable low level access to a video
+ framebuffer, audio output, mouse, and keyboard.
+ .
+ This version of SDL is compiled with X11 and Wayland graphics drivers and OSS,
+ ALSA, sndio and PulseAudio sound drivers.
+Homepage: https://www.libsdl.org/
+Multi-Arch: same
+
+Package: libswresample4
+Priority: optional
+Section: libs
+Installed-Size: 173
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Source: ffmpeg
+Version: 7:5.1.2-1.1
+Depends: libavutil57 (= 7:5.1.2-1.1), libc6 (>= 2.27), libsoxr0 (>= 0.1.0)
+Filename: pool/main/f/ffmpeg/libswresample4_5.1.2-1.1_riscv64.deb
+Size: 83484
+MD5sum: ceb560f70194da940f0c1bc7e42d2fa4
+SHA1: 96a9260178e70cc1488f3e12aaa7f068639efb66
+SHA256: 45b0145681d9257be70a6981dbba5ee7579033276a0e7ed6433e38cb929b8bb3
+SHA512: 202017544a97a48ed7cdc8fac01f9d8365e8caaf068d7da153d4ecaec63f88e783bbfe85beb06ad475f93e1b52b4c3ad8b9099ad6538cbbc683d23baaa617a1a
+Description: FFmpeg library for audio resampling, rematrixing etc. - runtime files
+ FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
+ mux, demux, stream, filter and play pretty much anything that humans and
+ machines have created. It supports the most obscure ancient formats up to the
+ cutting edge.
+ .
+ This library performs highly optimized audio resampling, rematrixing
+ and sample format conversion operations.
+ Specifically, this library performs the following conversions:
+  * Resampling is the process of changing the audio rate, for example from a
+    high sample rate of 44100Hz to 8000Hz. Audio conversion from high to low
+    sample rate is a lossy process. Several resampling options and algorithms
+    are available.
+  * Rematrixing is the process of changing the channel layout, for example from
+    stereo to mono. When the input channels cannot be mapped to the output
+    streams, the process is lossy, since it involves different gain factors
+    and mixing. Various other audio conversions (e.g. stretching and padding)
+    are enabled through dedicated options.
+  * Format conversion is the process of converting the type of samples, for
+    example from 16-bit signed samples to unsigned 8-bit or float samples.
+    It also handles packing conversion, when passing from packed layout (all
+    samples belonging to distinct channels interleaved in the same buffer), to
+    planar layout (all samples belonging to the same channel stored in a
+    dedicated buffer or "plane").
+ .
+ This package contains the runtime files.
+Homepage: https://ffmpeg.org/
+Multi-Arch: same
+
+Package: libswscale6
+Priority: optional
+Section: libs
+Installed-Size: 513
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Source: ffmpeg
+Version: 7:5.1.2-1.1
+Depends: libavutil57 (= 7:5.1.2-1.1), libc6 (>= 2.34)
+Filename: pool/main/f/ffmpeg/libswscale6_5.1.2-1.1_riscv64.deb
+Size: 188120
+MD5sum: ca86dbdc6cdb009e2fd201827e480f4f
+SHA1: 38d5ef51a615dd4f03bae8f0f437c1ff5807565d
+SHA256: 067cef2fe621b58107acc78b4a0a34af0fd262a44a70e71436e86c9256ea909a
+SHA512: a7d714037fa764a162ef2a4c420a68150ceaaa91c5f9af99b3779670bb416c94bd1922411397e249f209fbaeebef3aff2ef63760d726be0c6174557525b79717
+Description: FFmpeg library for image scaling and various conversions - runtime files
+ FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
+ mux, demux, stream, filter and play pretty much anything that humans and
+ machines have created. It supports the most obscure ancient formats up to the
+ cutting edge.
+ .
+ This library performs highly optimized image scaling and colorspace and pixel
+ format conversion operations.
+ Specifically, this library performs the following conversions:
+  * Rescaling is the process of changing the video size. Several rescaling
+    options and algorithms are available. This is usually a lossy process.
+  * Pixel format conversion is the process of converting the image format and
+    colorspace of the image, for example from planar YUV420P to RGB24 packed.
+    It also handles packing conversion, that is converts from packed layout
+    (all pixels belonging to distinct planes interleaved in the same buffer),
+    to planar layout (all samples belonging to the same plane stored in a
+    dedicated buffer or "plane"). This is usually a lossy process in case the
+    source and destination colorspaces differ.
+ .
+ This package contains the runtime files.
+Homepage: https://ffmpeg.org/
+Multi-Arch: same
+
+Package: libvlc-bin
+Priority: optional
+Section: video
+Installed-Size: 157
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Source: vlc
+Version: 3.0.18-2
+Depends: libc6 (>= 2.34), libvlc5 (>= 3.0.18)
+Filename: pool/main/v/vlc/libvlc-bin_3.0.18-2_riscv64.deb
+Size: 89716
+MD5sum: dd18b7c6df0b75a888b8a3ef2b4bceb0
+SHA1: 6fd7dd5eb1a17b487ae7b81266bf512f53e7cd7d
+SHA256: aad7247c6df4e4487dd35811d6a64d34f30262087a3d33b7ff7f18871d656e29
+SHA512: 6f138d506454ae851a08bb1664de3662a57e51c6d48e4e919ee697ae4b0a3d5671f9483a7135d35cbe5ec673c58b38512c1c74e9aefdee087daf58e25690f294
+Description: tools for VLC's base library
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
+ DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
+ podcasts, and multimedia streams from various network sources.
+ .
+ This package contains the vlc-cache-gen binary.
+Homepage: https://www.videolan.org/vlc/
+Multi-Arch: same
+
+Package: libvlc5
+Priority: optional
+Section: libs
+Installed-Size: 266
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Source: vlc
+Version: 3.0.18-2
+Depends: libc6 (>= 2.34), libvlccore9 (>= 3.0.18)
+Recommends: libvlc-bin (= 3.0.18-2)
+Filename: pool/main/v/vlc/libvlc5_3.0.18-2_riscv64.deb
+Size: 132936
+MD5sum: 59d1bf052d5b096ae6f6d65dd26ad711
+SHA1: 5a1d54eb578edc5e25e1c5b31b35db554eff8ac0
+SHA256: 334b7615aa13e8052a3c06c225033e088eac47c65f7188585f41b40ce842a7ad
+SHA512: 4a5cb658515ae5f30ba8763d2fb48896c97d3bf64aa4435bc4426bb3fd9dca9abbf8d1d01758d29c77a1ccf7a968e8e7218fd5b456bfdcb4b3d0e9652b5c6fa8
+Description: multimedia player and streamer library
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
+ DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
+ podcasts, and multimedia streams from various network sources.
+ .
+ This package contains the shared library required by applications using VLC
+ features.
+Homepage: https://www.videolan.org/vlc/
+Multi-Arch: same
+
+Package: libvlccore9
+Priority: optional
+Section: libs
+Installed-Size: 965
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Source: vlc
+Version: 3.0.18-2
+Provides: vlc-plugin-abi-3-0-0f
+Depends: libatomic1 (>= 4.8), libc6 (>= 2.34), libdbus-1-3 (>= 1.9.14), libidn12 (>= 1.13)
+Recommends: libproxy-tools
+Filename: pool/main/v/vlc/libvlccore9_3.0.18-2_riscv64.deb
+Size: 467416
+MD5sum: 7cc46bde550918160298a09139f3e80e
+SHA1: 7b258207b3711cb45f14d32675097e46465e6095
+SHA256: 67fd770572c94d0b2ff87de25776e4fc7fee7cf75cbdf21efbe119681b1ffa40
+SHA512: 5f72e96ce2077aab82e80d100870372d39aa936cb779f7dc47befc7727e6234c580558af508d2bad40a197813344f2626bdbfc3e31d8e225b2ecd0f7f0be5b26
+Description: base library for VLC and its modules
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
+ DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
+ podcasts, and multimedia streams from various network sources.
+ .
+ This package contains the shared library required by VLC modules and libvlc.
+Homepage: https://www.videolan.org/vlc/
+Multi-Arch: same
+
+Package: libwayland-egl1-mesa
+Priority: optional
+Section: oldlibs
+Installed-Size: 33
+Maintainer: Debian X Strike Force <debian-x@lists.debian.org>
+Architecture: riscv64
+Source: mesa
+Version: 22.3.5-1.1
+Depends: libegl1, libwayland-egl1
+Filename: pool/main/m/mesa/libwayland-egl1-mesa_22.3.5-1.1_riscv64.deb
+Size: 14564
+MD5sum: ce7e25abbab4f1a86d89924aa711515a
+SHA1: 923b80d14fc850c6b2a5b17f89ee77f7b69752d3
+SHA256: 77c517fdb2ad192a0fc096abc90ff1204a1a75aafd8085c556b609c2d992e62e
+SHA512: c65cede4472c8a3720c333a7bb00081d8088af6f23e04dc80f57a303b5b6f32fa1a8a73d24561562f17bfb587e1b7ae5807d19a2b121ca3b1cd0ccadf6b9a959
+Description: transitional dummy package
+ This is a transitional dummy package, it can be safely removed.
+Homepage: https://mesa3d.org/
+Multi-Arch: same
+
+Package: mesa-va-drivers
+Priority: optional
+Section: libs
+Installed-Size: 9551
+Maintainer: Debian X Strike Force <debian-x@lists.debian.org>
+Architecture: riscv64
+Source: mesa
+Version: 22.3.5-1.1
+Replaces: vdpau-va-driver (<< 0.7.4-5)
+Provides: va-driver
+Depends: libc6 (>= 2.34), libdrm-amdgpu1 (>= 2.4.110), libdrm-nouveau2 (>= 2.4.66), libdrm-radeon1 (>= 2.4.31), libdrm2 (>= 2.4.75), libelf1 (>= 0.142), libexpat1 (>= 2.0.1), libgcc-s1 (>= 4.3), libllvm15, libstdc++6 (>= 11), libx11-xcb1 (>= 2:1.8.3), libxcb-dri2-0 (>= 1.8), libxcb-dri3-0, libxcb-present0, libxcb-sync1, libxcb-xfixes0, libxcb1 (>= 1.9.2), libxshmfence1, libzstd1 (>= 1.5.2), zlib1g (>= 1:1.1.4)
+Breaks: vdpau-va-driver (<< 0.7.4-5)
+Filename: pool/main/m/mesa/mesa-va-drivers_22.3.5-1.1_riscv64.deb
+Size: 2360464
+MD5sum: 473e94ccd94aaa1574884dba4ee5e828
+SHA1: 6a67db8c008efd177c531efe921c76ce75aec8d9
+SHA256: 70941f31366fc6cd8e8612202b2dc8db0b13e69466fcbc24dce63fa2e668b296
+SHA512: 38878929b6b55b36283ef20e64faf7281b7875193503bf65e8b9e87e06875d4a0afa6837817c44201be17c460a16a076e0edcbd04d35340f69530353ab3813ef
+Description: Mesa VA-API video acceleration drivers
+ These libraries provide the Video Acceleration API (VA-API) for Unix.
+ They provide accelerated video playback (incl. H.264) and video
+ post-processing for the supported graphics cards.
+ .
+ This package enables support for VA-API for some gallium drivers.
+Enhances: libva2
+Homepage: https://mesa3d.org/
+Multi-Arch: same
+
+Package: mesa-vdpau-drivers
+Priority: optional
+Section: libs
+Installed-Size: 9813
+Maintainer: Debian X Strike Force <debian-x@lists.debian.org>
+Architecture: riscv64
+Source: mesa
+Version: 22.3.5-1.1
+Provides: vdpau-driver
+Depends: libvdpau1, libc6 (>= 2.34), libdrm-amdgpu1 (>= 2.4.110), libdrm-nouveau2 (>= 2.4.66), libdrm-radeon1 (>= 2.4.31), libdrm2 (>= 2.4.75), libelf1 (>= 0.142), libexpat1 (>= 2.0.1), libgcc-s1 (>= 4.3), libllvm15, libstdc++6 (>= 11), libx11-xcb1 (>= 2:1.8.3), libxcb-dri2-0 (>= 1.8), libxcb-dri3-0, libxcb-present0, libxcb-sync1, libxcb-xfixes0, libxcb1 (>= 1.9.2), libxshmfence1, libzstd1 (>= 1.5.2), zlib1g (>= 1:1.1.4)
+Filename: pool/main/m/mesa/mesa-vdpau-drivers_22.3.5-1.1_riscv64.deb
+Size: 2455924
+MD5sum: 04b631fff2b28a3d9893ea888c224555
+SHA1: 447cab6efb81d9aecc38531471f217d43deb64c8
+SHA256: ac07070240c9756a64202818e43416f2c6b99e414389640dbe1d9c2b2c5543d5
+SHA512: 2517384ca0e9ccb3e5af2902ce644dbf3feadfa1f33b336da7dd5bd195ab3ee249fb5c2b120d6d027f3e8dfebae8a8f4470772800fa95a7d07347662d7b55c74
+Description: Mesa VDPAU video acceleration drivers
+ These libraries provide the Video Decode and Presentation API for Unix.
+ They provide accelerated video playback (incl. H.264) and video
+ post-processing for the supported graphics cards.
+ .
+ This package enables support for VDPAU for some gallium drivers.
+Enhances: libvdpau1
+Homepage: https://mesa3d.org/
+Multi-Arch: same
+
+Package: mesa-vulkan-drivers
+Priority: optional
+Section: libs
+Installed-Size: 8249
+Maintainer: Debian X Strike Force <debian-x@lists.debian.org>
+Architecture: riscv64
+Source: mesa
+Version: 22.3.5-1.1
+Provides: vulkan-icd
+Depends: libvulkan1, python3:any | python3-minimal:any, libc6 (>= 2.34), libdrm-amdgpu1 (>= 2.4.110), libdrm2 (>= 2.4.99), libelf1 (>= 0.142), libexpat1 (>= 2.0.1), libgcc-s1 (>= 4.3), libllvm15, libstdc++6 (>= 11), libudev1 (>= 183), libwayland-client0 (>= 1.20.0), libx11-xcb1 (>= 2:1.8.3), libxcb-dri3-0 (>= 1.13), libxcb-present0, libxcb-randr0 (>= 1.13), libxcb-shm0, libxcb-sync1, libxcb-xfixes0, libxcb1 (>= 1.9.2), libxshmfence1, libzstd1 (>= 1.5.2), zlib1g (>= 1:1.1.4)
+Filename: pool/main/m/mesa/mesa-vulkan-drivers_22.3.5-1.1_riscv64.deb
+Size: 1941688
+MD5sum: 156a245719420ba75c663c2c7d82edaa
+SHA1: 9b5874b0e5a749211c9d48d8c7b11583e982a18c
+SHA256: 8539013ecac42f4b0872dde6a42c2348d8ffb1d954ba4cab059de576625c0ab7
+SHA512: 86b48854193f503035f1af1674ba81fed108ffea9ca1d97916b4849c4244fba5dcff5f0b52fcf12ae9581bc1b70c8e3928aef8a1b4c835e358ac04294f615d85
+Description: Mesa Vulkan graphics drivers
+ Vulkan is a low-overhead 3D graphics and compute API. This package
+ includes Vulkan drivers provided by the Mesa project.
+Homepage: https://mesa3d.org/
+Multi-Arch: same
+
+Package: nodejs
+Maintainer: StarFive Debian
+Architecture: riscv64
+Version: 18.0.0
+Filename: pool/main/n/nodejs/nodejs-18.0.0_riscv64.deb
+Size: 22038728
+MD5sum: 474322873a74b8e9d23f6ffb1023a35c
+SHA1: 5aefae0fb30138789680684a7f29900b6138bd91
+SHA256: 7de0543de1ce5212d0ece61a1a7bd62edfceb22a218a888dcb36b21dba759680
+SHA512: db4f4476054ce8b79587830bf89bf7a20204697794ecb025176e483f6ebe4478f3637ea80fb23ce8707217534fdc207a9f2fbca8f80c393d0ca8331004d52f58
+Description: Node.js for riscv64
+
+Package: nwjs
+Maintainer: Roger Wang <roger@nwjs.io>
+Architecture: riscv64
+Version: 0.65.1
+Filename: pool/main/n/nwjs/nwjs_0.65.1-2_riscv64.deb
+Size: 270544128
+MD5sum: 6acf767285eecfd2f94a02cc697b93f2
+SHA1: 0192673d48cd5261dca3d0cba7919d99f92d2261
+SHA256: 36f9859a7740bda3e60ec46a1ef7cbcb5122e783dc58ec665f1a01d134883a62
+SHA512: fc2c8bfcb321e66ee482e805ddf4a723ca81ac5bc3739ed3081742204490e53a3784d6ee21eadfec858f1e7029fc603b5ca775308debe3d6729adb17a5d623a1
+Description: NW.js formerly known as Node Webkit
+ NW.js lets you call all Node.js modules directly from DOM and enables a new way of writing applications with all Web technologies.
+
+Package: omx-il
+Priority: optional
+Section: libs
+Installed-Size: 151
+Maintainer: StarFive Debian
+Architecture: riscv64
+Version: 1.0-1
+Depends: libavcodec59 (>= 7:5.0), libavformat59 (>= 7:5.0), libavutil57 (>= 7:5.0), libc6 (>= 2.34)
+Filename: pool/main/o/omx-il/omx-il_1.0-1_riscv64.deb
+Size: 51276
+MD5sum: e00e6e8ac316920a95402e526d41ff78
+SHA1: bdd2ea7d8afa5c48c529d95b6e75dd44e4772074
+SHA256: 194443a4c5eb3a4bfc7b8a22bb16b0584677897c9a20f7cdcde70a6b3016a815
+SHA512: 4749b6deca57504ec688fcf0a9278b7317a7bf6160ac7e9f6a90aba1505984807b99eb0953262d24dfa377a5279a9bccb5c576d0a5064a59274ae1d965d6ab72
+Description: OpenOMX omxil Library with test program.
+Homepage: <insert the upstream URL, if relevant>
+
+Package: omx-il-dev
+Priority: optional
+Section: libdevel
+Installed-Size: 364
+Maintainer: StarFive Debian
+Architecture: riscv64
+Source: omx-il
+Version: 1.0-1
+Depends: omx-il
+Filename: pool/main/o/omx-il/omx-il-dev_1.0-1_riscv64.deb
+Size: 55836
+MD5sum: bcc235850bebd74bb2c3d0925dd5f780
+SHA1: 1aac79762e3dda8a716a77f4b894ed6c7f0a9a5f
+SHA256: 0e2a9df62cc164726f478927aba7cb8e6709ac5d159bbfbe38a5afb4deaa0e03
+SHA512: 344f4705fb843cbeaf4a0a4ed18fb7886c7ecb8f378b3589abd423e1ae405b37e3473b38c5e06b50c91c1f3f681d3daca7343effe2283f4805b8812bcc259dc1
+Description: OpenOMX omxil api Development Package with test program.
+Homepage: <insert the upstream URL, if relevant>
+
+Package: opencv-data
+Priority: optional
+Section: libdevel
+Installed-Size: 77184
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Architecture: all
+Source: opencv
+Version: 4.6.0+dfsg-10.3
+Filename: pool/main/o/opencv/opencv-data_4.6.0+dfsg-10.3_all.deb
+Size: 62381196
+MD5sum: 3276ab14ca8d68d3a05e679db8e8f355
+SHA1: ba76d5abba244c51d51af086de847bbcad5c9bb3
+SHA256: 98e6e5166f251dadd612287b2db1fdd6b90959737ed83611993c6237691dd2aa
+SHA512: b21d76aa0f2080d7318dc004fd18d1051228f9f8ceeeb0f29f164376d98763562fb2efb48d84c8c3b76a69d157439b961f621672fec07501413b558763b72be1
+Description: development data for opencv
+ This package contains some architecture independent files useful for
+ development with OpenCV.
+ .
+ The Open Computer Vision Library is a collection of algorithms and sample
+ code for various computer vision problems. The library is compatible with
+ IPL (Intel's Image Processing Library) and, if available, can use IPP
+ (Intel's Integrated Performance Primitives) for better performance.
+ .
+ OpenCV provides low level portable data types and operators, and a set
+ of high level functionalities for video acquisition, image processing and
+ analysis, structural analysis, motion analysis and object tracking, object
+ recognition, camera calibration and 3D reconstruction.
+Homepage: https://opencv.org
+Multi-Arch: foreign
+
+Package: opencv-doc
+Priority: optional
+Section: doc
+Installed-Size: 274208
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Architecture: all
+Source: opencv
+Version: 4.6.0+dfsg-10.3
+Depends: libjs-jquery, libjs-mathjax
+Filename: pool/main/o/opencv/opencv-doc_4.6.0+dfsg-10.3_all.deb
+Size: 95504996
+MD5sum: f9630f39202428b3c63be595ec02f1f0
+SHA1: a2230687b715eb9d823a6917a5324a7f4e803439
+SHA256: 1963d30265bb370d6d4882aeac66bc1b34bfb847bc0bee6abf64a816f8e17820
+SHA512: d977a7520248ac75e820d59363762b20835bac5cfce55caa1f0aba584804fb462c85fbe817111a0af66d6e137ae646bdf65a0503fd38da4fc5f9f3501368a3fd
+Description: OpenCV documentation and examples
+ This package contains the OpenCV documentation and example programs.
+ .
+ The Open Computer Vision Library is a collection of algorithms and sample
+ code for various computer vision problems. The library is compatible with
+ IPL (Intel's Image Processing Library) and, if available, can use IPP
+ (Intel's Integrated Performance Primitives) for better performance.
+ .
+ OpenCV provides low level portable data types and operators, and a set
+ of high level functionalities for video acquisition, image processing and
+ analysis, structural analysis, motion analysis and object tracking, object
+ recognition, camera calibration and 3D reconstruction.
+Homepage: https://opencv.org
+Multi-Arch: foreign
+
+Package: python3-opencv
+Priority: optional
+Section: python
+Installed-Size: 14556
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Architecture: riscv64
+Source: opencv
+Version: 4.6.0+dfsg-10.3
+Depends: python3 (<< 3.12), python3 (>= 3.10~), python3-numpy (>= 1:1.22.0), python3-numpy-abi9
+Filename: pool/main/o/opencv/python3-opencv_4.6.0+dfsg-10.3_riscv64.deb
+Size: 1556064
+MD5sum: 3d2c824c14c8e97066ebebf94f80b061
+SHA1: d0219344baa5d95748c4e7cf0767fb026d9eda27
+SHA256: 4085d7749663212298d2cf1519eafe8e442b87120f8c2b405df847eb25602252
+SHA512: 01eddaa6bd4ddea0658d34af792d7582b34260bb3b5bb9c176ca01ded59e20a22f0f912bdc2f256500174d5672874f010238b603192f336574262966653a30fd
+Description: Python 3 bindings for the computer vision library
+ This package contains Python 3 bindings for the OpenCV (Open Computer Vision)
+ library.
+ .
+ The Open Computer Vision Library is a collection of algorithms and sample
+ code for various computer vision problems. The library is compatible with
+ IPL (Intel's Image Processing Library) and, if available, can use IPP
+ (Intel's Integrated Performance Primitives) for better performance.
+ .
+ OpenCV provides low level portable data types and operators, and a set
+ of high level functionalities for video acquisition, image processing and
+ analysis, structural analysis, motion analysis and object tracking, object
+ recognition, camera calibration and 3D reconstruction.
+Homepage: https://opencv.org
+Multi-Arch: same
+
+Package: qt
+Maintainer: starfive Debian
+Architecture: riscv64
+Version: 5.15.2
+Filename: pool/main/q/qt/qt-5.15-2-wayland_riscv64.deb
+Size: 343957708
+MD5sum: 84d22f431acde72370f0f0df70f5fe4a
+SHA1: a19b1925b7ddcef9cdc6157ac8a92b6dd2692e06
+SHA256: ebf83d10cdc50b7346fe29df44d74af38f8e9050e5b336adcf4262ca91f04df1
+SHA512: 3797b575fe8e511045399aa220f7723c3101e238847e4f82c57b697dea64ec460cbb069037bcafb8d2c44fb835e378b8ce23178801c335f3e0029a537b3e91bb
+Description: QT
+
+Package: v4l2test
+Maintainer: starfive debian
+Architecture: riscv64
+Version: 1.0
+Depends: libv4l-0, libv4l-dev, v4l-utils, libjpeg-dev, libdrm-dev
+Filename: pool/main/v/v4l2test/v4l2test_riscv64.deb
+Size: 3379852
+MD5sum: 21e72b1127eaf29a965d0884c9e6da82
+SHA1: 0b952c7c72e564fe1f3f9102741dc6b6ab628dae
+SHA256: bb85f649b8a8081fd4882663730620e839164caf7e0b9a21ce5901631d2ee59a
+SHA512: c9d7da6ab41fc8fc1383cb863470b2e4a38b5e0beb329bbf6aa266f069cf7e7efc4ebff363468b73ef6c878bc0de1bf44d4bc82be8fe96c47aa3386a0e61acca
+Description: v4l2
+
+Package: v8
+Maintainer: StarFive Debian
+Architecture: riscv64
+Version: 10.2.154.13
+Filename: pool/main/v/v8/v8-10.2.154.13_riscv64.deb
+Size: 10000404
+MD5sum: 4dd47d0230d01a46fdd3a9a03a7df03e
+SHA1: d2f383bb3932c4d04cc5e900dc48ae16179e4f69
+SHA256: 042cb78061cfa4e5db5b8a852ec8f97bf1fc11ec76b8b19e9760d92b22cd926f
+SHA512: 73792e11de386cb02ac482680936b84196e3f5dcb3a095a7160991d958c1658abe11b216a92049577e6592a83d583d2714d163caaf6406163c37dd5206a5694c
+Description: v8 - d8 shell and build configs
+
+Package: vlc
+Priority: optional
+Section: video
+Installed-Size: 194
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Version: 3.0.18-2
+Provides: mp3-decoder
+Depends: vlc-bin (= 3.0.18-2), vlc-plugin-base (= 3.0.18-2), vlc-plugin-qt (= 3.0.18-2), vlc-plugin-video-output (= 3.0.18-2)
+Recommends: vlc-l10n (= 3.0.18-2), vlc-plugin-access-extra (= 3.0.18-2), vlc-plugin-notify (= 3.0.18-2), vlc-plugin-samba (= 3.0.18-2), vlc-plugin-skins2 (= 3.0.18-2), vlc-plugin-video-splitter (= 3.0.18-2), vlc-plugin-visualization (= 3.0.18-2)
+Suggests: vlc-plugin-fluidsynth (= 3.0.18-2), vlc-plugin-jack (= 3.0.18-2), vlc-plugin-pipewire, vlc-plugin-svg (= 3.0.18-2)
+Filename: pool/main/v/vlc/vlc_3.0.18-2_riscv64.deb
+Size: 108216
+MD5sum: 511ac47c2204ae8135c45bc0ce65a11e
+SHA1: 844e35d7a2d8929bdc9881b9d0cd92cc396d0d72
+SHA256: 83104d5c93a43e557a7420ba043b38c8e13da98193c770a2d74d25a408efbf78
+SHA512: 4c1304186dca46cf001180f96f60f696d76d0eb787cab24afb4c0578db02eb634c319ed95c90b277907b2b33fc3a09345b405146fd2b19c42683229eae6e089e
+Description: multimedia player and streamer
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
+ DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
+ podcasts, and multimedia streams from various network sources.
+ .
+ VLC can also be used as a streaming server that duplicates the stream it
+ reads and multicasts them through the network to other clients, or serves
+ them through HTTP.
+ .
+ VLC has support for on-the-fly transcoding of audio and video formats, either
+ for broadcasting purposes or for movie format transformations. Support for
+ most output methods is provided by this package, but features can be added by
+ installing additional plugins:
+  * vlc-plugin-access-extra
+  * vlc-plugin-fluidsynth
+  * vlc-plugin-jack
+  * vlc-plugin-notify
+  * vlc-plugin-samba
+  * vlc-plugin-skins2
+  * vlc-plugin-svg
+  * vlc-plugin-video-splitter
+  * vlc-plugin-visualization
+Homepage: https://www.videolan.org/vlc/
+
+Package: vlc-bin
+Priority: optional
+Section: video
+Installed-Size: 347
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Source: vlc
+Version: 3.0.18-2
+Depends: libvlc-bin (= 3.0.18-2), libc6 (>= 2.34), libvlc5 (>= 3.0.18)
+Filename: pool/main/v/vlc/vlc-bin_3.0.18-2_riscv64.deb
+Size: 125840
+MD5sum: 803ab1e84ee0cae49bd550d6067c9a6a
+SHA1: 30c96ec41050f5e1e84aa9e6d149bcbed049b625
+SHA256: c1e248b80270e54410a2163ab527c36d6dfd69cc7bd3e021c4a5b7ab2f0979c2
+SHA512: a163ea21e7ac9864a3d4fca694ccc45bf528207f4edc40ee40b6f790a4028535cf21222f116a9ec5e29e75ce5e4a346a357f7a7175112c17956d0c050dd7b801
+Description: binaries from VLC
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
+ DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
+ podcasts, and multimedia streams from various network sources.
+ .
+ This package contains the VLC's binaries.
+Homepage: https://www.videolan.org/vlc/
+
+Package: vlc-plugin-access-extra
+Priority: optional
+Section: video
+Installed-Size: 206
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Source: vlc
+Version: 3.0.18-2
+Depends: libc6 (>= 2.27), libsrt1.5-gnutls (>= 1.5.1), libvlccore9 (>= 3.0.18), libvncclient1 (>= 0.9.10), libxcb-composite0, libxcb-shm0, libxcb1 (>= 1.6), vlc-plugin-abi-3-0-0f
+Filename: pool/main/v/vlc/vlc-plugin-access-extra_3.0.18-2_riscv64.deb
+Size: 102740
+MD5sum: 53f660f497f63733d0707a7f027186df
+SHA1: a4f451f2811826a3fc14f7a966087bdf2c489c99
+SHA256: 44c80917a50962ed97e6d4e5bb17d530337435607f8feef880ffc89977b9e341
+SHA512: a9bfef23203fe8f3269f4dff74fdac69b058d5585de63f5d7ddca62bb52363796abe33c9085d31b620848aa57eceaee7a7cfcb7ffc29e3a2141bde81747c1b26
+Description: multimedia player and streamer (extra access plugins)
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
+ DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
+ podcasts, and multimedia streams from various network sources.
+ .
+ This package contains additional access plugins.
+Enhances: vlc
+Homepage: https://www.videolan.org/vlc/
+Multi-Arch: same
+
+Package: vlc-plugin-base
+Priority: optional
+Section: video
+Installed-Size: 9240
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Source: vlc
+Version: 3.0.18-2
+Depends: vlc-data (= 3.0.18-2), liba52-0.7.4 (>= 0.7.4), libarchive13 (>= 3.1.2), libaribb24-0 (>= 1.0.3), libasound2 (>= 1.0.27), libass9 (>= 1:0.13.6), libatomic1 (>= 4.8), libavahi-client3 (>= 0.6.16), libavahi-common3 (>= 0.6.16), libavc1394-0 (>= 0.5.3), libavcodec59 (>= 7:5.0), libavformat59 (>= 7:5.0), libavutil57 (>= 7:5.0), libbluray2 (>= 1:1.0.0), libc6 (>= 2.34), libcairo2 (>= 1.13.1), libcddb2 (>= 1.3.2), libchromaprint1 (>= 1.3.2), libdav1d6 (>= 0.1.0), libdbus-1-3 (>= 1.9.14), libdc1394-25 (>= 2.2.6), libdca0 (>= 0.0.5), libdvbpsi10 (>= 1.3.0), libdvdnav4 (>= 6.1.0), libdvdread8 (>= 6.1.0), libebml5 (>= 1.4.4), libfaad2 (>= 2.7), libflac12 (>= 1.3.0), libfontconfig1 (>= 2.12.6), libfreetype6 (>= 2.2.1), libfribidi0 (>= 1.0.0), libgcc-s1 (>= 4.3), libgcrypt20 (>= 1.10.0), libglib2.0-0 (>= 2.37.3), libgme0 (>= 0.5.5), libgnutls30 (>= 3.7.5), libgpg-error0 (>= 1.14), libgstreamer-plugins-base1.0-0 (>= 1.0.0), libgstreamer1.0-0 (>= 1.4.0), libharfbuzz0b (>= 0.9.4), libixml10 (>= 1:1.8.0), libjpeg62-turbo (>= 1.3.1), libkate1 (>= 0.3.0), liblirc-client0, liblua5.2-0 (>= 5.2.4), libmad0 (>= 0.15.1b-3), libmatroska7 (>= 1.7.1), libmpcdec6 (>= 1:0.1~r435), libmpeg2-4 (>= 0.5.1), libmpg123-0 (>= 1.28.0), libmtp9 (>= 1.1.0), libncursesw6 (>= 6), libnfs13 (>= 1.9.7), libogg0 (>= 1.1.0), libopenmpt-modplug1 (>= 0.8.9), libopus0 (>= 1.1), libpng16-16 (>= 1.6.2-1), libpostproc56 (>= 7:5.0), libprotobuf-lite32 (>= 3.21.12), libpulse0 (>= 1.0), libraw1394-11 (>= 2.1.2), libresid-builder0c2a, librsvg2-2 (>= 2.14.4), libsamplerate0 (>= 0.1.7), libsdl-image1.2 (>= 1.2.10), libsdl1.2debian (>= 1.2.15), libsecret-1-0 (>= 0.7), libshine3 (>= 3.1.0), libshout3 (>= 2.2.2), libsidplay2, libsoxr0 (>= 0.1.2), libspatialaudio0 (>= 0.3.0+git20180730+dfsg1), libspeex1 (>= 1.2~), libspeexdsp1 (>= 1.2.1), libssh2-1 (>= 1.2.3), libstdc++6 (>= 11), libswscale6 (>= 7:5.0), libsystemd0, libtag1v5 (>= 1.9.1-2.2~), libtheora0 (>= 1.0), libtinfo6 (>= 6), libtwolame0 (>= 0.3.6), libudev1 (>= 183), libupnp13 (>= 1:1.8.3), libvlccore9 (>= 3.0.18), libvorbis0a (>= 1.1.2), libvorbisenc2 (>= 1.1.2), libx264-164 (>= 2:0.164.3095+gitbaee400), libx265-199 (>= 3.5), libxcb-keysyms1 (>= 0.4.0), libxcb1, libxml2 (>= 2.7.4), libzvbi0 (>= 0.2.35), zlib1g (>= 1:1.1.4), vlc-plugin-abi-3-0-0f
+Recommends: xdg-utils
+Suggests: libdvdcss2
+Filename: pool/main/v/vlc/vlc-plugin-base_3.0.18-2_riscv64.deb
+Size: 2821960
+MD5sum: 5b861bfea7c548ce6591af41a03f4228
+SHA1: 1250b32337738f7cf244a9e7aaa55077d7a98730
+SHA256: a869053785c880d8e893d32a8477b50fd6c9ac3bb52d35bf1bf76b71dbec9053
+SHA512: 547e101a925f2f283e34c0e0a88343d1df2c602ebd8e980a579977850d8675627c69c2056f5c633ee023e0438e84674b91bcdee6056e8efba1bf141c7e9eac08
+Description: multimedia player and streamer (base plugins)
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
+ DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
+ podcasts, and multimedia streams from various network sources.
+ .
+ This package contains most plugins which are shipped in more specialied plugin
+ packages.
+Homepage: https://www.videolan.org/vlc/
+Multi-Arch: same
+
+Package: vlc-plugin-fluidsynth
+Priority: optional
+Section: video
+Installed-Size: 160
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Source: vlc
+Version: 3.0.18-2
+Depends: fluid-soundfont-gm | timgm6mb-soundfont, libc6 (>= 2.27), libfluidsynth3 (>= 2.0.5), libvlccore9 (>= 3.0.18), vlc-plugin-abi-3-0-0f
+Filename: pool/main/v/vlc/vlc-plugin-fluidsynth_3.0.18-2_riscv64.deb
+Size: 91392
+MD5sum: 77db30347892dc0ee25bebde8396963e
+SHA1: a28e1b60b684a05bbe2bfafc5aa194741f332da5
+SHA256: 29a976d13afadc00501de23f4c2067cf7ede99af043c510366a19598a73e7e34
+SHA512: b7dd9bb2045e1a9abf54953cc5d37995b5a51e5a0e243954cbddecf9e6a1a1e9ae0936700c3b6a9bcf97cdd99a52dea3baa9c1e86c2bb25c9b9b0a290a4f71de
+Description: FluidSynth plugin for VLC
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
+ DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
+ podcasts, and multimedia streams from various network sources.
+ .
+ This plugin adds support for playing MIDI file via the FluidSynth software
+ synthesizer to the VLC media player.
+Enhances: vlc
+Homepage: https://www.videolan.org/vlc/
+Multi-Arch: same
+
+Package: vlc-plugin-jack
+Priority: optional
+Section: video
+Installed-Size: 176
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Source: vlc
+Version: 3.0.18-2
+Depends: libc6 (>= 2.27), libjack-jackd2-0 (>= 1.9.10+20150825) | libjack-0.125, libvlccore9 (>= 3.0.18), vlc-plugin-abi-3-0-0f
+Filename: pool/main/v/vlc/vlc-plugin-jack_3.0.18-2_riscv64.deb
+Size: 95844
+MD5sum: fb30035abfba46464a374a4c4c35fe04
+SHA1: 6783aad57ed152ec48f617c34dd9ac9163c3c2cc
+SHA256: 7513f33e7bc5283d36d8b030c09e51e699aebc414841233458e5759500cf68ab
+SHA512: b49a86b335d6559b69e2720381de52b1d2a25aee798ff124aa7631d0ec20b574030d84fabd7f7fda266a803e83e978e87fc33f9a48b45a12cfe84f3efc2b7f1d
+Description: JACK audio plugins for VLC
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
+ DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
+ podcasts, and multimedia streams from various network sources.
+ .
+ These plugins add support for JACK to the VLC media player. To
+ activate the audio output module, use the `--aout jack' flag or
+ select the `jack' audio output plugin from the preferences menu.
+ For the jack input, use `vlc jack://channels=...:ports=...'
+Enhances: vlc
+Homepage: https://www.videolan.org/vlc/
+Multi-Arch: same
+
+Package: vlc-plugin-notify
+Priority: optional
+Section: video
+Installed-Size: 160
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Source: vlc
+Version: 3.0.18-2
+Depends: libc6 (>= 2.27), libgdk-pixbuf-2.0-0 (>= 2.22.0), libglib2.0-0 (>= 2.12.0), libgtk-3-0 (>= 3.0.0), libnotify4 (>= 0.7.0), libvlccore9 (>= 3.0.18), vlc-plugin-abi-3-0-0f
+Filename: pool/main/v/vlc/vlc-plugin-notify_3.0.18-2_riscv64.deb
+Size: 90992
+MD5sum: 0f93ed251e0d08eb69a29d3852a1f14e
+SHA1: a72533d2bb72a02fc5cbb51ee7e1268ffa637469
+SHA256: 2f467728db34ada72632c7424cd5a8aececd68fb1c573a9cdee8f0dd19d9ea5f
+SHA512: 01d50995420890e38b76f04bc3c0e24881fcd2d421e9187469423fed436e18cfce7013411d65d4c83fe7d8d3796e519de639df3a6b3b349a925f0a5971f84691
+Description: LibNotify plugin for VLC
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
+ DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
+ podcasts, and multimedia streams from various network sources.
+ .
+ This plugin adds support for libnotify track change notification to the
+ VLC media player.
+Enhances: vlc
+Homepage: https://www.videolan.org/vlc/
+Multi-Arch: same
+
+Package: vlc-plugin-qt
+Priority: optional
+Section: video
+Installed-Size: 3227
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Source: vlc
+Version: 3.0.18-2
+Depends: libc6 (>= 2.27), libgcc-s1 (>= 3.0), libqt5core5a (>= 5.15.1), libqt5gui5 (>= 5.14.1) | libqt5gui5-gles (>= 5.14.1), libqt5svg5 (>= 5.6.0~beta), libqt5widgets5 (>= 5.15.1), libqt5x11extras5 (>= 5.6.0), libstdc++6 (>= 5), libvlccore9 (>= 3.0.18), libwayland-client0 (>= 1.0.2), libx11-6, vlc-plugin-abi-3-0-0f
+Recommends: vlc-bin
+Filename: pool/main/v/vlc/vlc-plugin-qt_3.0.18-2_riscv64.deb
+Size: 1141760
+MD5sum: 1c2e3b45dee5ba0c9f084b23b8377682
+SHA1: 2ee2f8a7f45182c276616dbe51b2d154c773bced
+SHA256: 1218daacce72167a260efaef2e89a08e8ed714b79e90cec62fa1472656a821b8
+SHA512: 03b17c0e6da932a114970d19cad2e204e05cb89c0912f06100250335e846751bb2e1cd76a297cabd1b240d68a7be0fe25aeeb3c68aa13b13c3bef3e21e662d7f
+Description: multimedia player and streamer (Qt plugin)
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
+ DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
+ podcasts, and multimedia streams from various network sources.
+ .
+ This package contains VLC's Qt interface.
+Homepage: https://www.videolan.org/vlc/
+Multi-Arch: same
+
+Package: vlc-plugin-samba
+Priority: optional
+Section: video
+Installed-Size: 156
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Source: vlc
+Version: 3.0.18-2
+Depends: libc6 (>= 2.27), libsmbclient (>= 2:4.0.3+dfsg1), libvlccore9 (>= 3.0.18), vlc-plugin-abi-3-0-0f
+Filename: pool/main/v/vlc/vlc-plugin-samba_3.0.18-2_riscv64.deb
+Size: 91064
+MD5sum: 9671e8226c9f7e573c473f6753a48882
+SHA1: 2dd745336809f35a66308685793aa265201ea014
+SHA256: eae9fdf585cf149850a959e51a07cd5d4c14837c8c246752256249f691ef975c
+SHA512: e9146012735f714844e1372887550dc758d0bf6d369c092726c91804a46ee46f46036e341a27edbb2641c269afbc77e48809101bab49111326910eda23d3345a
+Description: Samba plugin for VLC
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
+ DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
+ podcasts, and multimedia streams from various network sources.
+ .
+ This plugin adds support to access Samba shares from the VLC media player.
+Enhances: vlc
+Homepage: https://www.videolan.org/vlc/
+Multi-Arch: same
+
+Package: vlc-plugin-skins2
+Priority: optional
+Section: video
+Installed-Size: 1068
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Source: vlc
+Version: 3.0.18-2
+Depends: fonts-freefont-ttf, vlc-plugin-qt (= 3.0.18-2), libc6 (>= 2.34), libfreetype6 (>= 2.2.1), libfribidi0 (>= 0.19.2), libgcc-s1 (>= 3.0), libstdc++6 (>= 11), libvlccore9 (>= 3.0.18), libx11-6, libxext6, libxinerama1 (>= 2:1.1.4), libxpm4, vlc-plugin-abi-3-0-0f
+Recommends: vlc-bin
+Filename: pool/main/v/vlc/vlc-plugin-skins2_3.0.18-2_riscv64.deb
+Size: 549728
+MD5sum: 9b4f04e7af938a220e2a539ab53ef3a6
+SHA1: 56e0180cee94a0675c852edc1c836f904abfc2a6
+SHA256: bbc175c92d7a5d2ef0522434c2ef6e4c9deb466f894f0fd200f8ebe4a3ad852d
+SHA512: 4c97ac656b52c54372815c59f97e5faa75a230e5cf8c95c13a9c492ba2e4e345727da8269d922762c01eefefdb9475ee7505a293babeb7ccd91b3ce240a9060c
+Description: multimedia player and streamer (Skins2 plugin)
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
+ DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
+ podcasts, and multimedia streams from various network sources.
+ .
+ This package contains VLC's Skins2 interface.
+Enhances: vlc
+Homepage: https://www.videolan.org/vlc/
+Multi-Arch: same
+
+Package: vlc-plugin-svg
+Priority: optional
+Section: video
+Installed-Size: 156
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Source: vlc
+Version: 3.0.18-2
+Depends: libc6 (>= 2.33), libcairo2 (>= 1.13.1), libglib2.0-0 (>= 2.12.0), librsvg2-2 (>= 2.14.4), libvlccore9 (>= 3.0.18), vlc-plugin-abi-3-0-0f
+Filename: pool/main/v/vlc/vlc-plugin-svg_3.0.18-2_riscv64.deb
+Size: 91044
+MD5sum: 3d61aa63a0e23b0925fe3e4e577cf715
+SHA1: 5a0402615fd2c28ccef990bce20cacdd615a2fbb
+SHA256: 670d45b9bb6c8364ecfa318771029f5def49e730d7397dc91514db115768c475
+SHA512: 406b3e22791c152cf3b68c81eafe281d413906f8303b23d38936aaf4e6d75e6ebaf19df1e5df2357e778dd59645c4c5a6ed57a2b1976aa1d698b25ab4456dc19
+Description: SVG plugin for VLC
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
+ DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
+ podcasts, and multimedia streams from various network sources.
+ .
+ This plugin allows you to render SVG graphics on top of the video. It is a text
+ renderer, and must be activated through the '--text-renderer svg' option. When
+ sent non-SVG data, it will convert it to SVG using a template that can be
+ specified by the svg-template-file option.
+Enhances: vlc
+Homepage: https://www.videolan.org/vlc/
+Multi-Arch: same
+
+Package: vlc-plugin-video-output
+Priority: optional
+Section: video
+Installed-Size: 672
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Source: vlc
+Version: 3.0.18-2
+Depends: libaa1 (>= 1.4p5), libavcodec59 (>= 7:5.0), libavutil57 (>= 7:5.0), libc6 (>= 2.34), libcaca0 (>= 0.99.beta20), libegl1, libgl1, libgles2, libplacebo208 (>= 4.208.0), libva-drm2 (>= 1.1.0), libva-wayland2 (>= 1.3.0), libva-x11-2 (>= 1.0.3), libva2 (>= 2.2.0), libvlccore9 (>= 3.0.18), libwayland-client0 (>= 1.20.0), libwayland-egl1 (>= 1.15.0), libx11-6, libxcb-keysyms1 (>= 0.4.0), libxcb-shm0, libxcb-xv0 (>= 1.2), libxcb1, vlc-plugin-abi-3-0-0f
+Filename: pool/main/v/vlc/vlc-plugin-video-output_3.0.18-2_riscv64.deb
+Size: 210600
+MD5sum: 672ecd2de14aa60480cb7896b795cdf5
+SHA1: 89f9e4ddffc788b4d5413bc302054506ba977c8a
+SHA256: a679d291171d8136ef70eb6752ca5d15ca90bf65fbe76084f734b446249f640d
+SHA512: e425a3344f1108859f96cc0db10b19f7ffc66933d601896cd9028e95d452eca55526425b12d78edec75a4673b5aada73449d3a1a903af0b5056e480170f25d93
+Description: multimedia player and streamer (video output plugins)
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
+ DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
+ podcasts, and multimedia streams from various network sources.
+ .
+ This package contains the video output plugins.
+Enhances: vlc
+Homepage: https://www.videolan.org/vlc/
+Multi-Arch: same
+
+Package: vlc-plugin-video-splitter
+Priority: optional
+Section: video
+Installed-Size: 198
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Source: vlc
+Version: 3.0.18-2
+Depends: libc6 (>= 2.27), libvlccore9 (>= 3.0.18), libxcb-randr0 (>= 1.1), libxcb1, vlc-plugin-abi-3-0-0f
+Filename: pool/main/v/vlc/vlc-plugin-video-splitter_3.0.18-2_riscv64.deb
+Size: 105276
+MD5sum: 3ef8841b1572348fc3f21937844e47ad
+SHA1: 9101ca6ac5396a575e55de15634a176c2faec634
+SHA256: 28a9ba009ab09b40f2d27a0262fc0ea278a36bbf7daee46a9316c8bdd87bd1a9
+SHA512: 7457ea64ecb3ec992d3f239ca4369bdf9a388cd4cdf0c8ad1786de7b33a49ca65041abf09c419b4229d8a998a2f045faca464e1fee5df5f969eb5c91ddf2ec74
+Description: multimedia player and streamer (video splitter plugins)
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
+ DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
+ podcasts, and multimedia streams from various network sources.
+ .
+ This package contains the video splitter plugins.
+Enhances: vlc
+Homepage: https://www.videolan.org/vlc/
+Multi-Arch: same
+
+Package: vlc-plugin-visualization
+Priority: optional
+Section: video
+Installed-Size: 203
+Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
+Architecture: riscv64
+Source: vlc
+Version: 3.0.18-2
+Depends: libc6 (>= 2.27), libgl1, libvlccore9 (>= 3.0.18), vlc-plugin-abi-3-0-0f
+Filename: pool/main/v/vlc/vlc-plugin-visualization_3.0.18-2_riscv64.deb
+Size: 110184
+MD5sum: 4dc7066f6264cc584bd4455f1058c466
+SHA1: d2940abc0751734f5388f626656d9b8338b81d89
+SHA256: 7339feb853e657ccd32f004f5da2330692512b8df1b1093fa3f4fc49640cbad7
+SHA512: 9880b91f591e475b3bba1e43f3ab38100f5662253c4158f48f5d0534ab547c47a761e207249923cd5e4836615de464ce996d0635ac281e9f3e3a07e8cf212470
+Description: multimedia player and streamer (visualization plugins)
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
+ DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
+ podcasts, and multimedia streams from various network sources.
+ .
+ This package contains the visualization plugins.
+Enhances: vlc
+Homepage: https://www.videolan.org/vlc/
+Multi-Arch: same
+
+Package: wave420l
+Priority: optional
+Section: libs
+Installed-Size: 463
+Maintainer: StarFive Debian
+Architecture: riscv64
+Version: 1.0-1
+Depends: libc6 (>= 2.34)
+Filename: pool/main/w/wave420l/wave420l_1.0-1_riscv64.deb
+Size: 214624
+MD5sum: 18096491a8f9716a95ceac99c09d4927
+SHA1: e6c93ea3de236956a3e4d254255d0e84ac81477f
+SHA256: 60c047887d1265cb7f1fa4a398be07f1d9eb1c2f3c4bd79c660d03cdeac0853d
+SHA512: d1648ae2e1ea913c8fe28b342663233ca0d15f671d5ca369ca7ee588f916c457e203486fa64736278804e792c4f71f063af45cf1ebcdafb19c9b9a43e3757d21
+Description: VPU Encoder Library.
+Homepage: <insert the upstream URL, if relevant>
+
+Package: wave420l-dev
+Priority: optional
+Section: libdevel
+Installed-Size: 637
+Maintainer: StarFive Debian
+Architecture: riscv64
+Source: wave420l
+Version: 1.0-1
+Depends: wave420l
+Filename: pool/main/w/wave420l/wave420l-dev_1.0-1_riscv64.deb
+Size: 99820
+MD5sum: 647eed542d4d1a737f21430fa6fcac16
+SHA1: bca230ab8a0b5d5bc76410b4ab2752d4c6a14684
+SHA256: 3c58300aa4665b9fc307583f91514485bfe62407d2750fb6e2bb65bb9468e2d5
+SHA512: 5ebcb3b3307433e4cbdeec0c09c4c058a179d6fd6fa6944b42e4f4207d63745cc7117ab633dfe03db659355b0024c3e5b8a4014353f947b97dbe68020b37b610
+Description: VPU Encoder Development Package.
+Homepage: <insert the upstream URL, if relevant>
+
+Package: wave511
+Priority: optional
+Section: libs
+Installed-Size: 1432
+Maintainer: StarFive Debian
+Architecture: riscv64
+Version: 1.0-1
+Depends: libc6 (>= 2.34)
+Filename: pool/main/w/wave511/wave511_1.0-1_riscv64.deb
+Size: 261260
+MD5sum: d878894c8e0b1ef75687a4e40009c55a
+SHA1: ccb543f0cbe993490bef7aa4ea8df7b09a49c4c8
+SHA256: 19101e5a033b191ef17aae927e0294b68c23d4cff0936f0261a90b385e42d66e
+SHA512: 7275088e465f9015ba1dbb2438326e274d6daf65123708547ebf477054601bb2f3036499533bf5ac3df599a9ddcad5b1c980d9d8a9bdd31f0b0df5fb4c8fa839
+Description: VPU Decoder Library.
+Homepage: <insert the upstream URL, if relevant>
+
+Package: wave511-dev
+Priority: optional
+Section: libdevel
+Installed-Size: 637
+Maintainer: StarFive Debian
+Architecture: riscv64
+Source: wave511
+Version: 1.0-1
+Depends: wave511
+Filename: pool/main/w/wave511/wave511-dev_1.0-1_riscv64.deb
+Size: 96880
+MD5sum: d8143e38b8d3c0b852beb1a6d51cad93
+SHA1: da5ed4d3fb0d25368077b361355559cdccd7a057
+SHA256: 1ba99b06005af74038cfb4e439e892c9752075462f049de066104492123d02a7
+SHA512: 0a41bcb6865e608566ec601ee29a3765f1fc191f3ac588585d7ed55ae64b1751ccc385a3f2aebad987a97b75b11ffac11b0378990acac64f5e618df505d7d3e9
+Description: VPU Decoder Development Package.
+Homepage: <insert the upstream URL, if relevant>
+

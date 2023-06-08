@@ -1,5 +1,0 @@
-async-functions
-object-spread
-generators
-BigInt
-TypedArray

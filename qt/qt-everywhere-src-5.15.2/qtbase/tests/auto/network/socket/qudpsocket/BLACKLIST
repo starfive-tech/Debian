@@ -1,9 +1,0 @@
-[writeDatagramToNonExistingPeer]
-# QTBUG-85364 QTBUG-74542 QTBUG-80328
-windows
-[readyReadForEmptyDatagram]
-opensuse-leap
-[echo]
-opensuse-42.3
-[readyReadForEmptyDatagram]
-linux

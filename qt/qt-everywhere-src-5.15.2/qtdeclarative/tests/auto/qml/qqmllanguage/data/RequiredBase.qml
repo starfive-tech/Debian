@@ -1,3 +1,0 @@
-NonRequiredBase {
-    required i
-}

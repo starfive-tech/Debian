@@ -1,7 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>main.qml</file>
-        <file>FrameGraph.qml</file>
-        <file>SimpleCamera.qml</file>
-    </qresource>
-</RCC>
