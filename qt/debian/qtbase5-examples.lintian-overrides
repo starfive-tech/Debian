@@ -1,0 +1,5 @@
+# The images are part of the examples
+qtbase5-examples: image-file-in-usr-lib
+qtbase5-examples: national-encoding [usr/lib/*/qt5/examples/widgets/tools/codecs/encodedfiles/iso-8859-1.txt]
+qtbase5-examples: national-encoding [usr/lib/*/qt5/examples/widgets/tools/codecs/encodedfiles/iso-8859-15.txt]
+qtbase5-examples: national-encoding [usr/lib/*/qt5/examples/widgets/tools/codecs/encodedfiles/utf-16.txt]

@@ -1,0 +1,30 @@
+#! /usr/bin/dh-exec
+[!armel !armhf] usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/xcbglintegrations/libqxcb-glx-integration.so
+[any-i386] usr/lib/${DEB_HOST_MULTIARCH}/sse2/libQt5Gui.so.*
+[kfreebsd-any linux-any] usr/lib/${DEB_HOST_MULTIARCH}/libQt5EglFSDeviceIntegration.so.*
+[kfreebsd-any linux-any] usr/lib/${DEB_HOST_MULTIARCH}/libQt5EglFsKmsSupport.so.*
+[kfreebsd-any linux-any] usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/egldeviceintegrations/libqeglfs-emu-integration.so
+[kfreebsd-any linux-any] usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/egldeviceintegrations/libqeglfs-kms-egldevice-integration.so
+[kfreebsd-any linux-any] usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/egldeviceintegrations/libqeglfs-kms-integration.so
+[kfreebsd-any linux-any] usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/egldeviceintegrations/libqeglfs-x11-integration.so
+[kfreebsd-any linux-any] usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/platforms/libqeglfs.so
+[kfreebsd-any linux-any] usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/platforms/libqminimalegl.so
+[linux-any] usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/generic/libqevdevkeyboardplugin.so
+[linux-any] usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/generic/libqevdevmouseplugin.so
+[linux-any] usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/generic/libqevdevtabletplugin.so
+[linux-any] usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/generic/libqevdevtouchplugin.so
+[linux-any] usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/generic/libqlibinputplugin.so
+[linux-any] usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/platforms/libqlinuxfb.so
+usr/lib/${DEB_HOST_MULTIARCH}/libQt5Gui.so.*
+usr/lib/${DEB_HOST_MULTIARCH}/libQt5XcbQpa.so.*
+usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/generic/libqtuiotouchplugin.so
+usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/imageformats/libqgif.so
+usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/imageformats/libqico.so
+usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/imageformats/libqjpeg.so
+usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/platforminputcontexts/libcomposeplatforminputcontextplugin.so
+usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/platforminputcontexts/libibusplatforminputcontextplugin.so
+usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/platforms/libqminimal.so
+usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/platforms/libqoffscreen.so
+usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/platforms/libqvnc.so
+usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/platforms/libqxcb.so
+usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/xcbglintegrations/libqxcb-egl-integration.so

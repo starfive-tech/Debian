@@ -1,0 +1,8 @@
+usr/lib/qt5/bin/fixqt4headers.pl usr/lib/${DEB_HOST_MULTIARCH}/qt5/bin/fixqt4headers.pl
+usr/lib/qt5/bin/moc              usr/lib/${DEB_HOST_MULTIARCH}/qt5/bin/moc
+usr/lib/qt5/bin/qdbuscpp2xml     usr/lib/${DEB_HOST_MULTIARCH}/qt5/bin/qdbuscpp2xml
+usr/lib/qt5/bin/qdbusxml2cpp     usr/lib/${DEB_HOST_MULTIARCH}/qt5/bin/qdbusxml2cpp
+usr/lib/qt5/bin/qlalr            usr/lib/${DEB_HOST_MULTIARCH}/qt5/bin/qlalr
+usr/lib/qt5/bin/rcc              usr/lib/${DEB_HOST_MULTIARCH}/qt5/bin/rcc
+usr/lib/qt5/bin/syncqt.pl        usr/lib/${DEB_HOST_MULTIARCH}/qt5/bin/syncqt.pl
+usr/lib/qt5/bin/uic              usr/lib/${DEB_HOST_MULTIARCH}/qt5/bin/uic

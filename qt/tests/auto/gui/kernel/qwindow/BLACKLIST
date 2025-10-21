@@ -1,0 +1,22 @@
+[positioning]
+opensuse-leap
+[positioning:default]
+linux
+macos ci
+winrt
+[positioning:fake]
+macos ci
+[modalWithChildWindow]
+# QTBUG-66851
+# QTBUG-69160
+opensuse-leap
+[modalWindowEnterEventOnHide_QTBUG35109]
+osx
+[spuriousMouseMove]
+# QTBUG-69162
+windows-10
+[testInputEvents]
+rhel-7.4
+[modalWindowPosition]
+# QTBUG-69161
+android

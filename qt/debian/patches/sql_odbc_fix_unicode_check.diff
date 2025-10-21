@@ -1,0 +1,32 @@
+Description: QSQL/ODBC: fix regression (trailing NUL)
+ When we fixed the callers of toSQLTCHAR() to use the result's size()
+ instead of the input's (which differ, if sizeof(SQLTCHAR) != 2), we
+ exposed callers to the append(0), which changes the size() of the
+ result QVLA. Callers that don't rely on NUL-termination (all?) now saw
+ an additional training NUL.
+ .
+ Fix by not NUL-terminating, and changing the only user of SQL_NTS to
+ use an explicit length.
+Origin: upstream, https://code.qt.io/cgit/qt/qtbase.git/commit/?id=9020034b3b6a3a81
+Last-Update: 2023-06-30
+
+--- a/src/plugins/sqldrivers/odbc/qsql_odbc.cpp
++++ b/src/plugins/sqldrivers/odbc/qsql_odbc.cpp
+@@ -125,7 +125,6 @@ inline static QVarLengthArray<SQLTCHAR>
+ {
+     QVarLengthArray<SQLTCHAR> result;
+     toSQLTCHARImpl(result, input);
+-    result.append(0); // make sure it's null terminated, doesn't matter if it already is, it does if it isn't.
+     return result;
+ }
+ 
+@@ -2119,7 +2118,8 @@ void QODBCDriverPrivate::checkUnicode()
+         QLatin1String("select 'test' from dual"),
+     };
+     for (const auto &statement : statements) {
+-        r = SQLExecDirect(hStmt, toSQLTCHAR(statement).data(), SQL_NTS);
++        auto encoded = toSQLTCHAR(statement);
++        r = SQLExecDirect(hStmt, encoded.data(), SQLINTEGER(encoded.size()));
+         if (r == SQL_SUCCESS)
+             break;
+     }

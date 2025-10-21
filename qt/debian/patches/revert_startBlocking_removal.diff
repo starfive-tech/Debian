@@ -1,0 +1,102 @@
+Description: revert "Remove the dead code for blocking methods from QtConcurrent"
+ It's a binary incompatible change.
+Origin: KDE, https://invent.kde.org/qt/qt/qtbase/-/commit/eeadc036d77b75be
+ Also submitted to upstream 5.15 branch according to
+ https://lists.qt-project.org/pipermail/development/2022-September/042951.html.
+Last-Update: 2022-09-10
+
+--- a/src/concurrent/qtconcurrentthreadengine.cpp
++++ b/src/concurrent/qtconcurrentthreadengine.cpp
+@@ -176,6 +176,39 @@ void ThreadEngineBase::startSingleThread
+     finish();
+ }
+ 
++void ThreadEngineBase::startBlocking()
++{
++    start();
++    barrier.acquire();
++    startThreads();
++
++    bool throttled = false;
++#ifndef QT_NO_EXCEPTIONS
++    try {
++#endif
++        while (threadFunction() == ThrottleThread) {
++            if (threadThrottleExit()) {
++                throttled = true;
++                break;
++            }
++        }
++#ifndef QT_NO_EXCEPTIONS
++    } catch (QException &e) {
++        handleException(e);
++    } catch (...) {
++        handleException(QUnhandledException());
++    }
++#endif
++
++    if (throttled == false) {
++        barrier.release();
++    }
++
++    barrier.wait();
++    finish();
++    exceptionStore.throwPossibleException();
++}
++
+ void ThreadEngineBase::startThread()
+ {
+     startThreadInternal();
+--- a/src/concurrent/qtconcurrentthreadengine.h
++++ b/src/concurrent/qtconcurrentthreadengine.h
+@@ -91,6 +91,7 @@ public:
+     ThreadEngineBase();
+     virtual ~ThreadEngineBase();
+     void startSingleThreaded();
++    void startBlocking();
+     void startThread();
+     bool isCanceled();
+     void waitForResume();
+@@ -144,6 +145,15 @@ public:
+     }
+ 
+     // Runs the user algorithm using multiple threads.
++    // This function blocks until the algorithm is finished,
++    // and then returns the result.
++    T *startBlocking()
++    {
++        ThreadEngineBase::startBlocking();
++        return result();
++    }
++
++    // Runs the user algorithm using multiple threads.
+     // Does not block, returns a future.
+     QFuture<T> startAsynchronously()
+     {
+@@ -223,6 +233,13 @@ class ThreadEngineStarter : public Threa
+ public:
+     ThreadEngineStarter(TypedThreadEngine *eng)
+         : Base(eng) { }
++
++    T startBlocking()
++    {
++        T t = *this->threadEngine->startBlocking();
++        delete this->threadEngine;
++        return t;
++    }
+ };
+ 
+ // Full template specialization where T is void.
+@@ -232,6 +249,12 @@ class ThreadEngineStarter<void> : public
+ public:
+     ThreadEngineStarter(ThreadEngine<void> *_threadEngine)
+         : ThreadEngineStarterBase<void>(_threadEngine) {}
++
++    void startBlocking()
++    {
++        this->threadEngine->startBlocking();
++        delete this->threadEngine;
++    }
+ };
+ 
+ //! [qtconcurrentthreadengine-1]

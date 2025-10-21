@@ -1,0 +1,1 @@
+usr/bin/${DEB_HOST_GNU_TYPE}-qmake usr/lib/${DEB_HOST_MULTIARCH}/qt5/bin/qmake

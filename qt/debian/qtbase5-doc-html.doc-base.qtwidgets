@@ -1,0 +1,9 @@
+Document: qt5-widgets
+Title: Qt 5 Widgets module
+Author: The Qt Company Ltd
+Abstract: This is the HTML documentation for Qt 5 Widgets
+Section: Programming/C++
+
+Format: HTML
+Index: /usr/share/doc/qtbase5-doc-html/html/qtwidgets/qtwidgets-index.html
+Files: /usr/share/doc/qtbase5-doc-html/html/qtwidgets/*.html

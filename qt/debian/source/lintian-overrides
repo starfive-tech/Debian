@@ -1,0 +1,18 @@
+# These files are test binary data
+qtbase-opensource-src source: source-is-missing [tests/auto/corelib/plugin/qpluginloader/elftest/corrupt2.elf64.so]
+qtbase-opensource-src source: source-is-missing [tests/auto/corelib/plugin/qpluginloader/elftest/corrupt3.elf64.so]
+qtbase-opensource-src source: source-is-missing [tests/auto/corelib/plugin/qpluginloader/elftest/debugobj.so]
+
+# And they are corrupt, but no need to worry about that
+qtbase-opensource-src source: binary-with-bad-dynamic-table [tests/auto/corelib/plugin/qpluginloader/elftest/debugobj.so]
+qtbase-opensource-src source: elf-error * [tests/auto/corelib/plugin/qpluginloader/elftest/corrupt2.elf64.so]
+qtbase-opensource-src source: elf-error * [tests/auto/corelib/plugin/qpluginloader/elftest/corrupt3.elf64.so]
+qtbase-opensource-src source: elf-warning * [tests/auto/corelib/plugin/qpluginloader/elftest/corrupt2.elf64.so]
+
+# These are not static libraries, despite the .a extension
+qtbase-opensource-src source: unpack-message-for-orig * ar failed for */tests/auto/corelib/io/qdir/types/a.a
+qtbase-opensource-src source: unpack-message-for-orig * ar failed for */tests/auto/corelib/io/qdir/types/b.a
+qtbase-opensource-src source: unpack-message-for-orig * ar failed for */tests/auto/corelib/io/qdir/types/c.a
+qtbase-opensource-src source: unpack-message-for-source ar failed for tests/auto/corelib/io/qdir/types/a.a
+qtbase-opensource-src source: unpack-message-for-source ar failed for tests/auto/corelib/io/qdir/types/b.a
+qtbase-opensource-src source: unpack-message-for-source ar failed for tests/auto/corelib/io/qdir/types/c.a

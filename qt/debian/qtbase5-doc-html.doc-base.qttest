@@ -1,0 +1,9 @@
+Document: qt5-test
+Title: Qt 5 Test module
+Author: The Qt Company Ltd
+Abstract: This is the HTML documentation for Qt 5 Test
+Section: Programming/C++
+
+Format: HTML
+Index: /usr/share/doc/qtbase5-doc-html/html/qttestlib/qttest-index.html
+Files: /usr/share/doc/qtbase5-doc-html/html/qttestlib/*.html

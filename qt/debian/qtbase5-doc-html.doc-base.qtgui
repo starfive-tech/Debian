@@ -1,0 +1,9 @@
+Document: qt5-gui
+Title: Qt 5 Gui module
+Author: The Qt Company Ltd
+Abstract: This is the HTML documentation for Qt 5 Gui
+Section: Programming/C++
+
+Format: HTML
+Index: /usr/share/doc/qtbase5-doc-html/html/qtgui/qtgui-index.html
+Files: /usr/share/doc/qtbase5-doc-html/html/qtgui/*.html

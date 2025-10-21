@@ -1,0 +1,9 @@
+Document: qt5-xml
+Title: Qt 5 XML module
+Author: The Qt Company Ltd
+Abstract: This is the HTML documentation for Qt 5 XML
+Section: Programming/C++
+
+Format: HTML
+Index: /usr/share/doc/qtbase5-doc-html/html/qtxml/qtxml-index.html
+Files: /usr/share/doc/qtbase5-doc-html/html/qtxml/*.html

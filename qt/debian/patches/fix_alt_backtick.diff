@@ -1,0 +1,80 @@
+Description: fix Alt+` shortcut on non-US layouts
+ Make it possible for non-letter-keys with Latin 1 symbols (`, !, @ etc.)
+ to participate in shortcuts also, when the keys generate national
+ symbols on non-Latin layout.
+ .
+ For example, in Russian layout, "`" key generates cyrillic "ё" letter of
+ national alphabet, so shortcuts with the key should still work
+ regardless of the actual layout.
+Origin: upstream, https://code.qt.io/cgit/qt/qtbase.git/commit?id=62e697fd568f6acd
+Last-Update: 2022-12-03
+
+--- a/src/platformsupport/input/xkbcommon/qxkbcommon.cpp
++++ b/src/platformsupport/input/xkbcommon/qxkbcommon.cpp
+@@ -471,7 +471,7 @@ QVector<xkb_keysym_t> QXkbCommon::toKeys
+     } else if (event->modifiers() & Qt::KeypadModifier) {
+         if (qtKey >= Qt::Key_0 && qtKey <= Qt::Key_9)
+             keysyms.append(XKB_KEY_KP_0 + (qtKey - Qt::Key_0));
+-    } else if (isLatin(qtKey) && event->text().isUpper()) {
++    } else if (isLatin1(qtKey) && event->text().isUpper()) {
+         keysyms.append(qtKey);
+     }
+ 
+@@ -523,7 +523,7 @@ int QXkbCommon::keysymToQtKey(xkb_keysym
+         // With standard shortcuts we should prefer a latin character, this is
+         // for checks like "some qkeyevent == QKeySequence::Copy" to work even
+         // when using for example 'russian' keyboard layout.
+-        if (!QXkbCommon::isLatin(keysym)) {
++        if (!QXkbCommon::isLatin1(keysym)) {
+             xkb_keysym_t latinKeysym = QXkbCommon::lookupLatinKeysym(state, code);
+             if (latinKeysym != XKB_KEY_NoSymbol)
+                 keysym = latinKeysym;
+@@ -546,7 +546,7 @@ static int keysymToQtKey_internal(xkb_ke
+     } else if (keysym >= XKB_KEY_KP_0 && keysym <= XKB_KEY_KP_9) {
+         // numeric keypad keys
+         qtKey = Qt::Key_0 + (keysym - XKB_KEY_KP_0);
+-    } else if (QXkbCommon::isLatin(keysym)) {
++    } else if (QXkbCommon::isLatin1(keysym)) {
+         qtKey = QXkbCommon::qxkbcommon_xkb_keysym_to_upper(keysym);
+     } else {
+         // check if we have a direct mapping
+@@ -678,7 +678,7 @@ QList<int> QXkbCommon::possibleKeys(xkb_
+         Qt::KeyboardModifiers neededMods = ModsTbl[i];
+         if ((modifiers & neededMods) == neededMods) {
+             if (i == 8) {
+-                if (isLatin(baseQtKey))
++                if (isLatin1(baseQtKey))
+                     continue;
+                 // add a latin key as a fall back key
+                 sym = lookupLatinKeysym(state, keycode);
+@@ -733,7 +733,7 @@ void QXkbCommon::verifyHasLatinLayout(xk
+     for (xkb_layout_index_t layout = 0; layout < layoutCount; ++layout) {
+         for (xkb_keycode_t code = minKeycode; code < maxKeycode; ++code) {
+             xkb_keymap_key_get_syms_by_level(keymap, code, layout, 0, &keysyms);
+-            if (keysyms && isLatin(keysyms[0]))
++            if (keysyms && isLatin1(keysyms[0]))
+                 nrLatinKeys++;
+             if (nrLatinKeys > 10) // arbitrarily chosen threshold
+                 return;
+@@ -766,7 +766,7 @@ xkb_keysym_t QXkbCommon::lookupLatinKeys
+         xkb_level_index_t level = xkb_state_key_get_level(state, keycode, layout);
+         if (xkb_keymap_key_get_syms_by_level(keymap, keycode, layout, level, &syms) != 1)
+             continue;
+-        if (isLatin(syms[0])) {
++        if (isLatin1(syms[0])) {
+             sym = syms[0];
+             break;
+         }
+--- a/src/platformsupport/input/xkbcommon/qxkbcommon_p.h
++++ b/src/platformsupport/input/xkbcommon/qxkbcommon_p.h
+@@ -94,8 +94,8 @@ public:
+     static void verifyHasLatinLayout(xkb_keymap *keymap);
+     static xkb_keysym_t lookupLatinKeysym(xkb_state *state, xkb_keycode_t keycode);
+ 
+-    static bool isLatin(xkb_keysym_t sym) {
+-        return ((sym >= 'a' && sym <= 'z') || (sym >= 'A' && sym <= 'Z'));
++    static bool isLatin1(xkb_keysym_t sym) {
++        return sym <= 0xff;
+     }
+     static bool isKeypad(xkb_keysym_t sym) {
+         return sym >= XKB_KEY_KP_Space && sym <= XKB_KEY_KP_9;

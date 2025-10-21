@@ -1,0 +1,6 @@
+[timeoutConnect:ip]
+windows
+# QTBUG-66247
+
+[bind]
+macos arm

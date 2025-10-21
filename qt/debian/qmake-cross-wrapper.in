@@ -1,0 +1,27 @@
+#!/bin/sh
+
+if [ "x$1" = x-qt5 ] || [ "x$1" = "x-qt=5" ] || [ "x$1" = "x-qt=qt5" ]; then
+	shift
+fi
+
+QMAKE_MODE=
+
+if [ "x$1" = x-query ]; then
+	exec /usr/lib/qt5/bin/qmake "$@" -qtconf /usr/lib/@DEB_HOST_MULTIARCH@/qt5/qt.conf
+elif [ "x$1" = x-makefile ] || [ "x$1" = x-project ]; then
+	QMAKE_MODE="$1"
+	shift
+fi
+
+exec /usr/lib/qt5/bin/qmake \
+	$QMAKE_MODE \
+	-qtconf /usr/lib/@DEB_HOST_MULTIARCH@/qt5/qt.conf \
+	-early \
+	QMAKE_CC=${CC:-@DEB_HOST_GNU_TYPE@-gcc} \
+	QMAKE_CXX=${CXX:-@DEB_HOST_GNU_TYPE@-g++} \
+	QMAKE_LINK=${CXX:-@DEB_HOST_GNU_TYPE@-g++} \
+	QMAKE_STRIP=${STRIP:-@DEB_HOST_GNU_TYPE@-strip} \
+	QMAKE_QMAKE=/usr/bin/@DEB_HOST_GNU_TYPE@-qmake \
+	PKG_CONFIG=@DEB_HOST_GNU_TYPE@-pkg-config \
+	-before \
+	"$@"

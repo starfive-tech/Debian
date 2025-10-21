@@ -1,0 +1,113 @@
+.TH QMAKE 1 "2017-04-09" "The Qt Company Ltd."
+.SH NAME
+qmake \- cross-platform makefile generator for Qt
+
+.SH SYNOPSIS
+.B qmake
+.I "[mode] [options] [files]"
+.br
+.SH "DESCRIPTION"
+.B QMake
+has two modes, one mode for generating project files based on some
+heuristics, and the other for generating makefiles. Normally you
+shouldn't need to specify a mode, as makefile generation is the default
+mode for qmake, but you may use this to test qmake on an existing
+project.
+
+.SH MODE
+.TP
+.B "\-project"
+Put qmake into project file generation mode. In this mode qmake
+interprets files as files to be built, defaults to *.c; *.ui; *.y; *.l;
+*.ts; *.xlf; *.qrc; *.h; *.hpp; *.hh; *.hxx; *.H; *.cpp; *.cc; *.cxx; *.C.
+.TP
+.B "\-makefile"
+Put qmake into makefile generation mode (default). In this mode qmake
+interprets files as project files to be processed, if skipped qmake will
+try to find a project file in your current working directory.
+
+.SH WARNINGS OPTIONS
+.TP
+.BI "\-Wnone"
+Turn off all warnings; specific ones may be re-enabled by later \-W options
+.TP
+.BI "\-Wall"
+Turn on all warnings
+.TP
+.BI "\-Wparser"
+Turn on parser warnings
+.TP
+.BI "\-Wlogic"
+Turn on logic warnings (on by default)
+.TP
+.BI "\-Wdeprecated"
+Turn on deprecation warnings (on by default)
+
+.SH OPTIONS
+.TP
+.BI "\-o file"
+Write output to file
+.TP
+.BI "\-d"
+Increase debug level
+.TP
+.BI "\-t templ"
+Overrides TEMPLATE as \fBtempl\fR
+.TP
+.BI "\-tp prefix"
+Overrides TEMPLATE so that prefix is prefixed into the value
+.TP
+.BI "\-help"
+Displays a help text
+.TP
+.BI "\-v"
+Version information
+.TP
+.BI "\-after"
+All variable assignments after this will be parsed after [files]
+.TP
+.BI "\-norecursive"
+Do not do a recursive search
+.TP
+.BI "\-recursive"
+Do a recursive search
+.TP
+.BI "\-set <prop> <value>"
+Set persistent property
+.TP
+.BI "\-unset <prop>"
+Unset persistent property
+.TP
+.BI "\-query <prop>"
+Query persistent property. Show all if <prop> is empty.
+.TP
+.BI "\-qtconf file"
+Use \fBfile\fR instead of looking for qt.conf
+.TP
+.BI "\-cache file"
+Use \fBfile\fR as cache [makefile mode only]
+.TP
+.BI "\-spec spec"
+Use \fBspec\fR as QMAKESPEC [makefile mode only]
+.TP
+.BI "\-nocache"
+Do not use a cache file [makefile mode only]
+.TP
+.BI "\-nodepend"
+Do not generate dependencies [makefile mode only]
+.TP
+.BI "\-nomoc"
+Do not generate moc targets [makefile mode only]
+.TP
+.BI "\-nopwd"
+Do not look for files in pwd [project mode only]
+
+.SH SEE ALSO
+.PP
+.BR /usr/share/qt5/doc/qmake/qmake-manual.html,
+.BR assistant (1)
+.SH AUTHOR
+This manual page was written by Brian Nelson <pyro@debian.org> based on
+the output of
+.B "qmake -help".
+Frederik Schwarzer <schwarzerf@gmail.com> updated it for Qt 4.5.2.

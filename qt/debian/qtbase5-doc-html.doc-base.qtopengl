@@ -1,0 +1,9 @@
+Document: qt5-opengl
+Title: Qt 5 OpenGL module
+Author: The Qt Company Ltd
+Abstract: This is the HTML documentation for Qt 5 OpenGL
+Section: Programming/C++
+
+Format: HTML
+Index: /usr/share/doc/qtbase5-doc-html/html/qtopengl/qtopengl-index.html
+Files: /usr/share/doc/qtbase5-doc-html/html/qtopengl/*.html

@@ -1,0 +1,9 @@
+Document: qt5-dbus
+Title: Qt 5 D-Bus module
+Author: The Qt Company Ltd
+Abstract: This is the HTML documentation for Qt 5 D-Bus
+Section: Programming/C++
+
+Format: HTML
+Index: /usr/share/doc/qtbase5-doc-html/html/qtdbus/qtdbus-index.html
+Files: /usr/share/doc/qtbase5-doc-html/html/qtdbus/*.html

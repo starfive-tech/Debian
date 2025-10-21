@@ -1,0 +1,5 @@
+#! /usr/bin/dh-exec
+[linux-any] usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/bearer/libqconnmanbearer.so
+[linux-any] usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/bearer/libqnmbearer.so
+usr/lib/${DEB_HOST_MULTIARCH}/libQt5Network.so.*
+usr/lib/${DEB_HOST_MULTIARCH}/qt5/plugins/bearer/libqgenericbearer.so

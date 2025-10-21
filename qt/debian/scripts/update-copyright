@@ -1,0 +1,199 @@
+#!/usr/bin/python3
+
+import os
+import re
+import sys
+
+verbose = '--verbose' in sys.argv
+
+default_copyright = 'The Qt Company Ltd.'
+default_licenses = (
+    'BSD-3-clause',
+    'LGPL-3 or GPL-2',
+    'GPL-3 with Qt-1.0 exception',
+    'GFDL-NIV-1.3',
+)
+header_re = re.compile(r"\$QT_BEGIN_LICENSE:([\w\-]+)\$")
+copyright_re = re.compile(r"Copyright \(C\) (\d\d.+)")
+
+author_map = {
+    re.compile('^BlackBerry|^Research [Ii]n Motion'): 'BlackBerry Limited (formerly Research In Motion)',
+    re.compile('^BogDan Vatra'): 'BogDan Vatra <bogdan@kde.org>',
+    re.compile('^Canonical'): 'Canonical, Ltd.',
+    re.compile('^David Faure'): 'David Faure <faure@kde.org>',
+    re.compile('^Giuseppe D\'Angelo'): 'Giuseppe D\'Angelo <dangelog@gmail.com>',
+    re.compile('^Governikus GmbH & Co. KG'): 'Governikus GmbH & Co. KG.',
+    re.compile('^Green Hills Software'): 'Green Hills Software',
+    re.compile('^Intel Corporation'): 'Intel Corporation',
+    re.compile('^Ivan Komissarov'): 'Ivan Komissarov <ABBAPOH@gmail.com>',
+    re.compile('KDAB'): 'Klarälvdalens Datakonsult AB, a KDAB Group company',
+    re.compile('^Konstantin Ritt'): 'Konstantin Ritt <ritt.ks@gmail.com>',
+    re.compile('^Lorn Potter'): 'Lorn Potter',
+    re.compile(r'Martsum .*tmartsum\[at\]gmail.com'): 'Thorbjørn Lund Martsum <tmartsum@gmail.com>',
+    re.compile('^Olivier Goffart'): 'Olivier Goffart <ogoffart@woboq.com>',
+    re.compile('^Richard J. Moore'): 'Richard J. Moore <rich@kde.org>',
+    re.compile('^Robin Burchell'): 'Robin Burchell <robin.burchell@viroteck.net>',
+    re.compile('^Samuel Gaist'): 'Samuel Gaist <samuel.gaist@edeltech.ch>',
+    re.compile('^Stephen Kelly'): 'Stephen Kelly <steveire@gmail.com>',
+    re.compile('^The Qt Company'): 'The Qt Company Ltd.',
+}
+
+licenses_map = {
+    'BSD': 'BSD-3-clause',
+    'FDL': 'GFDL-NIV-1.3',
+    'GPL': 'GPL-3',
+    'GPL-EXCEPT': 'GPL-3 with Qt-1.0 exception',
+    'LGPL': 'LGPL-3 or GPL-2',
+    'LGPL21': 'LGPL-2.1-or-3 with Qt-1.1 exception',
+    'LGPL3': 'LGPL-3 or GPL-2+',
+    'LGPL3-COMM': 'LGPL-3',
+    'MIT': 'Expat',
+}
+
+exclude_prefixes = (
+    'header',
+    '.git',
+)
+
+start_header = '## BEGIN AUTO GENERATED BLOCK'
+end_header = '## END AUTO GENERATED BLOCK'
+
+
+class CopyrightInfo():
+    def __init__(self):
+        self.min_years = {}
+        self.max_years = {}
+        self.files = []
+
+    def add_file(self, authors, file):
+        for min_year, max_year, author in authors:
+            if author in self.min_years:
+                self.min_years[author] = min(self.min_years[author], min_year)
+            else:
+                self.min_years[author] = min_year
+            if author in self.max_years:
+                self.max_years[author] = max(self.max_years[author], max_year)
+            else:
+                self.max_years[author] = max_year
+        self.files.append(file)
+
+    def get_strings(self, authors):
+        for author in authors:
+            min_year = self.min_years[author]
+            max_year = self.max_years[author]
+            if min_year == max_year:
+                yield '%d %s' % (min_year, author)
+            else:
+                yield '%d-%d %s' % (min_year, max_year, author)
+
+
+def canonicalize_author_name(author):
+    for regex, replacement in author_map.items():
+        if regex.search(author):
+            return replacement
+    return author
+
+
+def parse_file(filename):
+    license = None
+    authors = []
+    with open(filename) as file:
+        try:
+            data = file.readlines(500)
+        except UnicodeDecodeError:
+            data = []
+            authors = None
+    for line in data:
+        match = copyright_re.search(line)
+        if match:
+            copyright = match.group(1)
+            max_year = min_year = int(copyright[:4])
+            if copyright[4] == '-':
+                max_year = int(copyright[5:9])
+                author = copyright[10:]
+            elif copyright[4:7] == ' - ':
+                max_year = int(copyright[7:11])
+                author = copyright[12:]
+            else:
+                author = copyright[5:]
+            author = canonicalize_author_name(author)
+            authors.append((min_year, max_year, author))
+        match = header_re.search(line)
+        if match:
+            license = licenses_map[match.group(1)]
+    if license and not authors:
+        print(f'{filename} ({license}): No authors!', file=sys.stderr)
+    elif verbose:
+        if authors is None:
+            print(f'{filename} (binary)')
+        elif license is None:
+            print(f'{filename} (unknown)')
+        else:
+            print(f'{filename} ({license})')
+    return license, authors
+
+
+def get_source_files(root_directory):
+    for dirpath, dirnames, filenames in os.walk(root_directory):
+        for filename in filenames:
+            full_path = os.path.join(dirpath, filename)
+            if full_path.startswith('./'):
+                full_path = full_path[2:]
+            if any(full_path.startswith(prefix) for prefix in exclude_prefixes):
+                continue
+            yield full_path
+
+
+def format_list(title, strings):
+    return title + ('\n' + ' ' * len(title)).join(strings)
+
+
+def main(root_directory):
+    with open('debian/copyright') as copyright_file:
+        current_copyright = copyright_file.read()
+        start_pos = current_copyright.find(start_header) + len(start_header) + 1
+        start_data = current_copyright[:start_pos]
+        end_pos = current_copyright.find(end_header) - 1
+        end_data = current_copyright[end_pos:]
+
+    data = read_input(root_directory)
+
+    with open('debian/copyright', 'w') as output_file:
+        output_file.write(start_data)
+        write_output(data, output_file)
+        output_file.write(end_data)
+
+
+def read_input(root_directory):
+    data = {}
+
+    for filename in get_source_files(root_directory):
+        license, authors = parse_file(filename)
+        if license is None:
+            continue
+        if license not in data:
+            data[license] = {}
+        license_dict = data[license]
+        authors_tuple = tuple(sorted({author[2] for author in authors}))
+        if authors_tuple not in license_dict:
+            license_dict[authors_tuple] = CopyrightInfo()
+        license_dict[authors_tuple].add_file(authors, filename)
+    return data
+
+
+def write_output(data, output_file):
+    for license in sorted(data.keys()):
+        output_file.write('\n## ' + license + '\n')
+        license_dict = data[license]
+        for authors in sorted(license_dict.keys()):
+            if authors == (default_copyright,) and license in default_licenses:
+                continue
+            copyright_info = license_dict[authors]
+            output_file.write('\n')
+            output_file.write(format_list('Files: ', sorted(copyright_info.files)) + '\n')
+            output_file.write(format_list('Copyright: ', copyright_info.get_strings(authors)) + '\n')
+            output_file.write('License: ' + license + '\n')
+
+
+if __name__ == '__main__':
+    main('.')

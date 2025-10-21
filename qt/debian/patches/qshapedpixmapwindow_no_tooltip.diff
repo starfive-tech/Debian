@@ -1,0 +1,25 @@
+Description: do not set Qt::ToolTip flag for QShapedPixmapWindow
+ This hint is not really needed in the first place and only causes
+ problems in some environments.
+ .
+ For example in KDE, the compositor animates changes in position and size
+ for all ToolTip windows. However, this is not wanted here because we use
+ this window as a thumbnail for a drag-and-drop operation.
+ Before this patch the dragged element would lag significantly behind the
+ cursor. Now it works as expected, i.e. the dragged element follows the
+ cursor immediately.
+Origin: upstream, https://code.qt.io/cgit/qt/qtbase.git/commit/?id=180b496b537089b8
+Bug: https://bugreports.qt.io/browse/QTBUG-98048
+Last-Update: 2023-05-20
+
+--- a/src/gui/kernel/qshapedpixmapdndwindow.cpp
++++ b/src/gui/kernel/qshapedpixmapdndwindow.cpp
+@@ -56,7 +56,7 @@ QShapedPixmapWindow::QShapedPixmapWindow
+     QSurfaceFormat format;
+     format.setAlphaBufferSize(8);
+     setFormat(format);
+-    setFlags(Qt::ToolTip | Qt::FramelessWindowHint | Qt::X11BypassWindowManagerHint
++    setFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint
+              | Qt::WindowTransparentForInput | Qt::WindowDoesNotAcceptFocus);
+ }
+ 

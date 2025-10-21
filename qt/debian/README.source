@@ -1,0 +1,357 @@
+DFSG-repackaging
+----------------
+
+The source code of Qt is repackaged to get rid of the non-DFSG compliant
+RFCs that are bundled with zlib's source code inside src/3rdparty/zlib/doc/.
+
+Additional similar removed files in Qt 5 are: 
+tests/manual/network_stresstest/qtest/bigfile 
+tests/auto/network/access/qnetworkreply/bigfile 
+tests/auto/network/access/qnetworkreply/rfc3252.txt 
+tests/auto/network/access/qnetworkreply/resource 
+tests/auto/network/access/qftp/rfc3252.txt 
+tests/auto/corelib/tools/qbytearray/rfc3252.txt 
+tests/auto/corelib/io/qtextstream/rfc3261.txt
+
+Bootstrapping the docs packages
+-------------------------------
+
+In Qt 5.6 the qdoc tool was moved to qttools source, so qtbase got a
+Build-Depends-Indep on qttools5-dev-tools. Thus you need to do the following
+steps if you want to rebuild the whole Qt stack from scratch:
+
+* Build only arch-dependent packages from these sources:
+  - qtbase-opensource-src
+  - qtdeclarative-opensource-src
+  - qtlocation-opensource-src
+  - qtsensors-opensource-src
+  - qtwebsockets-opensource-src
+  - qtwebchannel-opensource-src
+  - qtwebkit-opensource-src
+  - qttools-opensource-src
+* Build the arch-independent packages (-doc and -doc-html) of the above sources.
+* Build the rest of the Qt stack in the usual way.
+
+Note: the docs packages should not be a problem when bootstrapping a new
+Debian architecture, because the arch-independent packages are already available
+in Debian archive.
+
+Managing private ABI version
+----------------------------
+
+When upstream ABI breaks, update qtbase-abi-x-y-z version in debian/control
+and in the symbols files.
+
+Patches to the original source code
+-----------------------------------
+
+Debian patches to the package original source must be stored in debian/patches
+directory. Debian patches are applied when the package is built and unapplied
+when the package is cleaned. The package uses quilt [1] for managing those
+patches. Various tasks of patch management (adding, removing etc.) are
+described in /usr/share/doc/quilt/README.source (provided by quilt package of
+version 0.46-4.1 or later).
+
+Public VCS repository of Debian packaging
+-----------------------------------------
+
+Debian packaging history of this package is stored in Git [2] repository.
+Repository policy and packaging workflow are described below. This information
+is mostly for Debian package maintainers or people following packaging process.
+If you are merely preparing a NMU which changes upstream code, feel free to
+follow a standard patch creation procedure with quilt as described in the
+section above.
+
+Pushing permissions and occasional contributions
+------------------------------------------------
+
+* People in debian/control Maintainer and Uploaders (co-maintainers) fields may
+  freely push changes to public repository.
+* Other members of packaging group should request permission of the current
+  co-maintainers (via IRC or mailing list) before adding yourself to the list of
+  Uploaders or pushing any other kind of changes.
+* Occasional contributors may send patches. Preferably, patches should be
+  formatted with `git format-patch` in order to retain commit authorship
+  information.
+* Pushed commits and patches must not violate repository policy as defined
+  below.
+
+Committing policy and guidelines
+--------------------------------
+
+* Work-in-progress debian/changelog entry must have its distribution field set to
+  UNRELEASED. That's DEBCHANGE_RELEASE_HEURISTIC=changelog setting for dch.
+* New packaging changes must be committed together with the change description
+  in the debian/changelog entry (if applicable). Sentences should end with dots.
+* The guidelines below are *highly* recommended to follow in order to reduce
+  conflicts in debian/changelog when cherry-picking and merging between
+  branches:
+  * Commits should be self-contained (i.e. one change - one commit).
+  * It is a good idea to open a new revision with an empty changelog entry (two
+    empty lines between entry header and trailer) as its own commit. When
+    packaging a new upstream release, such first commit should include a new
+    changelog entry with "New upstream release." as the only change.
+  * dch should be configured with DEBCHANGE_MULTIMAINT_MERGE=yes or called with
+    --mainttrailer/-t option in order to reduce maintainer trailer changes.
+    As a result, dch --release should be used to update the date in the trailer
+    when releasing the package to Debian.
+* Commit message must be meaningful (typically, debcommit is OK). The first
+  commit message line must be short (up to 72-80 characters) and end with a
+  dot. More detailed description might be provided in paragraphs wrapped at 80
+  characters after a empty line (e.g. like a well formatted standard Git commit
+  message).
+
+Branching policy
+----------------
+
+Debian packaging branches must not contain original source and must not have
+been merged with a branch containing original source code (referred by name
+"upstream" in the rest of this document) in any point of their history. If
+necessary, it is recommended to keep a private upstream branch in the private
+local repository or just track upstream remote Git repository locally.
+
+Debian packaging branches must only contain debian/ subdirectory in their root
+directory in order to avoid potential conflicts with upstream source. This
+restriction applies even to Git-specific files like .gitignore.
+
+Branches should be named as follows:
+
+  * master - main packaging branch. It typically contains packaging aimed at
+    unstable. However, if unstable is (semi-)frozen, it may even contain
+    packaging for experimental. It is up package maintainers what is considered
+    "current" release.
+  * Other mainline branches must be named after Debian release codenames (e.g.
+    lenny, squeeze, sid, experimental etc.) that they contain packaging of.
+    When such a branch (e.g. experimental) is merged to master, it does not
+    need to be deleted from the remote repository.
+  * Other packaging "work" branches may be pushed to the remote repository at
+    discretion of package maintainer(s). These branches should be deleted from
+    the public repository when they are no longer needed.
+
+Non-fast-forwarding pushes (e.g. rebase of already published history) are
+forbidden to all mainline packaging branches unless they are absolutely
+necessary and have previously been agreed upon by co-maintainers of the
+package.
+
+Tagging policy
+--------------
+
+Tag namespace "debian" is reserved for tagging package releases to Debian.
+Preferably, public repository should not contain any other tags unless
+otherwise agreed upon.
+
+Each official package release must be tagged. The tag must meet the following
+requirements:
+
+  * The tag must mark the state of packaging as uploaded to Debian archive.
+    Re-tagging is allowed if necessary.
+  * The tag must be annotated and preferably signed with the key of uploader.
+  * The tag must be named like "debian/<version>" where <version> is a full
+    debian package version without epoch. All occurrences of the ~ character in
+    <version> should be replaced with the - character because Git does not
+    support ~ character in tag names.
+  * The tag must be assigned the message with content like
+    "<version>/<distribution>" where <version> is a full debian version of the
+    package (without any modifications including epoch) and <distribution>
+    is the distribution this package is uploaded to (as per the latest debian
+    changelog entry).
+
+For example, in order to tag the tip of current packaging branch as upload of
+the package version 4:4.6.0~beta1-1 to experimental, the following command may
+be used:
+
+  $ git tag debian/4.6.0-beta1-1 -sm "4:4.6.0~beta1-1/experimental"
+
+Versioning of upstream snapshots
+--------------------------------
+
+Since Git commit IDs are not sequential, it is recommended to use a sequential
+number (number of commits since the latest tag) that `git describe` returns at
+the tip of the upstream snapshot being packaged.
+
+For example, if:
+
+  $ git describe
+  v1.2-beta1-45-67890abc
+
+then Debian package upstream version part of this snapshot could be
+1.2~beta1+git45+67890abc.
+
+Cloning public packaging repository
+-----------------------------------
+
+    # For users with ssh access to salsa.debian.org:
+    $ git clone git@salsa.debian.org:qt-kde-team/subgroup/repository.git
+
+    # For anonymous users:
+    $ git clone <Vcs-Git URL from debian/control>
+
+  Wait a bit. You will end up with full clone of the public repository and a
+  local branch master will be setup to track remote master branch
+  (origin/master). Change to the directory of the repository.
+
+  In order to track another packaging branch (e.g. lenny) locally, run:
+
+    $ git checkout -b lenny origin/lenny
+
+  Now let's setup `git push` to push all packaging branches and debian tags by
+  default:
+
+    $ git config --add remote.origin.push "refs/heads/master"
+    $ git config --add remote.origin.push "refs/heads/lenny"
+    $ git config --add remote.origin.push "refs/tags/debian/*"
+
+Pulling changes
+---------------
+
+In order to avoid pointless merge commits, it is recommended to use --rebase
+option to `git pull` when pulling changes from the remote repository if your
+local master contains not-yet-pushed and rather trivial commits:
+
+  $ git checkout master
+  $ git pull --rebase
+
+Integrating original source into local repository
+-------------------------------------------------
+
+  Obviously, packaging process requires to have original source next to the
+  debian/ directory. Since it is not allowed to ship upstream source in the
+  public packaging branches, it needs to be retrieved and managed outside
+  packaging branches. Basically, there are a couple of options:
+
+  1) Original source is extracted to the packaging branch working tree from
+     the tarball:
+
+       # (only once) Ignore everything (upstream source) but files under debian/.
+       $ git config core.excludesfile debian/upstreamignore
+
+       # Checkout a packaging branch
+       $ git checkout master
+
+       # Remove all untracked files including ignored ones. This cleans up the
+       # root directory from old upstream sources (if any)
+       $ git clean -xdff
+
+       # Extract upstream source code into packaging branch working tree
+       $ tar zxvf ../qtbase-opensource-src_5.4.2.orig.tar.gz --strip=1
+
+       # Do packaging, committing, finally push...
+
+  2) Original source is maintained in the separate (local) branch(es) and is
+     read into the packaging branch as needed:
+
+     a) If original source comes in the form of the tarball, it can be
+        maintained in the local 'upstream' branch. When creating such a new
+        disjoint upstream branch, execute:
+
+          # Switch HEAD to not-yet-created upstream branch
+          $ git symbolic-ref HEAD refs/heads/upstream
+
+        When updating an existing upstream branch to a new release, just do:
+
+          # Clean current branch before checkout
+          $ git clean -xdff
+          $ git checkout upstream
+
+        Then do something like this:
+
+          # Remove all tracked files (e.g. old sources)
+          $ git rm -r '*'
+
+          # Extract tarball into the repository
+          $ tar zxvf ../qtbase-opensource-src_5.4.2.orig.tar.gz --strip=1
+
+          # Add all files to the index and commit the result
+          $ git add -A
+          $ git commit -m "Import upstream 5.4.2 release."
+
+     b) Original source can be fetched from the remote upstream repository.
+        For example, let's define a new remote 'qt' for original Qt sources.
+
+          $ git remote add qt git://code.qt.io/qt/qtbase.git
+          $ git remote update
+          # Wait ...
+          $ git branch upstream qt/dev # optional
+
+     Finally, read upstream tree to the packaging branch working tree, do:
+
+       # (only once) Ignore everything (upstream source) but files under
+       # debian/.
+       $ git config core.excludesfile debian/upstreamignore
+
+       # Make sure there are no dangling untracked files
+       $ git clean -xdff
+
+       # Checkout packaging branch
+       $ git checkout master
+
+       # Read upstream (can be any git commit'ish/tree'ish reference) sources
+       # into the working tree
+       $ git read-tree upstream
+       $ git checkout-index -a
+       $ git reset
+
+       # Do packaging, committing, finally push...
+
+  3) Do all packaging work in the private 'build' branch which is a merge of
+     upstream (2a or 2b) and packaging branch. This scenario might be quite
+     error prone and time consuming since packaging commits must be done in the
+     packaging branch rather than build branch or later cherry-picked from the
+     build to master branch.
+
+     a) Committing to master directly:
+
+       $ git checkout build # (or git checkout -b build upstream)
+       $ git merge upstream # (or git reset --hard upstream)
+       $ git merge master
+
+       # Do work
+       $ git checkout master
+       $ git commit
+       $ git checkout build
+       $ git merge master
+
+       # Do more work
+       $ git checkout master
+       $ git commit
+       ...
+
+    b) Cherry-picking (or rebasing) from build branch:
+
+       $ git checkout build # (or git checkout -b build upstream)
+       $ git merge upstream # (or git reset --hard upstream)
+       $ git merge master
+
+       # Do work
+       $ git commit
+       # Do more work
+       $ git commit
+       ...
+       # Done. Now merge packaging changes back to master.
+
+       # Either
+       $ git checkout master
+       $ git cherry-pick commit1
+       $ git cherry-pick commit2
+       ...
+       $ git branch -D build # build branch becomes useless
+
+       # OR convert build branch into master using rebase
+       $ git rebase -i --onto master `git merge-base upstream master`
+       $ git checkout master
+       $ git reset --hard build
+
+       # Tag, push etc.
+
+  Feel free to use whatever workflow you like most (or any other). In general,
+  workflow #3 looks more cumbersome but it's nearer the proper Git way.
+  However, workflows #1 are #2 are somewhat simpler even if lower level git
+  commands are used. What is more, they give you less headache when managing
+  patches with quilt because Git is told to ignore everything but debian/
+  subdirectory hence it won't track changes made by `quilt push`. This way you
+  can always be sure that `git commit -a` won't pick up any raw patches to
+  upstream source regardless if anything is quilt pushed or not.
+
+[1] Available in the quilt package on Debian based systems. quilt must be
+    invoked with QUILT_PATCHES environment variables set to debian/patches.
+[2] Available in the git-core package on Debian based systems.

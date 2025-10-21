@@ -1,0 +1,10 @@
+usr/lib/qt5/bin/fixqt4headers.pl
+usr/lib/qt5/bin/moc
+usr/lib/qt5/bin/qdbuscpp2xml
+usr/lib/qt5/bin/qdbusxml2cpp
+usr/lib/qt5/bin/qlalr
+usr/lib/qt5/bin/qvkgen
+usr/lib/qt5/bin/rcc
+usr/lib/qt5/bin/syncqt.pl
+usr/lib/qt5/bin/tracegen
+usr/lib/qt5/bin/uic
