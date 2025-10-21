@@ -1,0 +1,64 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+tab-context-new-tab =
+    .label = नया टैब
+    .accesskey = w
+reload-tab =
+    .label = टैब फिर लोड करें
+    .accesskey = R
+select-all-tabs =
+    .label = सभी टैब का चयन करें
+    .accesskey = S
+tab-context-play-tab =
+    .label = टैब चलाएँ
+    .accesskey = l
+tab-context-play-tabs =
+    .label = टैब्स चलाएँ
+    .accesskey = y
+duplicate-tab =
+    .label = दोहरे टैब
+    .accesskey = D
+duplicate-tabs =
+    .label = दोहरे टैब
+    .accesskey = D
+# The following string is displayed on a menuitem that will close the tabs from the end of the tabstrip to the currently targeted tab (excluding the currently targeted and any other selected tabs).
+# In left-to-right languages this should use "Right" and in right-to-left languages this should use "Left".
+close-tabs-to-the-end =
+    .label = दाहिने तरफ टैब बंद करें
+    .accesskey = i
+close-other-tabs =
+    .label = अन्य टैब बंद करें
+    .accesskey = o
+reload-tabs =
+    .label = टैब फिर लोड करें
+    .accesskey = R
+pin-tab =
+    .label = टैब पिन करें
+    .accesskey = P
+unpin-tab =
+    .label = टैब का पिन निकालें
+    .accesskey = b
+pin-selected-tabs =
+    .label = टैब पिन करें
+    .accesskey = P
+unpin-selected-tabs =
+    .label = टैब का पिन निकालें
+    .accesskey = b
+bookmark-selected-tabs =
+    .label = टैबों को पुस्तचिन्ह करें…
+    .accesskey = k
+move-to-start =
+    .label = शुरू करने के लिए ले जाएँ
+    .accesskey = S
+move-to-end =
+    .label = अंत में ले जाएँ
+    .accesskey = E
+move-to-new-window =
+    .label = नए विंडो में खिसकाएँ
+    .accesskey = W
+
+## Variables:
+##  $tabCount (Number): the number of tabs that are affected by the action.
+

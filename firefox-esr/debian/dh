@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# Wrapper around dh to enable parallelism in debian/rules if not already
+# enabled.
+
+case "$MAKEFLAGS" in
+*-j*)
+    # Already enabled, do nothing.
+    ;;
+*)
+    parallel=
+    for opt in "$DEB_BUILD_OPTIONS"; do
+        case "$opt" in
+        parallel=*)
+            parallel=${opt#parallel=}
+            ;;
+        esac
+    done
+    if [ -n "$parallel" ]; then
+        export MAKEFLAGS="-j$parallel${MAKEFLAGS:+ $MAKEFLAGS}"
+    fi
+    ;;
+esac
+
+exec dh "$@"

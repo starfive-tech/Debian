@@ -1,0 +1,1252 @@
+Source: firefox-esr
+Section: web
+Priority: optional
+Maintainer: Maintainers of Mozilla-related packages <team+pkg-mozilla@tracker.debian.org>
+Uploaders: Mike Hommey <glandium@debian.org>
+Build-Depends: autotools-dev,
+               debhelper-compat (= 12),
+               libx11-dev,
+               libx11-xcb-dev,
+               libxt-dev,
+               libgtk-3-dev,
+               libglib2.0-dev,
+               libdrm-dev,
+               libstartup-notification0-dev,
+               libjpeg-dev,
+               zlib1g-dev,
+               libreadline-dev,
+               python3 (>= 3.6),
+               dpkg-dev,
+               libnspr4-dev (>= 2:4.32~),
+               libnss3-dev (>= 2:3.89~),
+               libvpx-dev (>= 1.10.0),
+               libdbus-glib-1-dev,
+               libffi-dev,
+               libevent-dev,
+               libpulse-dev,
+               libasound2-dev,
+               yasm,
+               nasm (>= 2.14) [amd64 i386],
+               rustc (>= 1.63),
+               cargo (>= 0.66),
+               llvm-dev,
+               libclang-dev,
+               clang,
+               libc++-dev-wasm32,
+               libclang-rt-dev-wasm32,
+               lld,
+               cbindgen (>= 0.24.3),
+               nodejs (>= 12.22.1),
+               zip,
+               unzip,
+               locales,
+               xvfb,
+               xfonts-base,
+               xauth,
+               ttf-bitstream-vera,
+               fonts-freefont-ttf,
+               fonts-dejima-mincho,
+               iso-codes
+Build-Conflicts: graphicsmagick-imagemagick-compat,
+                 liboss4-salsa-dev,
+                 libhildonmime-dev,
+                 libosso-dev
+Standards-Version: 3.9.8.0
+Vcs-Git: https://salsa.debian.org/mozilla-team/firefox.git -b esr115/master
+Vcs-Browser: https://salsa.debian.org/mozilla-team/firefox/commits/esr115/master
+
+Package: firefox-esr
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         fontconfig,
+         procps,
+         debianutils (>= 1.16),
+         libnspr4 (>= 2:4.32~),
+         libnss3 (>= 2:3.89~)
+Recommends: libavcodec60 | libavcodec-extra60 | libavcodec59 | libavcodec-extra59 | libavcodec58 | libavcodec-extra58 | libavcodec57 | libavcodec-extra57 | libavcodec56 | libavcodec-extra56 | libavcodec55 | libavcodec-extra55 | libavcodec54 | libavcodec-extra54 | libavcodec53 | libavcodec-extra53
+Suggests: fonts-stix | otf-stix,
+          fonts-lmodern,
+          libgssapi-krb5-2 | libkrb53,
+          libcanberra0,
+          pulseaudio
+Breaks: xul-ext-torbutton
+Provides: www-browser,
+          gnome-www-browser
+Description: Mozilla Firefox web browser - Extended Support Release (ESR)
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+
+Package: firefox-esr-l10n-all
+Architecture: all
+Section: metapackages
+Depends: ${misc:Depends}, firefox-esr-l10n-ach, firefox-esr-l10n-af, firefox-esr-l10n-an, firefox-esr-l10n-ar, firefox-esr-l10n-ast, firefox-esr-l10n-az, firefox-esr-l10n-be, firefox-esr-l10n-bg, firefox-esr-l10n-bn, firefox-esr-l10n-br, firefox-esr-l10n-bs, firefox-esr-l10n-ca, firefox-esr-l10n-ca-valencia, firefox-esr-l10n-cak, firefox-esr-l10n-cs, firefox-esr-l10n-cy, firefox-esr-l10n-da, firefox-esr-l10n-de, firefox-esr-l10n-dsb, firefox-esr-l10n-el, firefox-esr-l10n-en-ca, firefox-esr-l10n-en-gb, firefox-esr-l10n-eo, firefox-esr-l10n-es-ar, firefox-esr-l10n-es-cl, firefox-esr-l10n-es-es, firefox-esr-l10n-es-mx, firefox-esr-l10n-et, firefox-esr-l10n-eu, firefox-esr-l10n-fa, firefox-esr-l10n-ff, firefox-esr-l10n-fi, firefox-esr-l10n-fr, firefox-esr-l10n-fur, firefox-esr-l10n-fy-nl, firefox-esr-l10n-ga-ie, firefox-esr-l10n-gd, firefox-esr-l10n-gl, firefox-esr-l10n-gn, firefox-esr-l10n-gu-in, firefox-esr-l10n-he, firefox-esr-l10n-hi-in, firefox-esr-l10n-hr, firefox-esr-l10n-hsb, firefox-esr-l10n-hu, firefox-esr-l10n-hy-am, firefox-esr-l10n-ia, firefox-esr-l10n-id, firefox-esr-l10n-is, firefox-esr-l10n-it, firefox-esr-l10n-ja, firefox-esr-l10n-ka, firefox-esr-l10n-kab, firefox-esr-l10n-kk, firefox-esr-l10n-km, firefox-esr-l10n-kn, firefox-esr-l10n-ko, firefox-esr-l10n-lij, firefox-esr-l10n-lt, firefox-esr-l10n-lv, firefox-esr-l10n-mk, firefox-esr-l10n-mr, firefox-esr-l10n-ms, firefox-esr-l10n-my, firefox-esr-l10n-nb-no, firefox-esr-l10n-ne-np, firefox-esr-l10n-nl, firefox-esr-l10n-nn-no, firefox-esr-l10n-oc, firefox-esr-l10n-pa-in, firefox-esr-l10n-pl, firefox-esr-l10n-pt-br, firefox-esr-l10n-pt-pt, firefox-esr-l10n-rm, firefox-esr-l10n-ro, firefox-esr-l10n-ru, firefox-esr-l10n-sc, firefox-esr-l10n-sco, firefox-esr-l10n-si, firefox-esr-l10n-sk, firefox-esr-l10n-sl, firefox-esr-l10n-son, firefox-esr-l10n-sq, firefox-esr-l10n-sr, firefox-esr-l10n-sv-se, firefox-esr-l10n-szl, firefox-esr-l10n-ta, firefox-esr-l10n-te, firefox-esr-l10n-tg, firefox-esr-l10n-th, firefox-esr-l10n-tl, firefox-esr-l10n-tr, firefox-esr-l10n-trs, firefox-esr-l10n-uk, firefox-esr-l10n-ur, firefox-esr-l10n-uz, firefox-esr-l10n-vi, firefox-esr-l10n-xh, firefox-esr-l10n-zh-cn, firefox-esr-l10n-zh-tw
+Description: All language packages for Firefox ESR (meta)
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This is a metapackage depending on all available localizations of Firefox ESR.
+
+Package: firefox-esr-l10n-ach
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Acoli language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Acoli.
+
+Package: firefox-esr-l10n-af
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-af
+Description: Afrikaans language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Afrikaans.
+
+Package: firefox-esr-l10n-an
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-an
+Description: Aragonese language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Aragonese.
+
+Package: firefox-esr-l10n-ar
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-ar
+Description: Arabic language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Arabic.
+
+Package: firefox-esr-l10n-ast
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Asturian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Asturian.
+
+Package: firefox-esr-l10n-az
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Azerbaijani language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Azerbaijani.
+
+Package: firefox-esr-l10n-be
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-be
+Description: Belarusian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Belarusian.
+
+Package: firefox-esr-l10n-bg
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-bg | myspell-bg
+Description: Bulgarian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Bulgarian.
+
+Package: firefox-esr-l10n-bn
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Breaks: firefox-esr-l10n-bn-in (<< 68), firefox-esr-l10n-bn-bd (<< 68)
+Replaces: firefox-esr-l10n-bn-in (<< 68), firefox-esr-l10n-bn-bd (<< 68)
+Provides: firefox-esr-l10n-bn-in, firefox-esr-l10n-bn-bd
+Description: Bengali language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Bengali.
+
+Package: firefox-esr-l10n-br
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-br
+Description: Breton language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Breton.
+
+Package: firefox-esr-l10n-bs
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-bs
+Description: Bosnian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Bosnian.
+
+Package: firefox-esr-l10n-ca
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-ca
+Description: Catalan language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Catalan.
+
+Package: firefox-esr-l10n-ca-valencia
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Catalan (Valencia) language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Catalan (Valencia).
+
+Package: firefox-esr-l10n-cak
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Kaqchikel language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Kaqchikel.
+
+Package: firefox-esr-l10n-cs
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-cs
+Description: Czech language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Czech.
+
+Package: firefox-esr-l10n-cy
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Welsh language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Welsh.
+
+Package: firefox-esr-l10n-da
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-da | myspell-da
+Description: Danish language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Danish.
+
+Package: firefox-esr-l10n-de
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-de-de | hunspell-de-at | hunspell-de-ch
+Description: German language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in German.
+
+Package: firefox-esr-l10n-dsb
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Lower Sorbian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Lower Sorbian.
+
+Package: firefox-esr-l10n-el
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-el | myspell-el-gr
+Description: Modern Greek language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Modern Greek.
+
+Package: firefox-esr-l10n-en-ca
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-en-gb | hunspell-en-us
+Description: English (Canada) language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in English (Canada).
+
+Package: firefox-esr-l10n-en-gb
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-en-gb | hunspell-en-us
+Description: English (United Kingdom) language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in English (United Kingdom).
+
+Package: firefox-esr-l10n-eo
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: myspell-eo
+Description: Esperanto language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Esperanto.
+
+Package: firefox-esr-l10n-es-ar
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-es | myspell-es
+Description: Spanish (Argentina) language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Spanish (Argentina).
+
+Package: firefox-esr-l10n-es-cl
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-es | myspell-es
+Description: Spanish (Chile) language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Spanish (Chile).
+
+Package: firefox-esr-l10n-es-es
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-es | myspell-es
+Description: Spanish (Spain) language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Spanish (Spain).
+
+Package: firefox-esr-l10n-es-mx
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-es | myspell-es
+Description: Spanish (Mexico) language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Spanish (Mexico).
+
+Package: firefox-esr-l10n-et
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: myspell-et
+Description: Estonian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Estonian.
+
+Package: firefox-esr-l10n-eu
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-eu
+Description: Basque language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Basque.
+
+Package: firefox-esr-l10n-fa
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: myspell-fa
+Description: Persian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Persian.
+
+Package: firefox-esr-l10n-ff
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Fulah language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Fulah.
+
+Package: firefox-esr-l10n-fi
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: xul-ext-mozvoikko
+Description: Finnish language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Finnish.
+
+Package: firefox-esr-l10n-fr
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-fr | myspell-fr | myspell-fr-gut
+Description: French language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in French.
+
+Package: firefox-esr-l10n-fur
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Friulian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Friulian.
+
+Package: firefox-esr-l10n-fy-nl
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Western Frisian (Netherlands) language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Western Frisian (Netherlands).
+
+Package: firefox-esr-l10n-ga-ie
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: myspell-ga
+Description: Irish (Ireland) language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Irish (Ireland).
+
+Package: firefox-esr-l10n-gd
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-gd | myspell-gd
+Description: Scottish Gaelic language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Scottish Gaelic.
+
+Package: firefox-esr-l10n-gl
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-gl-es | hunspell-gl
+Description: Galician language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Galician.
+
+Package: firefox-esr-l10n-gn
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Guarani language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Guarani.
+
+Package: firefox-esr-l10n-gu-in
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-gu
+Description: Gujarati (India) language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Gujarati (India).
+
+Package: firefox-esr-l10n-he
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-he | myspell-he
+Description: Hebrew language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Hebrew.
+
+Package: firefox-esr-l10n-hi-in
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-hi
+Description: Hindi (India) language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Hindi (India).
+
+Package: firefox-esr-l10n-hr
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-hr
+Description: Croatian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Croatian.
+
+Package: firefox-esr-l10n-hsb
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Upper Sorbian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Upper Sorbian.
+
+Package: firefox-esr-l10n-hu
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-hu | myspell-hu
+Description: Hungarian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Hungarian.
+
+Package: firefox-esr-l10n-hy-am
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: myspell-hy
+Description: Armenian (Armenia) language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Armenian (Armenia).
+
+Package: firefox-esr-l10n-ia
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Interlingua language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Interlingua.
+
+Package: firefox-esr-l10n-id
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-id
+Description: Indonesian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Indonesian.
+
+Package: firefox-esr-l10n-is
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-is
+Description: Icelandic language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Icelandic.
+
+Package: firefox-esr-l10n-it
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-it
+Description: Italian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Italian.
+
+Package: firefox-esr-l10n-ja
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Japanese language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Japanese.
+
+Package: firefox-esr-l10n-ka
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Georgian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Georgian.
+
+Package: firefox-esr-l10n-kab
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Kabyle language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Kabyle.
+
+Package: firefox-esr-l10n-kk
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-kk
+Description: Kazakh language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Kazakh.
+
+Package: firefox-esr-l10n-km
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Central Khmer language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Central Khmer.
+
+Package: firefox-esr-l10n-kn
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Kannada language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Kannada.
+
+Package: firefox-esr-l10n-ko
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-ko
+Description: Korean language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Korean.
+
+Package: firefox-esr-l10n-lij
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Ligurian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Ligurian.
+
+Package: firefox-esr-l10n-lt
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-lt
+Description: Lithuanian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Lithuanian.
+
+Package: firefox-esr-l10n-lv
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-lv | myspell-lv
+Description: Latvian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Latvian.
+
+Package: firefox-esr-l10n-mk
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Macedonian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Macedonian.
+
+Package: firefox-esr-l10n-mr
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Marathi language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Marathi.
+
+Package: firefox-esr-l10n-ms
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Malay language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Malay.
+
+Package: firefox-esr-l10n-my
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Burmese language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Burmese.
+
+Package: firefox-esr-l10n-nb-no
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: myspell-nb
+Description: Norwegian Bokmål (Norway) language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Norwegian Bokmål (Norway).
+
+Package: firefox-esr-l10n-ne-np
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-ne
+Description: Nepali (Nepal) language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Nepali (Nepal).
+
+Package: firefox-esr-l10n-nl
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-nl
+Description: Dutch language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Dutch.
+
+Package: firefox-esr-l10n-nn-no
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: myspell-nn
+Description: Norwegian Nynorsk (Norway) language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Norwegian Nynorsk (Norway).
+
+Package: firefox-esr-l10n-oc
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-oc
+Description: Occitan language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Occitan.
+
+Package: firefox-esr-l10n-pa-in
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Panjabi (India) language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Panjabi (India).
+
+Package: firefox-esr-l10n-pl
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-pl | myspell-pl
+Description: Polish language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Polish.
+
+Package: firefox-esr-l10n-pt-br
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-pt-br | myspell-pt-br
+Description: Portuguese (Brazil) language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Portuguese (Brazil).
+
+Package: firefox-esr-l10n-pt-pt
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-pt-pt | myspell-pt-pt
+Description: Portuguese (Portugal) language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Portuguese (Portugal).
+
+Package: firefox-esr-l10n-rm
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Romansh language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Romansh.
+
+Package: firefox-esr-l10n-ro
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-ro
+Description: Romanian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Romanian.
+
+Package: firefox-esr-l10n-ru
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-ru | myspell-ru
+Description: Russian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Russian.
+
+Package: firefox-esr-l10n-sc
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Sardinian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Sardinian.
+
+Package: firefox-esr-l10n-sco
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Scots language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Scots.
+
+Package: firefox-esr-l10n-si
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-si
+Description: Sinhala language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Sinhala.
+
+Package: firefox-esr-l10n-sk
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-sk | myspell-sk
+Description: Slovak language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Slovak.
+
+Package: firefox-esr-l10n-sl
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-sl
+Description: Slovenian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Slovenian.
+
+Package: firefox-esr-l10n-son
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Songhai languages language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Songhai languages.
+
+Package: firefox-esr-l10n-sq
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: myspell-sq
+Description: Albanian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Albanian.
+
+Package: firefox-esr-l10n-sr
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-sr
+Description: Serbian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Serbian.
+
+Package: firefox-esr-l10n-sv-se
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-sv-se
+Description: Swedish (Sweden) language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Swedish (Sweden).
+
+Package: firefox-esr-l10n-szl
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Silesian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Silesian.
+
+Package: firefox-esr-l10n-ta
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Tamil language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Tamil.
+
+Package: firefox-esr-l10n-te
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-te
+Description: Telugu language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Telugu.
+
+Package: firefox-esr-l10n-tg
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Tajik language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Tajik.
+
+Package: firefox-esr-l10n-th
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-th
+Description: Thai language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Thai.
+
+Package: firefox-esr-l10n-tl
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Tagalog language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Tagalog.
+
+Package: firefox-esr-l10n-tr
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Turkish language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Turkish.
+
+Package: firefox-esr-l10n-trs
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Chicahuaxtla Triqui language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Chicahuaxtla Triqui.
+
+Package: firefox-esr-l10n-uk
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-uk | myspell-uk
+Description: Ukrainian language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Ukrainian.
+
+Package: firefox-esr-l10n-ur
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Urdu language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Urdu.
+
+Package: firefox-esr-l10n-uz
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-uz
+Description: Uzbek language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Uzbek.
+
+Package: firefox-esr-l10n-vi
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Recommends: hunspell-vi
+Description: Vietnamese language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Vietnamese.
+
+Package: firefox-esr-l10n-xh
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Xhosa language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Xhosa.
+
+Package: firefox-esr-l10n-zh-cn
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Chinese (China) language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Chinese (China).
+
+Package: firefox-esr-l10n-zh-tw
+Architecture: all
+Section: localization
+Depends: ${misc:Depends},
+         firefox-esr (>= ${source:Version}), firefox-esr (<< ${source:Version}.1~)
+Description: Chinese (Taiwan) language package for Firefox ESR
+ Firefox ESR is a powerful, extensible web browser with support for modern
+ web application technologies.
+ .
+ This package contains the localization of Firefox ESR in Chinese (Taiwan).

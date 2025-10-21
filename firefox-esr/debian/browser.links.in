@@ -1,0 +1,13 @@
+/usr/lib/@browser@/@browser@ /usr/bin/@browser@
+/usr/lib/@browser@/@browser@ /usr/lib/@browser@/firefox-bin
+/usr/share/@browser@/browser/chrome/icons/default/default16.png /usr/share/icons/hicolor/16x16/apps/@browser@.png
+/usr/share/@browser@/browser/chrome/icons/default/default32.png /usr/share/icons/hicolor/32x32/apps/@browser@.png
+/usr/share/@browser@/browser/chrome/icons/default/default48.png /usr/share/icons/hicolor/48x48/apps/@browser@.png
+/usr/share/@browser@/browser/chrome/icons/default/default64.png /usr/share/icons/hicolor/64x64/apps/@browser@.png
+/usr/share/@browser@/browser/chrome/icons/default/default128.png /usr/share/icons/hicolor/128x128/apps/@browser@.png
+/etc/@browser@ /usr/share/@browser@/browser/defaults/syspref
+
+/usr/share/@browser@/browser/chrome /usr/lib/@browser@/browser/chrome
+/usr/share/@browser@/browser/defaults /usr/lib/@browser@/browser/defaults
+
+/usr/share/@browser@/distribution /usr/lib/@browser@/distribution

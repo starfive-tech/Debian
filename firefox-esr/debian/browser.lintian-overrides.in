@@ -1,0 +1,17 @@
+@browser@: embedded-library usr/lib/@browser@/libxul.so: libtheora
+# The embedded libjpeg is libjpeg-turbo, not libjpeg.
+@browser@: embedded-library usr/lib/@browser@/libxul.so: libjpeg
+# The embedded libpng is patched for APNG support
+@browser@: embedded-library usr/lib/@browser@/libxul.so: libpng
+# Upstream code is not ready to use system library
+@browser@: embedded-library usr/lib/@browser@/libxul.so: srtp
+# This is a stripped down libavutil
+@browser@: embedded-library usr/lib/@browser@/libmozavutil.so: libavutil
+%ifndef USE_SYSTEM_NSS
+# Debian doesn't have the right version.
+@browser@: embedded-library usr/lib/@browser@/libnss3.so: nss
+%endif
+%ifndef USE_SYSTEM_NSPR
+# Debian doesn't have the right version.
+@browser@: embedded-library usr/lib/@browser@/libnspr4.so: nspr
+%endif

@@ -1,0 +1,2969 @@
+xulrunner (1.9.2.8-1) experimental; urgency=low
+
+  * New upstream release.
+  * Fixes mfsa-2010-48, also known as CVE-2010-2755.
+  * js/src/nanojit/njcpudetect.h: Add missing detection for armv4t.
+
+ -- Mike Hommey <glandium@agricola.debian.org>  Wed, 28 Jul 2010 10:22:31 +0000
+
+xulrunner (1.9.2.7-1) experimental; urgency=high
+
+  * New upstream release.
+  * Fixes mfsa-2010-{34-47}, also known as
+    CVE-2010-1211, CVE-2010-1212, CVE-2010-1208, CVE-2010-1209,
+    CVE-2010-1214, CVE-2010-1215, CVE-2010-2752, CVE-2010-2753,
+    CVE-2010-1205, CVE-2010-1213, CVE-2010-1207, CVE-2010-1210,
+    CVE-2010-2751, CVE-2010-0654, CVE-2010-2754.
+
+  * debian/control*:
+    - Add build-depends on libglib2.0-dev (>= 2.18.0) for filemonitor.
+      Closes: #587636.
+    - Bump libnss build-depends to fit what configure is looking for.
+      Closes: #587637.
+    - Remove conflict/replace for very old packages.
+    - Bump Standards-Version to 3.9.0.0.
+    - Fit the Uploaders field to reality.
+  * debian/mozconfig.in, debian/rules: Check if mozconfig system library
+    options will properly set the right variables. Closes: #587639
+  * debian/reftest-app/application.ini: Set a MaxVersion in our reftest-app
+    application.ini.
+  * debian/extra-stuff/Makefile.in: Use Preprocessor.py instead of
+    preprocessor.pl in debian/extra-stuff.
+  * debian/rules:
+    - Only set -std=gnu++0x flag when using g++ 4.4+.
+    - Don't install dependentlibs.list.
+    - Bump shlibs.
+  * debian/libmozjsSO_VERSION.symbols.in: Add new symbols.
+
+  * xpcom/reflect/xptcall/src/md/unix/*ppc_linux*: Add support for powerpcspe.
+    Closes: #586072.
+  * xulrunner/installer/mozilla-plugin.pc.in: Fix mozilla-plugin.pc.in CFLAGS.
+    Closes: #581384.
+  * modules/plugin/Makefile.in: Build the test plugin on GNU/kfreebsd.
+
+ -- Mike Hommey <glandium@debian.org>  Wed, 21 Jul 2010 03:26:49 +0200
+
+xulrunner (1.9.2.4-2) experimental; urgency=low
+
+  * Import the sole change from new upstream release 1.9.2.6:
+    - modules/libpref/src/init/all.js: Increase the OOPP hang timeout.
+
+ -- Mike Hommey <glandium@debian.org>  Mon, 28 Jun 2010 09:34:08 +0200
+
+xulrunner (1.9.2.4-1) experimental; urgency=low
+
+  * New upstream release.
+  * Fixes mfsa-2010-{26,28-33}, also known as
+    CVE-2010-1200, CVE-2010-1202, CVE-2010-1203, CVE-2010-1198,
+    CVE-2010-1196, CVE-2010-1199, CVE-2010-1125, CVE-2010-1197,
+    CVE-2008-5913.
+    Closes: #532516
+
+  * modules/libpr0n/encoders/png/nsPNGEncoder.cpp: Use png_set_filter to make
+    libpng not use write filters. bz#564410.
+  * netwerk/protocol/http/src/nsHttpChannel.cpp: Make sure to call
+    OnStartRequest even if we're failing on an SSL CONNECT. bz#561536.
+    Closes: #553635.
+  * memory/jemalloc/jemalloc.c: Use syscall() for mmap and munmap, and disable
+    ncpus use in jemalloc to work around deadlocks. Replaces the previous patch
+    to use a small pool of static memory during initialization. bz#435683
+
+  * debian/test.mk: Re-enable PNG xpcshell tests that were failing when using
+    system library.
+
+ -- Mike Hommey <glandium@debian.org>  Wed, 23 Jun 2010 12:39:34 +0200
+
+xulrunner (1.9.2.4~build2-3) experimental; urgency=low
+
+  * debian/rules, debian/xulrunner-BASE_VERSION.install.in: Don't install
+    plugin-container when building without ipc support.
+
+ -- Mike Hommey <glandium@debian.org>  Wed, 05 May 2010 08:54:37 +0200
+
+xulrunner (1.9.2.4~build2-2) experimental; urgency=low
+
+  * debian/rules:
+    - Strip symbols in the spidermonkey-bin package.
+    - Disable IPC support (for OOPP) on unsupported architectures. Fixes
+      FTBFS on anything but armel, i386 and amd64.
+  * toolkit/components/satchel/test/unit/test_autocomplete.js: Fix race
+    condition. bz#525394.
+  * debian/test.mk: Enable test_autocomplete.js.
+  * debian/control*:
+    - xulrunner-1.9.x needs to depend on a strict version of libmozjs.
+    - libmozjs3d 1.9.2.4 breaks xulrunner-1.9.2 before that version.
+    Closes: #580104.
+
+ -- Mike Hommey <glandium@debian.org>  Tue, 04 May 2010 16:32:35 +0200
+
+xulrunner (1.9.2.4~build2-1) experimental; urgency=low
+
+  * debian/copyright, debian/remove.nonfree: Update to fit new upstream
+    (pre)release.
+  * config/Makefile.in, config/autoconf.mk.in, config/system-headers,
+    configure*, ipc/chromium/Makefile.in, toolkit/library/libxul-rules.mk:
+    Support building against system libevent. bz#558789.
+  * ipc/chromium/Makefile.in: Remove VISIBILITY_FLAGS hack.
+  * ipc/chromium/src/base/thread_collision_warner.h: Include memory.h instead
+    of memory to avoid C++0x problems. bz#563294.
+  * debian/control*, debian/mozconfig: Build against system libevent.
+  * debian/xulrunner-BASE_VERSION.install.in: Install the plugin container.
+  * debian/extra-stuff/Makefile.in: Add MOZ_CHILD_PROCESS_NAME definition for
+    package manifest.
+
+ -- Mike Hommey <glandium@debian.org>  Mon, 03 May 2010 12:29:06 +0200
+
+xulrunner (1.9.2.3-3) experimental; urgency=low
+
+  * debian/control*, debian/rules: Don't include spidermonkey-bin debugging
+    symbols in libmozjs-dbg. There is actually not much to be debugged in smjs
+    itself, while the need to conflict with all other libmozjs-dbg packages is
+    a big caveat. Closes: #579251.
+  * debian/rules:
+    - Disable necko wifi on unsupported platforms. Closes: #578463.
+    - Build with -std=gnu++0x.
+
+  * toolkit/xre/nsAppRunner.cpp:
+    - KDE/Gnome startup notification not disappearing when app window is up.
+      bz#416053. Closes: #562970.
+    - KDE/Gnome startup notification not disappearing for the first time
+      startup (needsRestart). bz#534845.
+  * configure*: : Revert change to force not to use -fshort-wchar.
+  * embedding/components/find/src/nsFind.cpp, layout/base/nsCSSRendering.cpp,
+    layout/generic/nsTextFrameThebes.cpp,
+    modules/libpr0n/decoders/jpeg/nsJPEGDecoder.cpp,
+    modules/plugin/base/public/npruntime.h,
+    xpcom/tests/TestEncoding.cpp: Fix compiler errors with g++ 4.4 with
+    -std=gnu++0x of the form: error: narrowing conversion ... inside { }.
+    bz#502301.
+  * config/system-headers, js/src/config/system-headers: No need to put ffi.h
+    in system-headers, it was already there.
+  * modules/plugin/base/public/nsIPluginTag.idl,
+    modules/plugin/base/src/nsPluginHost.*: Keep nsIPluginTag binary
+    compatibility and add fullpath to a nsIPluginTag_1_9_2 interface.
+  * debian/extra-stuff/addonsInfo.js, debian/extra-stuff/debUpdateNotifier.js:
+    Use the nsIPluginTag_1_9_2 interface when available, in debian/extra-stuff
+    components.
+  * netwerk/streamconv/converters/nsBinHexDecoder.cpp: Additional fix for
+    g++ 4.4 -std=gnu++0x errors. This fixes FTBFS on arm, ppc and s390.
+  * xulrunner/installer/libxul-embedding.pc.in: Put -ldl in the proper field
+    in libxul-embedding.pc.
+  * xpcom/glue/nsStringAPI.h, xpcom/string/public/nsLiteralString.h,
+    xpcom/base/nscore.h: Do build time detection of 2-bytes wchar_t and
+    char16_t support. bz#559278. Closes: #577677.
+  * xpcom/reflect/xptcall/src/md/unix/Makefile.in,
+    xpcom/reflect/xptcall/src/md/unix/xptcinvoke_linux_sh.cpp,
+    xpcom/reflect/xptcall/src/md/unix/xptcstubs_linux_sh.cpp: Add xptcall
+    support for SH4 processors. Closes: #553593. bz#382214.
+    Thanks Nobuhiro Iwamatsu and others.
+  * js/src/nanojit/NativeARM.cpp, js/src/nanojit/avmplus.h,
+    js/src/nanojit/njcpudetect.h: Add nanojit support for ARMv4T. Thanks Albin
+    Tonnerre for the initial patch. bz#552624. Fixes FTBFS on armel.
+  * js/src/jsbit.h, js/src/jslog2.cpp, js/src/jstl.h: Change parameter type of
+    JS_{CEILING,FLOOR}_LOG2W and js_FloorLog2wImpl to be JSSize. This fixes
+    FTBFS on s390. bz#557270.
+  * xpcom/threads/nsProcessCommon.cpp: Fix remaining race condition when
+    calling nsProcess.Kill. bz#543441.
+  * layout/base/tests/Makefile.in: Hack to avoid building and running
+    TestPoisonArea for now. It currently fails to build on several
+    architectures, and also freezes on others (at least arm), so we disable it
+    until things are sorted out.
+
+ -- Mike Hommey <glandium@debian.org>  Sat, 01 May 2010 11:19:10 +0200
+
+xulrunner (1.9.2.3-2) experimental; urgency=low
+
+  * debian/remove.nonfree: There are still some .cvsignore files in the
+    upstream tarballs.
+  * debian/extra-stuff/packages-static.xulrunner: Install debian.jar and
+    debian.manifest ; without them, the upgrade notifier doesn't work.
+
+ -- Mike Hommey <glandium@debian.org>  Fri, 02 Apr 2010 20:55:13 +0200
+
+xulrunner (1.9.2.3-1) experimental; urgency=low
+
+  * New upstream release.
+  * debian/copyright: Update with upstream changes.
+  * debian/rules: Bump BASE_VERSION to 1.9.2.
+  * debian/control*:
+    - Build depend on libnotify-dev.
+    - Remove 1.9.1 specific Breaks/Replaces/Conflicts.
+  * debian/rules, debian/libmozjsSO_VERSION.symbols.jit.in,
+    debian/libmozjsSO_VERSION.symbols.in: Bump libmozjs so version and update
+    symbols file.
+  * debian/control*, debian/extra-stuff/packages-static.xulrunner,
+    debian/mozconfig.in, debian/postinstrm.in, debian/python-xpcom.dirs,
+    debian/python-xpcom.install.in, debian/python-xpcom.prerm,
+    debian/rules, debian/xulrunner-BASE_VERSION.postinst.in: Remove python
+    xpcom, as it is not provided upstream anymore.
+  * debian/extra-stuff/Makefile.in, debian/extra-stuff/filemonitor/Makefile.in:
+    Adapt debian/extra-stuff to new upstream.
+  * debian/rules:
+    - Modify js/src install rule.
+    - Install and cleanup headers from their new location.
+    - Enable readline support in for xpcshell.
+  * debian/xulrunner-dev.install.in: Remove -unstable pkg-config files. They
+    were removed upstream.
+  * debian/xulrunner-BASE_VERSION.install.in: Install components.list file.
+  * debian/test.mk: Remove tests that are known to fail.
+  * debian/mozconfig.in: Use --enable-readline instead of --with-readline.
+  * debian/mozconfig.in, debian/control*: Build against system libffi.
+  * debian/rules, debian/test.mk: Move reftest-app cleanup to debian/test.mk.
+  * debian/test.mk: The reftest application needs to point to
+    distribution/bundles from XRE. The reftest specific components are now
+    there, and XRE won't load bundles from $GRE_DIR/distribution/bundles;
+    only from $APP_DIR/distribution/bundles.
+
+  * js/src/Makefile.in: mozilla-config.h was renamed js-confdefs.h in js/src.
+  * js/src/shell/Makefile.in: Remove the js shell from the build directory
+    during cleanup.
+  * layout/tools/pageloader/Makefile.in, layout/tools/reftest/Makefile.in,
+    layout/tools/reftest/print-manifest-dirs.py,
+    netwerk/test/httpserver/Makefile.in, testing/mochitest/Makefile.in,
+    testing/xpcshell/Makefile.in, testing/xpcshell/runxpcshelltests.py,
+    xpcom/sample/Makefile.in, xpcom/tests/TestFactory.cpp,
+    xpcom/tests/dynamic/Makefile.in: Move test and tools which aren't part of
+    Firefox into distribution bundles, so that the components.list machinery
+    doesn't pick them up. bz#527458.
+  * modules/plugin/base/public/nsIPluginTag.idl,
+    modules/plugin/base/src/nsPluginHost.cpp: Expose fullpath from
+    nsIPluginTag. bz#550668.
+  * xulrunner/app/xulrunner.js: Set extensions.dss.enabled to false at XRE
+    level. bz#547943.
+  * js/src/jsapi-tests/Makefile.in: jsapi-tests don't build when using
+    -Wl,--as-needed. bz#547715.
+  * js/src/jsbuiltins.*: Revert previous patch to not export
+    js_SetTraceableNativeFailed, it is now used.
+  * js/src/Makefile.in: Use new EXPORTS_NAMESPACES facility to install
+    nanojit headers.
+  * js/src/shell/Makefile.in: Link js shell against shared mozjs library.
+    bz#501300.
+  * js/src/jscntxt.h, js/src/jsbuiltins.h: Avoid mangling some exported
+    symbols from libmozjs.
+  * js/src/configure.in: Enable x64 JIT backend by default. bz#489146.
+  * js/src/config/rules.mk, config/rules.mk: Modify gross workaround to avoid
+    installing test idl and include files in the SDK to fit upstream changes.
+  * config/autoconf.mk.in, config/system-headers, configure.in,
+    js/ctypes/Makefile.in, js/src/config/system-headers,
+    toolkit/library/libxul-config.mk, toolkit/toolkit-tiers.mk: Allow to
+    build against system libffi. bz#551138.
+  * modules/libpr0n/test/reftest/apng/reftest.list: Always fail apng test.
+  * xpcom/reflect/xptinfo/src/xptiInterfaceInfoManager.cpp: Fix issues with
+    symlinked component directories. bz#551152.
+
+ -- Mike Hommey <glandium@debian.org>  Fri, 02 Apr 2010 12:12:13 +0200
+
+xulrunner (1.9.1.9-2) unstable; urgency=low
+
+  * debian/control.in: Update debian/control.in, that was mistakenly left
+    aside.
+  * debian/control*: python-xpcom needs to pre depend on the xulrunner
+    package. Closes: #576108
+  * debian/python-xpcom.prerm: Remove pyabout.pyo file when removing
+    python-xpcom.
+
+ -- Mike Hommey <glandium@debian.org>  Thu, 01 Apr 2010 20:29:38 +0200
+
+xulrunner (1.9.1.9-1) unstable; urgency=low
+
+  * New upstream release.
+  * Fixes mfsa-2010-{16-21,23-24}, also known as
+    CVE-2010-0173, CVE-2010-0174, CVE-2010-0175, CVE-2010-0176,
+    CVE-2010-0177, CVE-2010-0178, CVE-2010-0179, CVE-2010-0181.
+
+  * debian/xulrunner-BASE_VERSION.links.in: Use SO_VERSION for libmozjs.so
+    link in the GRE directory.
+  * debian/rules, debian/test.mk: Move test rules in a separate file.
+  * debian/test.mk: Don't buffer sed's output for tests.
+  * debian/remove.nonfree: We now remove more non-free data. Also cleaned
+    up outdated stuff. Closes: #567920
+  * debian/source/format, debian/patches/*: Switch to 3.0 (quilt) format,
+    with patches.
+
+  * build/automation-build.mk: More automation compiled python cleanup.
+    bz#543469.
+  * testing/testsuite-targets.mk: Cleanup test suite logs. bz#555189.
+  * modules/libpr0n/test/reftest/pngsuite-ancillary/reftest.list: Mark the
+    png tests as random so that they are actually run. It will help spotting
+    all the architectures that have different rounding.
+  * js/src/config/check-sync-dirs.py: Make check-sync-dirs.py check file
+    contents. bz#550704.
+
+ -- Mike Hommey <glandium@debian.org>  Wed, 31 Mar 2010 11:16:06 +0200
+
+xulrunner (1.9.1.8-6) unstable; urgency=low
+
+  * debian/extra-stuff/filemonitor/Makefile.in,
+    debian/extra-stuff/packages-static.xulrunner,
+    debian/xulrunner-BASE_VERSION.install.in,
+    debian/extra-stuff/Makefile.in: Revert previous change to move Debian
+    specific components into
+    $GRE_DIR/distribution/bundles/debian/components.
+  * toolkit/xre/nsXREDirProvider.*: Revert previous change to load
+    distribution bundles from GRE directory, too. See bz#551132 comment #7.
+  * extensions/java/xpcom/Makefile.in: Disable tests for javaxpcom.
+  * debian/rules:
+    - Change the way the test suite is called. At the same time, prepend
+      test suite output with the test suite name, so that the various test
+      results can be easily filtered.
+    - Build javaxpcom jars whenever /usr/bin/javac can be found. This
+      simplifies how the packages are built.
+    - Do a global dh_testdir test instead of running it in individual rules.
+  * js/src/nanojit/NativeARM.*: Fix ever-growing stack in JIT on ARM.
+    bz#545747.
+  * layout/reftests/first-letter/399941-[89]*.html: Don't fail reftest
+    first-letter tests because of a background bug. bz#512487.
+  * layout/svg/crashtests/crashtests.list: Skip 441368-1.svg crash test,
+    as it triggers an almost infinite loop.
+  * toolkit/components/downloads/test/unit/test_bug_406857.js: Don't block
+    on test_bug_406857.js when example.com is not reachable. bz#553995.
+    Closes: #571390.
+  * storage/src/mozStorageService.cpp: Don't error-out when run-time
+    libsqlite is older than build-time libsqlite In Debian, we have shlibs
+    to handle this
+  * debian/rules, debian/reftest-app, debian/control: Run reftest and
+    crashtest to get more code coverage on all architectures. Prepare for
+    surprises.
+  * layout/reftests/font-face/local-1*.html: Use Bitstream Vera as an
+    alternative font in reftest font-face/local-1. bz#554029.
+  * modules/libpr0n/test/reftest/apng/reftest.list: Disable apng reftest
+    when apng support is not built.
+  * modules/libpr0n/test/reftest/pngsuite-ancillary/reftest.list: Skip png
+    tests that are known to fail. bz#471917.
+  * layout/reftests/bugs/reftest.list: reftest 424074-1-ref2.xul passes
+    depending on the gtk theme. bz#554036.
+  * debian/control: Build depend on the fonts that are required for the
+    reftests.
+  * toolkit/components/search/nsSearchService.js: Download search engine
+    icons when searchplugin is read-only. bz#554265.
+  * debian/extra-stuff/debUpdateNotifier.js: Fall back to the application
+    name as defined in application.ini when the application doesn't
+    contain a brandShortName in its branding chrome.
+  * debian/extra-stuff/Makefile.in, debian/extra-stuff/debUpdateNotifier.js,
+    debian/extra-stuff/debUpdateNotifier.properties: Allow to localize the
+    debUpdateNotifier popup message. At the same time, slightly reword the
+    text to be more explicit about what is going to be restarted.
+    Closes: #574160.
+  * xulrunner/stub/nsXULStub.cpp: Resolve GRE directory symbolic link.
+    bz#530196, bz#550659.
+  * debian/xulrunner-BASE_VERSION.preinst.in: Remove the check for the
+    chrome directory in /usr/lib/xulrunner-$VERSION It was only necessary
+    in 1.9.0.x versions when it moved and was replaced by a symlink.
+
+ -- Mike Hommey <glandium@debian.org>  Wed, 24 Mar 2010 12:15:54 +0100
+
+xulrunner (1.9.1.8-5) unstable; urgency=low
+
+  * js/src/Makefile.in:
+    - Simplify installation of nanojit headers.
+    - DESTDIR support in js/src/Makefile.in. bz#482747.
+    - Install js shell when running make install from js/src.
+    - Install the .so symlink to the versioned library with make install.
+  * configure.in, configure: Simplify how js/src/configure is called from
+    main configure. bz#548273.
+  * debian/rules: Use make install from js/src. This allows to install the
+    js shell and C headers more easily.
+  * debian/rules: Generate debhelper files before the install target.
+  * debian/control.in, debian/control, debian/dh/dh_xulrunner.in: Don't rely
+    on readelf -p in dh_xulrunner. Now rely on objdump -h, which should be
+    available on stable and probably oldstable. This means we can lift the
+    binutils dependencies.
+    Note there was a binutils build dependency before, for a very old mips
+    bug, but the required version was already in oldstable, so removing the
+    build-dep altogether just works. Closes: #568888.
+  * debian/*: Get the libmozjs SO version from js/src/Makefile.in and
+    generate control files from it.
+  * xpcom/glue/nsTArray.*, xpcom/glue/nsTPtrArray.h: Always align AutoArrays
+    for 64-bits words, as decided with upstream.
+  * debian/rules, debian/symbols.filter: Unconditionally filter any C++
+    mangled symbol from libmozjs.
+  * debian/rules, debian/xulrunner-BASE_VERSION.1.in: Add a (basic) manual
+    page. Closes: #394567.
+  * debian/control.in, debian/control:
+    - Remove libkrb5-dev build dependency.
+    - Don't conflict with newer pango-graphite. Closes: #572380.
+  * debian/extra-stuff/Makefile.in, debian/extra-stuff/debAbout.js,
+    debian/extra-stuff/packages-static.xulrunner, toolkit/content/about.dtd,
+    toolkit/content/about.xhtml, toolkit/content/jar.mn: Remove the debAbout
+    component and its use in the about: page. We already removed its use
+    from the iceweasel package, and it was the sole user of that feature.
+  * toolkit/xre/nsXREDirProvider.*: Load distribution bundles from GRE
+    directory, too.
+  * debian/extra-stuff/filemonitor/Makefile.in,
+    debian/extra-stuff/packages-static.xulrunner,
+    debian/xulrunner-BASE_VERSION.install.in,
+    debian/extra-stuff/Makefile.in: Move Debian specific components into
+    $GRE_DIR/distribution/bundles/debian/components.
+  * debian/rules: Use dh_auto_* --parallel where appropriate.
+  * xpcom/tests/TestBlockingProcess.cpp: Modify patched TestBlockingProcess
+    so that it builds cross-platforms. bz#543438.
+  * debian/extra-stuff/addonsInfo.js: Manually sort plugins and extensions
+    list in addons info component. This will make the component compatible
+    with 1.9.2.
+  * debian/extra-stuff/*.js: Get plugin path from nsIPluginTag.fullpath when
+    available. nsIPluginTag.filename only contains the leaf name on 1.9.2.
+  * debian/extra-stuff/debUpdateNotifier.js: Remove extra whitespace in
+    restart prompt.
+  * debian/extra-stuff/filemonitor/debGIOFileMonitorService.cpp: Allow
+    giofilemonitor to monitor files too.
+  * debian/copyright: Use DEP-5 format. Also remove some licensing terms
+    when they can be found in a file in subdirectories that are not used to
+    build the binary packages. Thanks Gabriele Giacone for the initial work.
+
+ -- Mike Hommey <glandium@debian.org>  Mon, 08 Mar 2010 15:33:35 +0100
+
+xulrunner (1.9.1.8-4) unstable; urgency=low
+
+  * debian/control, debian/rules: Rename xulrunner:Recommends variable to
+    gnome:Depends.
+  * debian/control: Switch gnome support dependencies from Recommends to
+    Suggests. Closes: #570579.
+  * modules/plugin/Makefile.in: Don't build the null plugin.
+  * debian/xulrunner-1.9.1.install: Don't install
+    /usr/lib/xulrunner-1.9.1/plugins now it's empty.
+  * debian/rules:
+    - Remove media libraries headers from xulrunner-dev.
+    - Only generate the fr_FR locale when it is not available on the
+      system. It appears the locales-all package Provides: locales but
+      localedef doesn't work with it.
+    - Don't remove debian/*.shlibs.local, which are never created, in the
+      clean target.
+    - Don't remove debian/libmozjs2d.symbols. recursively: it's a file.
+    - Generate maintainer scripts and other files on all binary-* targets.
+      This will also fix the lack of proper maintainer scripts on the uploaded
+      architecture.
+    - Don't call dh_pysupport from override_dh_install. dh will run it anyways.
+  * debian/*: Generalize the use of $(BASE_VERSION) in the packaging. This
+    should make packaging different releases at the same time easier.
+  * debian/mozconfig.in: Remove more obsolete mozconfig options.
+  * debian/control{,.in}: Suggest libcanberra0.
+  * widget/src/gtk2/Makefile.in, widget/src/gtk2/nsWindow.*: Replace
+    mozDrawingarea with a single GdkWindow. bz#506433.
+  * widget/src/gtk2/mozcontainer.*, widget/src/gtk2/nsWindow.cpp: Reuse the
+    GdkWindow in MozContainers. bz#506433.
+  * widget/src/gtk2/nsWindow.*: Destroy child nsWindows when destroying the
+    parent. bz#522635. Closes: #571138.
+  * widget/src/gtk2/mozcontainer.h: Header adjustment for imported changes.
+    Changes from bz#506433 rely on bz#471877 being applied, and we now need
+    gtkversion.h on top of gtkcontainer.h.
+  * widget/src/gtk2/nsWindow.cpp: Handle side-effect sibling destruction when
+    destroying child windows. bz#528386.
+
+ -- Mike Hommey <glandium@debian.org>  Thu, 25 Feb 2010 15:26:16 +0100
+
+xulrunner (1.9.1.8-3) unstable; urgency=low
+
+  * xpcom/reflect/xptcall/src/md/unix/xptcstubs_mips.cpp: Fix xptcstubs on
+    mipsel. The previous patch for mips broke it.
+  * debian/xulrunner-1.9.1.preinst: Don't fail in preinst when
+    /usr/lib/mozilla doesn't exist. Closes: #570388.
+  * toolkit/components/url-classifier/src/nsUrlClassifierDBService.cpp:
+    Revert work around for alignment problems on sparc.
+  * xpcom/glue/nsTArray.*, xpcom/glue/nsTPtrArray.h: Force better
+    nsAutoT{Ptr,}Array buffer alignment. This solves issues on sparc in a
+    better way than the previous workaround that missed some other failure
+    cases. bz#448658. Closes: #568214.
+  * js/src/Makefile.in: Move cleanup changes to match equivalent upstream
+    changes on trunk.
+  * debian/rules: Re-enable test suite on arm.
+
+ -- Mike Hommey <glandium@debian.org>  Sun, 21 Feb 2010 08:19:35 +0100
+
+xulrunner (1.9.1.8-2) unstable; urgency=low
+
+  * The "too much magic kills the magic" release.
+  * debian/rules:
+    - Use configure instead of dh_auto_configure, as the latter doesn't
+      support autoconf 2.13 generated configure scripts properly.
+      Closes: #570311.
+    - Use --no-print-directory option of make instead of -s, since dh likes
+      to set MAKEFLAGS=-w.
+    - Disable the test suite on arm. There is one failing test, but to debug
+      it, I'd prefer the arm buildd to actually generate debs so that I don't
+      have to wait 2 days to be able to debug (the buildd being significantly
+      faster to build than the porterbox).
+  * debian/extra-stuff/packages-static.xulrunner: Actually install the
+    debUpdateNotifier component.
+  * debian/control: Relax binutils dependency.
+
+ -- Mike Hommey <glandium@debian.org>  Thu, 18 Feb 2010 08:59:30 +0100
+
+xulrunner (1.9.1.8-1) unstable; urgency=low
+
+  * New upstream release.
+  * Fixes mfsa-2010-{01-05}, also known as
+    CVE-2010-0159, CVE-2010-0160, CVE-2009-1571, CVE-2009-3988,
+    CVE-2010-0162.
+
+  * debian/control:
+    + Add missing ${misc:Depends}
+    + Build-depend on binutils with readelf -p support. Closes: #568888.
+    + xulrunner-dev depends on binutils with readelf -p support.
+    + Bump Standards-Version to 3.8.4.0.
+    + Fix the xulrunner-1.9.1-dbg package description.
+    + Don't allow different versions of xulrunner-1.9.1, python-xpcom and
+      xulrunner-1.9.1-dbg to be installed at the same time. Likewise for
+      libmozjs2d-dbg, libmozjs2d and spidermonkey-bin.Thanks Adrian von
+      Bidder. Closes: #570085.
+  * debian/xulrunner-1.9.1.preinst: Change permissions of /usr/lib/mozilla
+    and /usr/lib/mozilla/extensions. As earlier versions of xulrunner could
+    create these directories with the wrong permissions at runtime, we need
+    to change their permissions if they exist.
+  * debian/xulrunner-1.9.1.docs, debian/rules: Remove non installation of
+    README.txt. It was setup to be installed in xulrunner-1.9.1.docs, but was
+    explicitly excluded with a -X argument to dh_installdocs. Removing both
+    just has the same effect.
+  * debian/rules:
+    + Change the way the MPL file is created.
+    + Remove old comments from dh-make templates.
+    + Don't unnecessarily set LD_LIBRARY_PATH when building.
+  * debian/control, debian/compat, debian/rules: Switch to using dh.
+  * debian/extra-stuff/addonsInfo.js:
+    + Always prevent application to do something when given the
+      --dump-addons-info option.
+    + Avoid missing newline in dump-addons-info output when no plugins are
+      installed.
+  * debian/extra-stuff/debUpdateNotifier.js: Slightly reword update notifier
+    restart prompt.
+  * debian/extra-stuff, debian/filemonitor, debian/rules: Move
+    debian/filemonitor into debian/extra-stuff.
+  * xulrunner/app/Makefile.in: Revert one-liner harmless change that was the
+    result of a bad merge.
+
+  * config/config.mk, config/rules.mk, js/src/config/config.mk,
+    js/src/config/rules.mk: Remove pseudo speed enhancements for
+    my{config,rules}.mk as agreed with upstream. bz#541767.
+  * js/src/configure.in, js/src/configure: Avoid using -fshort-wchar in
+    libmozjs, as it was done in the main configure script.
+  * toolkit/components/url-classifier/src/nsUrlClassifierDBService.cpp:
+    Work around alignment problems on sparc. bz#448658.
+  * intl/uconv/ucvlatin/nsUCS2BEToUnicode.cpp,
+    intl/uconv/ucvlatin/nsUTF32ToUnicode.cpp: Fixes for misaligned accesses
+    on sparc and arm. bz#544512. Closes: #568214.
+  * xpcom/reflect/xptcall/src/md/unix/xptcinvoke_ppc_linux.cpp,
+    xpcom/reflect/xptcall/tests/TestXPTCInvoke.cpp: Fix for padding of long
+    long arguments on ppc xptcall. bz#520367. Closes: #568213.
+  * xpcom/reflect/xptcall/src/md/unix/xptcinvoke_arm.cpp: Fix xptcinvoke on
+    arm. bz#476903.
+  * js/src/nanojit/NativeARM.cpp: Fix stack alignment on function calls in
+    JIT on arm. bz#545747. Closes: #568212.
+  * xpcom/reflect/xptcall/src/md/unix/xptcinvoke_mips.cpp,
+    xpcom/reflect/xptcall/src/md/unix/xptcstubs_mips.cpp: Fix xptinvoke and
+    xptstubs on mips o32 big endian. Closes: #568249.
+  * widget/src/gtk2/nsPrintDialogGTK.cpp: Don't show the SVG output option
+    in the print dialog. bz#546093. Closes: #569809.
+
+ -- Mike Hommey <glandium@debian.org>  Wed, 17 Feb 2010 21:38:23 +0100
+
+xulrunner (1.9.1.6-2) unstable; urgency=low
+
+  * modules/libpref/src/prefapi.cpp: Fix crash with SwitchProxy installed.
+    Closes: #559501.
+  * toolkit/components/console/jsconsole-clhandler.js,
+    toolkit/xre/nsAppRunner.cpp: Fix misalignments in --help command line.
+    bz#458631, xulrunner part.
+  * debian/extra-stuff/Makefile.in, debian/extra-stuff/addonsInfo.js,
+    debian/extra-stuff/reportbug-helper-script, debian/rules,
+    debian/xulrunner-1.9.1.install: Add a component that dumps addons
+    information, and a helper script for reportbug
+  * debian/rules: Move debAbout component into debian/extra-stuff.
+  * debian/extra-stuff/debAbout.js: Simplify debAbout component by using
+    XPCOMUtils.
+  * debian/control, debian/rules, debian/xulrunner-1.9.1-gnome-support.install,
+    debian/xulrunner-1.9.1.install: Merge xulrunner-1.9.1-gnome-support into
+    xulrunner-1.9.1.
+  * toolkit/mozapps/update/src/nsUpdateService.js.in: Avoid creating the
+    updates directory when update service is disabled. bz#538933.
+  * toolkit/xre/nsXREDirProvider.cpp: Avoid creating
+    /usr/lib/mozilla/extensions 0700 when running as root. bz#538929.
+    Closes: #559926.
+  * build/Makefile.in, build/automation-build.mk, build/automation.py.in,
+    build/pgo/Makefile.in, layout/tools/reftest/Makefile.in,
+    testing/mochitest/Makefile.in: Don't remove build/automationutils.py
+    on make clean. bz#525047.
+  * Makefile.in, config/config.mk, config/rules.mk, js/src/config/config.mk,
+    js/src/config/rules.mk: Avoid creating config/my{config,rules}.mk.
+    bz#541767.
+  * build/automation-build.mk: Remove automation.py in make clean. bz#541768.
+  * build/Makefile.in: Remove leaktest files in make clean. bz#541769.
+  * js/src/Makefile.in: Remove generated files from js/src during make
+    distclean. bz#541770.
+  * js/src/xpconnect/src/Makefile.in: Cleanup idl-parser leftovers in make
+    clean. bz#541774.
+  * xulrunner/installer/Makefile.in: Properly clean
+    xulrunner/installer/*.system.conf.
+  * debian/control: Remove build dependency against liblcms1-dev.
+  * configure.in, configure: Remove --enable-system-lcms check, which somehow
+    resisted merges with upstream.
+  * debian/mozconfig: cookie, permissions and spellcheck are no longer
+    extensions.
+  * debian/control, debian/mozconfig, debian/rules, debian/test/*: Remove the
+    custom test application and use upstream xpcshell-tests instead.
+  * debian/rules:
+    + Remove useless setting of JAVA_HOME when ./configure'ing.
+    + Correctly handle the nocheck DEB_BUILD_OPTIONS flag.
+    + Replace findstring with filter when checking DEB_BUILD_OPTIONS.
+    + Remove xpcshell-tests that are known and expected to fail, at least for
+      now.
+  * toolkit/mozapps/extensions/src/nsExtensionManager.js.in: Avoid extension
+    manager failure when there is no branding (like in the testsuite).
+    Workaround for bz#455238.
+  * extensions/java/xpcom/Makefile.in: Disable javaxpcom tests at build time
+    when DEB_NO_JAR is unset.
+  * debian/extra-stuff/Makefile.in: Add basic places preferences by default.
+    These are required for places to work properly in xul applications that
+    wouldn't set them.
+  * js/src/config/check-sync-dirs.py, js/src/config/check-sync-exceptions:
+    Add (obvious) exceptions for js/src/config/check-sync-dirs.py. We also
+    modify the script so that given directories can be ignored. bz#542468.
+  * debian/rules, debian/control: Also run "make check" in the test target.
+  * extensions/python/xpcom/Makefile.in: Disable python-xpcom tests for now.
+  * debian/control: Build-Conflict with libhildonmime-dev and libosso-dev.
+  * config/rules.mk, js/src/config/rules.mk: Synchronize config/rules.mk and
+    js/src/config/rules.mk for check-sync-dirs.py.
+  * debian/rules, debian/extra-stuff/packages-static.xulrunner,
+    debian/extra-stuff/Makefile.in: Avoid installing test programs by using
+    upstream "installer". We use the installer files from firefox so that
+    most files are properly listed already, to which we add xulrunner and
+    debian specific files.
+  * js/src/config/rules.mk, config/rules.mk, debian/rules: Gross workaround
+    to avoid installing test idl and include files in the SDK. bz#542749.
+  * debian/rules: Only fix permissions in /usr/include and /usr/share.
+  * debian/control:
+    + Change xulrunner-1.9.1's section to libs. Closes: #551701.
+    + Bump libcairo2-dev build dependency. Upstream decided once more to
+      enforce runtime dependencies as build time *sigh*.
+  * js/src/Makefile.in: Install missing nanojit and .tbl headers from js/src.
+    bz#542789.
+  * debian/rules: Properly install mozjs header files in /usr/include.
+    Closes: #560404.
+  * chrome/src/nsChromeRegistry.*, chrome/test/unit/test_bug519468.js,
+    toolkit/xre/nsXREDirProvider.cpp: Allow intl.locale.matchOS to be
+    modified in user profile. bz#519468. Closes: #417961.
+  * chrome/src/nsChromeRegistry.cpp, chrome/test/unit/test_bug519468.js:
+    Override intl.locale.matchOS if general.useragent.locale is set in user
+    profile. This allows the Quick Locale Switcher extension to work.
+    bz#542999
+  * debian/rules: Allow to pass TEST_PATH to xpcshell-tests, in which case we
+    don't run make check. This allows to run a given xpcshell test.
+  * debian/libmozjs-dev.install, debian/libmozjs-dev.links: Install
+    libmozjs.so through dh_install instead of dh_link.
+  * debian/xulrunner-1.9.1.install, debian/xulrunner-1.9.1.prerm: Make
+    .autoreg part of the package.
+  * debian/rules: Fail dh_install when it doesn't install everything (except
+    the libmozillainterfaces-java stuff)
+  * debian/rules: Remove the file comparison scripts. We now use dh_install
+    --fail-missing, and the upstream installer guarantees debian/tmp content
+    from dist/bin.
+  * debian/control, debian/rules: Use fr_FR.UTF-8 locale during tests.
+  * xpcom/threads/nsProcessCommon.cpp: Avoid crashing when trying to kill a
+    nsProcess that is already terminated. bz#543441.
+  * xpcom/tests/TestBlockingProcess.cpp: Don't use stdin to block the
+    TestBlockingProcess. This made the nsIProcess unit test fail in pbuilder.
+    bz#543438.
+  * debian/rules: Add a test to ensure dh_xulrunner works properly.
+  * debian/dh/dh_xulrunner.in:
+    + Add hint about the dh sequence addon in dh_xulrunner manpage.
+    + Also add a note about dh_shlibdeps required to be run beforehand.
+    + Fix dh_xulrunner after the xpcom glue changes in 1.9.1.6-1.
+      Closes: #567746.
+    + Avoid displaying errors when an ELF file doesn't contain an .rodata
+      section.
+  * xpcom/tests/Makefile.in: Cleanup xpcom/tests/TestScriptable.h on make
+    clean. bz#543464.
+  * build/Makefile.in: Cleanup build/automationutils.pyc on make clean.
+    bz#543469.
+  * debian/rules: Remove unused {DEBIAN,UPSTREAM}_VERSION variables.
+  * debian/filemonitor/*, debian/rules, debian/xulrunner-1.9.1.install:
+    Add a file monitoring component, based on GIOFileMonitor.
+  * debian/extra-stuff/Makefile.in, debian/extra-stuff/debUpdateNotifier.js:
+    Add an update notifier component. This component uses the file monitor
+    component to track plugins, extensions, GRE and application updates, and
+    prompts for restart in case a system upgrade occurred. The prompt still
+    needs to be enhanced and localized.
+
+ -- Mike Hommey <glandium@debian.org>  Tue, 02 Feb 2010 08:44:43 +0100
+
+xulrunner (1.9.1.6-1) unstable; urgency=low
+
+  * New upstream release.
+  * Fixes mfsa-2009-{65-70}, also known as
+    CVE-2009-3979, CVE-2009-3980, CVE-2009-3982, CVE-2009-3388,
+    CVE-2009-3389, CVE-2009-3983, CVE-2009-3984, CVE-2009-3985,
+    CVE-2009-3986.
+  * xpcom/glue/standalone/nsGlueLinkingDlopen.cpp: Revert changes introduced
+    in 1.9~b4-1 that should not be necessary anymore. This code also
+    FTBFS'ed with gcc-4.4. Closes: #560462.
+
+ -- Mike Hommey <glandium@debian.org>  Wed, 16 Dec 2009 11:41:36 +0100
+
+xulrunner (1.9.1.5-2) unstable; urgency=low
+
+  * configure.in, configure: Work around FTBFS on mips by disabling TLS
+    support.
+  * debian/control:
+    + python-xpcom Breaks epiphany-gecko (<< 2.28) instead of conflicting
+      with epiphany-browser. Closes: #556622.
+    + libmozjs2d Breaks xulrunner-1.9.1 (<< 1.9.1.4). Closes: #556658.
+    + Make xulrunner-1.9.1-gnome-support depend on libgnomeui-0.
+      Closes: #555162.
+  * js/src/configure.in, js/src/configure,
+    media/libsydneyaudio/src/Makefile.in: Fix FTBFS on hurd-i386. Thanks
+    Samuel Thibault. Closes: #556244.
+  * xulrunner/installer/libxul-embedding*.pc.in: Add -ldl. Closes: #556888.
+  * js/jsd/jsd_xpc.cpp: Fix JS debugger crash on 64-bit: don't truncate PC
+    to jsuint in jsds_FilterHook. bz#510040. Closes: #542768.
+  * toolkit/content/inlineSpellCheckUI.js: Support both - and _ separators
+    in dictionary names when making them user friendly. bz#514151.
+
+ -- Mike Hommey <glandium@debian.org>  Mon, 23 Nov 2009 20:04:19 +0100
+
+xulrunner (1.9.1.5-1) unstable; urgency=low
+
+  * New upstream release.
+  * debian/remove.nonfree: Synchronize with Iceape 2.0.
+  * debian/copyright: Update with missing information, and remove lcms
+    licensing as it was dropped in 1.9.1.4.
+  * debian/mozconfig: Remove obsolete options.
+  * debian/rules:
+    + Put -Wl,--as-needed in front of OS_LDFLAGS.
+    + Update config.{guess,sub} in js/src/build/autoconf, too.
+    + Don't modify platform.ini.
+  * debian/control:
+    + xulrunner-1.9.1 breaks iceweasel versions earlier than 3.5.5-1, as
+      their GRE version range is not broad enough.
+    + Build depend on libreadline-dev before libreadline5-dev.
+      Closes: #553873.
+    + Force a runtime dependency on libcairo2 >= 1.8.8 for @font-face
+      support. Closes: #537350.
+    + Bump Standards-Version to 3.8.3.0.
+    + Tighten libmozjs-dev dependency on libmozjs2d.
+  * memory/jemalloc/jemalloc.c: Remove remainings of an old patch that was
+    applied upstream in jemalloc.
+  * extensions/python/xpcom/src/loader/Makefile.in,
+    extensions/python/xpcom/src/module/Makefile.in: Fix rpath in the
+    pyxpcom components.
+
+ -- Mike Hommey <glandium@debian.org>  Thu, 12 Nov 2009 21:22:29 +0100
+
+xulrunner (1.9.1.4-1) unstable; urgency=low
+
+  * New upstream release.
+  * Fixes mfsa-2009-{52,53-57,59,61-64}, also known as
+    CVE-2009-3370, CVE-2009-3274, CVE-2009-3371, CVE-2009-3372,
+    CVE-2009-3373, CVE-2009-3374, CVE-2009-1563, CVE-2009-3375,
+    CVE-2009-3376, CVE-2009-3377, CVE-2009-3378, CVE-2009-3379,
+    CVE-2009-3380, CVE-2009-3381, CVE-2009-3383.
+  * debian/control:
+    + Bump sqlite build dependency to 3.6.16.
+    + libmozjs2d-dbg conflicts with libmozjs1d-dbg. Closes: #550626.
+  * debian/libmozjs1d.symbols, debian/rules: Add new symbols and bump shlibs.
+
+ -- Mike Hommey <glandium@debian.org>  Wed, 28 Oct 2009 16:15:45 +0100
+
+xulrunner (1.9.1.3-3) unstable; urgency=low
+
+  * debian/xulrunner-1.9.1.links: Point dictionaries to /usr/share/hunspell.
+    Closes: #549875.
+
+ -- Mike Hommey <glandium@debian.org>  Sat, 10 Oct 2009 11:10:46 +0200
+
+xulrunner (1.9.1.3-2) experimental; urgency=low
+
+  * debian/xulrunner-dev.install, debian/rules, debian/dh/*: Add a
+    dh_xulrunner (deb)helper and a "xulrunner" dh sequence to add the
+    "proper" xulrunner dependency to shlibs:Depends.
+  * debian/xulrunner-1.9.1.install: Install the update.locale file.
+    Closes: #540784.
+  * debian/control, debian/rules: Build against default-jdk, but keep
+    support for java-gcj-compat-dev. Closes: #526305.
+  * debian/control: xulrunner-1.9.1-dbg conflicts with xulrunner-1.9-dbg.
+    Closes: #537628.
+  * js/src/Makefile.in: Properly build twice in a row (picked from upstream
+    mercurial repo). Closes: #546770.
+  * Don't build oss and wireless geoloc support on *bsd and hurd.
+    Thanks Petr Salinger. Closes: #547269.
+
+ -- Mike Hommey <glandium@debian.org>  Wed, 16 Sep 2009 17:54:36 +0200
+
+xulrunner (1.9.1.3-1) experimental; urgency=low
+
+  * New upstream release.
+  * Fixes mfsa-2009-{47,49,50}, also known as
+    CVE-2009-3070, CVE-2009-3071, CVE-2009-3072, CVE-2009-3074,
+    CVE-2009-3075, CVE-2009-3077, CVE-2009-3078.
+  * debian/control:
+    + Build depend on newer libnss3-dev.
+    + Build depend on libiw-dev to build wifi monitor component.
+      Closes: #543339
+
+ -- Mike Hommey <glandium@debian.org>  Thu, 10 Sep 2009 21:52:12 +0200
+
+xulrunner (1.9.1.2-1) experimental; urgency=low
+
+  * New upstream release.
+  * Fixes mfsa-2009-{38,44,45,46}, some of which are also known as
+    CVE-2009-2654, CVE-2009-2470.
+
+ -- Mike Hommey <glandium@debian.org>  Thu, 20 Aug 2009 07:36:51 +0200
+
+xulrunner (1.9.1.1-2) experimental; urgency=low
+
+  * js/src/Makefile.in: Avoid linking with system-installed libmozjs when
+    linking js binary to it.
+  * debian/rules, debian/symbols.filter: Workaround bug in gcc < 4.4
+    exporting hidden vtables and VTTs on armel. Closes: #537775.
+  * modules/libpref/src/prefapi.cpp: Avoid writing out locked prefs default
+    value in user preferences. Closes: #512111.
+  * debian/rules:
+    + Don't fail to build with DEB_BUILD_OPTIONS=noopt.
+    + Avoid duplicating LDFLAGS during the build.
+  * debian/control: Change the Maintainer field and add Uploaders. Welcome
+    to Antonio Jose Lopez Morillo.
+
+ -- Mike Hommey <glandium@debian.org>  Thu, 30 Jul 2009 00:12:30 +0200
+
+xulrunner (1.9.1.1-1) experimental; urgency=low
+
+  * New upstream release. Fixes 0-day JIT flaw.
+  * js/src/jsbuiltins.cpp: Really don't export js_SetTraceableNativeFailed.
+    Closes: #536530.
+  * configure.in, configure, debian/control: Build against sqlite 3.6.x.
+  * debian/control:
+    + Build-depend on nspr 4.8.
+    + Change section for libmozjs2d-dbg, xulrunner-1.9.1-dbg and
+      libmozillainterfaces-java.
+  * debian/rules: Add support for DEB_BUILD_OPTIONS's nocheck.
+  * debian/control: Bump Standards-Version to 3.8.2.0.
+  * debian/copyright: Fix GPL and LGPL text location.
+  * debian/copyright, debian/xulrunner-1.9.1.README.Debian: Fix typos.
+  * toolkit/mozapps/downloads/src/nsHelperAppDlg.js.in: Fix bad application
+    message. Closes: #494694.
+
+ -- Mike Hommey <glandium@debian.org>  Fri, 17 Jul 2009 23:31:38 +0200
+
+xulrunner (1.9.1-1) experimental; urgency=low
+
+  * New upstream release.
+  * debian/control: Build-Depend on libhunspell-dev >= 1.2.
+  * config/config.mk: Revert previous fix for FTBFS because of internal
+    version of hunspell, which is okay now.
+  * content/svg/content/src/Makefile.in,
+  * gfx/thebes/src/gfxASurface.cpp: Fix FTBFS when system cairo provides
+    directfb surfaces. bz#501239.
+  * js/src/xpconnect/shell/xpcshell.cpp: Fix FTBFS of xpcshell when
+    EDITLINE is set. bz#501241.
+  * js/src/jsdate.{h,cpp}: Make js_IntervalNow part of the friendly API.
+    bz#491617.
+  * js/src/jsapi.{h,cpp}: Expose js_StrictlyEqual() to consumers. bz#491646.
+  * config/autoconf.mk.in, configure.in, configure, js/src/Makefile.in:
+    Revert changes to allow to build a standalone js binary, as it is now
+    built by default upstream.
+  * js/src/Makefile.in, js/src/js.cpp, js/src/jstracer.cpp: Allow to build
+    the js shell against the libmozjs shared library. bz#501300.
+  * config/autoconf.mk.in, configure.in, configure, js/src/Makefile.in,
+    js/src/config/autoconf.mk.in, js/src/configure.in, js/src/configure:
+    Build js shell and xpcshell against libreadline.
+  * js/src/jsobj.cpp, js/src/jscntxt.cpp: Don't export some functions that
+    are not defined in headers. This way, they don't end up being C++
+    mangled as well.
+  * config/autoconf.mk.in, debian/rules,
+    extensions/python/xpcom/src/loader/Makefile.in,
+    extensions/python/xpcom/src/module/Makefile.in,
+    xulrunner/installer/Makefile.in: Use a variable for xulrunner base
+    version in various places.
+  * config/autoconf.mk.in, debian/*: s/1.9/1.9.1/g.
+  * build/unix/run-mozilla.sh, debian/rules, debian/xulrunner-1.9.1.install,
+    xulrunner/stub/Makefile.in, xulrunner/stub/nsXULStub.cpp: Remove
+    libjemalloc and workarounds as it is now statically linked.
+  * config/rules.mk, js/src/config/rules.mk: Move SO_VERSION handling in
+    js/src's copy of config/rules.mk.
+  * js/src/jsobj.{h,cpp}, js/src/xpconnect/src/xpcquickstubs.cpp: Make
+    js_obj_defineGetter and js_obj_defineSetter friend API.
+  * debian/control: Add build dependency on libasound2-dev.
+  * debian/rules: Properly install js shell binary:
+  * debian/control, debian/libmozjs*, debian/rules,
+    debian/xulrunner-1.9.1.links, js/src/Makefile.in: Update symbols,
+    and bump soname.
+  * js/src/jsbuiltins.h: Don't export js_SetTraceableNativeFailed, which
+    is only used internally. Otherwise, this is one more different symbol
+    between JIT and non-JIT builds.
+  * debian/libmozjs2d.symbols.jit, debian/rules: Add missing symbol for
+    JIT-enabled builds.
+  * js/src/nanojit/Assembler.cpp: Implement sync_instruction_memory for
+    sparc linux. bz#502369.
+  * debian/copyright: Update copyright information.
+
+ -- Mike Hommey <glandium@debian.org>  Wed, 08 Jul 2009 00:07:55 +0200
+
+xulrunner (1.9.0.11-1) unstable; urgency=low
+
+  * New upstream release.
+  * Fixes mfsa-2009-{24-32}, also known as
+    CVE-2009-1392, CVE-2009-1832, CVE-2009-1833, CVE-2009-1834,
+    CVE-2009-1835, CVE-2009-1836, CVE-2009-1837, CVE-2009-1838,
+    CVE-2009-1839, CVE-2009-1840, CVE-2009-1841.
+
+ -- Mike Hommey <glandium@debian.org>  Fri, 12 Jun 2009 07:36:01 +0200
+
+xulrunner (1.9.0.10-1) unstable; urgency=high
+
+  * New upstream release.
+  * Fixes mfsa-2009-23 also known as CVE-2009-1313 (Regression crash).
+    Closes: #525740.
+
+ -- Mike Hommey <glandium@debian.org>  Tue, 28 Apr 2009 07:26:33 +0200
+
+xulrunner (1.9.0.9-1) unstable; urgency=high
+
+  * New upstream release.
+  * Fixes mfsa-2009-{14-19,21,22}, also known as
+    CVE-2009-1302, CVE-2009-1303, CVE-2009-1304, CVE-2009-1305,
+    CVE-2009-0652, CVE-2009-1306, CVE-2009-1307, CVE-2009-1308,
+    CVE-2009-1309, CVE-2009-1311, CVE-2009-1312.
+
+ -- Mike Hommey <glandium@debian.org>  Wed, 22 Apr 2009 20:59:09 +0200
+
+xulrunner (1.9.0.8-1) unstable; urgency=high
+
+  * New upstream release.
+  * Fixes mfsa-2009-{12,13}, also known as
+    CVE-2009-1169 and CVE-2009-1044.
+
+ -- Mike Hommey <glandium@debian.org>  Sat, 28 Mar 2009 10:32:35 +0100
+
+xulrunner (1.9.0.7-1) unstable; urgency=high
+
+  * New upstream release.
+  * Fixes mfsa-2009-{07-09}, also known as
+    CVE-2009-0771, CVE-2009-0772, CVE-2009-0773, CVE-2009-0774,
+    CVE-2009-0775, CVE-2009-0776.
+
+ -- Mike Hommey <glandium@debian.org>  Sun, 08 Mar 2009 11:20:05 +0100
+
+xulrunner (1.9.0.6-1) unstable; urgency=low
+
+  * New upstream release.
+  * Fixes mfsa-2009-{01,02,04-06}, also known as
+    CVE-2009-0352, CVE-2009-0353, CVE-2009-0354, CVE-2009-0356,
+    CVE-2009-0357, CVE-2009-0358.
+
+ -- Mike Hommey <glandium@debian.org>  Wed, 04 Feb 2009 08:00:40 +0100
+
+xulrunner (1.9.0.5-1) unstable; urgency=low
+
+  * New upstream release.
+  * Fixes mfsa-2008-{60,63-68}, also known as
+    CVE-2008-5500, CVE-2008-5501, CVE-2008-5502, CVE-2008-5505,
+    CVE-2008-5506, CVE-2008-5507, CVE-2008-5508, CVE-2008-5510,
+    CVE-2008-5511, CVE-2008-5512.
+  * debian/control: conflict with pango-graphite, to avoid all problems
+    it causes.
+
+ -- Mike Hommey <glandium@debian.org>  Sat, 20 Dec 2008 10:55:24 +0100
+
+xulrunner (1.9.0.4-2) unstable; urgency=low
+
+  * debian/xulrunner-1.9.preinst: Brown paper bag fix to avoid failure on
+    install (upgrades were fine).
+
+ -- Mike Hommey <glandium@debian.org>  Sun, 23 Nov 2008 09:34:15 +0100
+
+xulrunner (1.9.0.4-1) unstable; urgency=low
+
+  * New upstream release.
+  * Fixes mfsa-2008-{47,51-58}, also known as
+    CVE-2008-0017, CVE-2008-4582, CVE-2008-5015, CVE-2008-5016,
+    CVE-2008-5017, CVE-2008-5018, CVE-2008-5019, CVE-2008-5021,
+    CVE-2008-5022, CVE-2008-5023, CVE-2008-5024.
+  * debian/postinst.in: Use a temporary directory as $HOME when running
+    xpcshell. Thanks Theppitak Karoonboonyanan. Closes: #495311.
+  * debian/rules:
+    + Exclude jemalloc from kfreebsd packages, as it is not built.
+      Thanks Petr Salinger. Closes: #501476.
+    + Use LDFLAGS instead of CFLAGS to set -Wl,--no-relax on alpha.
+  * modules/libpr0n/src/imgRequest.cpp: Apply patch from bz#373701 to
+    properly close streaming HTTP connections and avoid sucking bandwidth.
+    Closes: #491144.
+  * browser/app/mozilla.in: Do exec instead of uselessly forking.
+    Closes: #496626.
+  * memory/jemalloc/jemalloc.c: Apply patch from bz#460933 to avoid
+    possible deadlock on fork with jemalloc enabled.
+  * xpcom/glue/nsThreadUtils.cpp: Better fix to avoid crashes such as bug
+    #481925. Might fix bug #503926, too.
+  * debian/xulrunner-1.9.preinst: If /usr/lib/xulrunner-1.9/chrome is an
+    empty directory, remove it. This will allow dpkg to create the symbolic
+    link correctly. Closes: #482415, #486334, #486354, #492488.
+  * toolkit/components/url-classifier/src/Makefile.in: Disable optimization
+    on alpha as it leads to crashes when using this component.
+  * uriloader/exthandler/nsMIMEInfoImpl.h,
+    uriloader/exthandler/unix/nsMIMEInfoUnix.cpp,
+    uriloader/exthandler/unix/nsOSHelperAppService.cpp,
+    uriloader/exthandler/unix/nsOSHelperAppService.h: Revert change from
+    release 1.9.0.1-1.
+  * uriloader/exthandler/unix/nsMIMEInfoUnix.cpp: Properly launch
+    applications set in $HOME/.mailcap. Replaces the previous patch in
+    a much simpler way.
+
+ -- Mike Hommey <glandium@debian.org>  Sat, 22 Nov 2008 12:50:09 +0100
+
+xulrunner (1.9.0.3-1) unstable; urgency=low
+
+  * New upstream release.
+  * Fixes mfsa-2008-{40-44}, also known as
+    CVE-2007-3837, CVE-2008-4058, CVE-2008-4059, CVE-2008-4060,
+    CVE-2008-4065, CVE-2008-4066, CVE-2008-4066, CVE-2008-4067.
+  * debian/xulrunner-1.9.install: Don't install dependentlibs.list. It's
+    causing problems with gdb and is not necessary on our builds.
+  * debian/control: Bumped Standards-Version to 3.8.0.1. No changes.
+  * xulrunner/app/Makefile.in: Use browser/app/mozilla.in instead of
+    xulrunner/app/mozilla.in. The browser version has received more love
+    upstream, and properly remove the xremote code, which has been handled
+    by the binary itself for a while, and causes some problems on PPC at
+    least.
+  * build/unix/run-mozilla.sh, debian/postinstrm.in, debian/rules,
+    xulrunner/stub/nsXULStub.cpp: Disable jemalloc by default, because of all
+    the kinds of random problems it causes, but let advanced users load it by
+    setting the MOZILLA_JEMALLOC environment variable. Closes: #490360.
+  * debian/rules: Create sdk/bin as a symlink to /usr/lib/xulrunner-1.9.
+    Closes: #491693
+  * modules/plugin/base/src/nsPluginHostImpl.cpp: Don't register plugins if
+    the MOZILLA_DISABLE_PLUGINS environment variable is set.
+
+ -- Mike Hommey <glandium@debian.org>  Sun, 28 Sep 2008 16:30:37 +0200
+
+xulrunner (1.9.0.1-1) unstable; urgency=low
+
+  * New upstream release.
+    + Fix urlclassifier so that its black list is properly updated.
+      Closes: #486311.
+  * memory/jemalloc/jemalloc.c: Allow memory to be allocated from a small pool
+    of static memory during initialization. Some LD_PRELOADed libraries such
+    as libaoss and libtrash can divert some functions used by jemalloc
+    initialization, themselves needing malloc or calloc. This used to lead to
+    a deadlock. Closes: #487614.
+  * uriloader/exthandler/nsHandlerService.js: Avoid spurious "Run" items in
+    application handlers configuration pane.
+  * uriloader/exthandler/nsMIMEInfoImpl.h,
+    uriloader/exthandler/unix/nsMIMEInfoUnix.cpp,
+    uriloader/exthandler/unix/nsOSHelperAppService.cpp,
+    uriloader/exthandler/unix/nsOSHelperAppService.h: Properly launch
+    applications set in $HOME/.mailcap. Closes: #488971.
+  * uriloader/exthandler/unix/nsOSHelperAppService.cpp: Apply small changes
+    asked by upstream in bz#440840 so that we have what will be applied
+    upstream.
+  * xpcom/reflect/xptcall/src/md/unix/xptc_platforms_unixish_x86.h,
+    xpcom/reflect/xptcall/src/md/unix/Makefile.in: Fix FTBFS on Hurd-i386.
+    Closes: #490390.
+  * debian/control:
+    + libmozjs1d-dbg conflicts with libmozjs0d-dbg.  Closes: #490296.
+    + Conflict with j2re1.4. Even when solving the infinite loop issue, new
+      issues were showing up one after another with this old and obviously
+      broken plugin. Closes: #481407.
+  * debian/rules:
+    + Don't fail to build with DEB_BUILD_OPTIONS=debug, which adds symbols to
+      libmozjs1d.
+    + Add symbolic links for nss headers in the SDK directories.
+      Closes: #490747.
+    + Avoid breaking current iceweasel that doesn't have a broad enough
+      version range in application.ini.
+  * debian/remove.nonfree: Don't remove files that don't exist anymore, and
+    synchronize with the remove.nonfree file from iceweasel.
+  * modules/libpref/src/init/all.js: Disable network manager authority over
+    online/offline. Closes: #483167.
+  * xpcom/io/nsLocalFileUnix.cpp, xpcom/io/nsLocalFileUnix.h: Use stat64()
+    where supported, so that directory listing doesn't choke on 2GB+ files.
+    Closes: #489733.
+  * debian/test/application.ini: Allow our testcase to work with versions up
+    to 2.0.
+  * config/autoconf.mk.in, xulrunner/installer/Makefile.in: Don't use the full
+    version (1.9.0.1) in install paths.
+  * extensions/pref/autoconfig/src/nsReadConfig.cpp: Read autoconfig files
+    from GRE directory instead of application directory. Closes: #490814.
+
+ -- Mike Hommey <glandium@debian.org>  Mon, 14 Jul 2008 22:15:18 +0200
+
+xulrunner (1.9~rc2-5) unstable; urgency=low
+
+  * debian/control: Add a dependency on xulrunner-1.9 to
+    xulrunner-1.9-gnome-support.
+  * uriloader/exthandler/unix/nsOSHelperAppService.cpp: Properly catch test
+    process exit code. This avoids mailcap entries where the test fails to be
+    chosen.
+  * toolkit/xre/nsAppRunner.cpp: Set DISPLAY with the value passed to
+    --display. This avoids surprises when running DISPLAY=:0 iceweasel
+    --display=:1, and some other problems.
+  * toolkit/themes/gnomestripe/global/jar.mn: Install loading_16_grey.gif in
+    classic.jar, and add an override to replace loading16.png, which happens
+    to be an APNG file, with it. Closes: #487556.
+  * toolkit/xre/nsAppRunner.cpp: Don't use static strings when setting
+    environment, since there are situations where libxul.so gets dlclose()d,
+    making these strings unavailable and leading to strange segfaults.
+    Closes: #487785.
+  * build/unix/run-mozilla.sh: Allow to debug with LD_PRELOADed libraries.
+  * debian/rules, debian/postinstrm.in: Generate xulrunner-1.9.postinst from
+    template, too. Also replace handling of upgrade by handling of
+    abort-install.
+  * debian/xulrunner-1.9.postinst: Removed.
+  * debian/postinstrm.in:
+    + Avoid xpcshell to use libjemalloc, avoiding install to hang while using
+      libtrash or other LD_PRELOADed library conflicting with libjemalloc.
+      Closes: #488349.
+    + Catch xpcshell crashes in postinst/rm so that install can proceed
+      properly. Remove possibly incomplete components registries it could
+      have generated, then. Closes: #488350.
+  * xpcom/glue/nsThreadUtils.cpp:
+    + Tentatively fix crashes when epiphany exits.  This will require an
+      epihany rebuild. Closes: #481925.
+    + Also add a failsafe in NS_ProcessPendingEvents.
+
+ -- Mike Hommey <glandium@debian.org>  Sun, 29 Jun 2008 10:32:32 +0200
+
+xulrunner (1.9~rc2-4) unstable; urgency=low
+
+  * xulrunner/stub/nsXULStub.cpp: Refactored the previous change allowing
+    xulrunner-stub to be symlinked, so that it works properly in more cases.
+  * xpcom/io/nsAppFileLocationProvider.cpp: Add /usr/lib/mozilla/plugins as
+    global location to find plugins.
+  * configure, configure.in: Force to not use -fshort-wchar. Closes: #485876.
+  * uriloader/exthandler/unix/nsOSHelperAppService.cpp: Avoid thread wait
+    catching system() child process termination, which can make mailcap
+    entries with tests ignored (since tests end up failing). Closes: #473557.
+  * uriloader/exthandler/unix/nsOSHelperAppService.cpp: Ignore mailcap entries
+    with "needsterminal". Closes: #467612.
+  * toolkit/content/about.dtd, toolkit/content/about.xhtml,
+    toolkit/content/jar.mn, toolkit/locales/en-US/chrome/global/about.dtd:
+    Avoid the about: page to be broken when l10n chrome doesn't include the
+    debian specific strings, which will stay in english.
+  * modules/libpref/src/prefapi.*, modules/libpref/src/prefread.*: Allow .js
+    preference files to set locked prefs with lockPref(). Closes: #469020.
+  * toolkit/xre/nsXREDirProvider.cpp: Add another preferences directory for
+    applications: preferences/syspref. It was existing in previous versions of
+    iceweasel as a symlink to /etc/iceweasel/pref. This has the side effect to
+    make these preferences there work again, and to disable the "set as
+    default browser" dialog. Closes: #485662.
+  * xulrunner/app/Makefile.in: Don't link xulrunner-bin against libjemalloc
+    anymore.
+  * build/unix/run-mozilla.sh, xulrunner/stub/Makefile.in,
+    xulrunner/stub/nsXULStub.cpp: Load libjemalloc through LD_PRELOAD in both
+    stub (which happened to not be linked against libjemalloc, so iceweasel
+    should get a performance boost) and xulrunner-bin. This can be disabled
+    by setting the MOZILLA_NO_JEMALLOC environment variable to some value.
+  * debian/xulrunner-1.9.install: Don't install libjemalloc by default.
+    Closes: #486663.
+  * debian/rules: Refactored tests to use MOZILLA_NO_JEMALLOC, and install
+    libjemalloc if the corresponding test succeeded.
+
+ -- Mike Hommey <glandium@debian.org>  Sat, 21 Jun 2008 14:28:44 +0200
+
+xulrunner (1.9~rc2-3) unstable; urgency=low
+
+  * config/autoconf.mk.in, configure, configure.in,
+    xulrunner/installer/Makefile.in,
+    xulrunner/installer/libxul-embedding-unstable.pc.in,
+    xulrunner/installer/libxul-embedding.pc.in,
+    xulrunner/installer/libxul-unstable.pc.in,
+    xulrunner/installer/libxul.pc.in: Don't hardcode -fshort-wchar in the .pc
+    files. Thanks Riku Voipio. Closes: #485618.
+  * xpcom/glue/nsTextFormatter.cpp: Fixed bad certificate error message
+    displaying (null) as common name at least on amd64, due to the way
+    va_lists are being used in nsTextFormatter.
+  * security/manager/ssl/public/Makefile.in,
+    security/manager/ssl/public/nsIBadCertListener.idl,
+    security/manager/ssl/src/nsNSSIOLayer.*: Fore-port nsIBadCertListener from
+    1.8, to allow embedding applications to use the same dialogs as before,
+    instead of the new ssl alert pages from Firefox, which have several
+    problems in embedding applications.
+  * debian/control: Make -dbg packages less a hassle for manual installations
+    with dpkg.
+  * debian/debAbout.js: Removed last debugging message.
+
+ -- Mike Hommey <glandium@debian.org>  Sun, 15 Jun 2008 22:11:16 +0200
+
+xulrunner (1.9~rc2-2) unstable; urgency=low
+
+  * debian/libmozillainterfaces-java.install, debian/xulrunner-1.9.install:
+    Move javaxpcom.jar into the libmozillainterfaces-java package.
+    Closes: #485284.
+  * debian/control: Small description changes to fit this move.
+  * debian/libmozillainterfaces-java.install: Move MozillaGlue.jar into the
+    libmozillainterfaces-java package.
+  * debian/rules: Don't install MozillaInterfaces and MozillaGlue files in
+    xulrunner-dev.
+
+ -- Mike Hommey <glandium@debian.org>  Mon, 09 Jun 2008 08:15:35 +0200
+
+xulrunner (1.9~rc2-1) unstable; urgency=low
+
+  * modules/libjar/nsJAR.cpp: Apply patch from Alexander Sack to avoid
+    deadlocks.
+  * debian/xulrunner-1.9.links: Don't create links for nspr libraries,
+    since nspr now has them.
+  * debian/control: Since we don't ship neither nspr nor nss so links, force
+    dependencies onto versions of nspr and nss that ship them, to avoid
+    partial upgrade surprises to our testing or unstable users.
+  * toolkit/components/url-classifier/src/nsUrlClassifierDBService.cpp:
+    Fix unaligned word access. Thanks Martin Guy to have tracked this down.
+    Closes: #483949.
+  * debian/control: Remove xulrunner-dev-bin and xulrunner-1.9-common
+    packages, adapt xulrunner-dev and xulrunner-1.9 for transition.
+  * debian/xulrunner-1.9-common.*, debian/xulrunner-dev-bin.*: Removed.
+  * debian/xulrunner-1.9.*, debian/xulrunner-dev.*: Install files that
+    previously were in xulrunner-1.9-common and xulrunner-dev-bin.
+  * debian/rules:
+    + Don't filter-out mozilla-config and xpcom-config files when
+      installing arch-indep files.
+    + Don't install the buildconfig.html override, it is not needed anymore.
+  * toolkit/content/jar.mn: Do include content/global/buildconfig.html in
+    toolkit.jar.
+
+ -- Mike Hommey <glandium@debian.org>  Sun, 08 Jun 2008 10:41:19 +0200
+
+xulrunner (1.9~rc1-2) experimental; urgency=low
+
+  * toolkit/content/about.xhtml: Remove unintendly left debugging message.
+  * xpcom/reflect/xptcall/src/md/unix/Makefile.in: Use -O0 instead of -O1 for
+    xptcstubs on hppa, it seems -O1 is still too much.
+  * debian/control: Ensure xulrunner-1.9 depends on libmozjs1d >= 1.9~rc1.
+    Closes: #482824.
+  * debian/rules: Workaround libgnome exitting when it can't create its
+    configuration directory when user home doesn't exist (as it happens on
+    buildds) despite $HOME being set, by setting GNOME22_USER_DIR.
+    Closes: #482812.
+  * debian/xulrunner-dev-bin.install, debian/rules: Install xpcom-config.h
+    in arch-dependent xulrunner-dev-bin package.
+
+ -- Mike Hommey <glandium@debian.org>  Tue, 27 May 2008 00:12:49 +0200
+
+xulrunner (1.9~rc1-1) experimental; urgency=low
+
+  * New upstream Release Candidate release (taken from upstream CVS):
+    + Avoid non null terminated strings being considered as such, leading to
+      garbage at the end of drag&dropped content. Closes: #481021.
+  * debian/control: Turn libmozjs-dev into an arch-dependent package, so that
+    arch-dependent jsautocfg.h has the proper content on all architectures.
+    Closes: #480045.
+  * xpcom/reflect/xptcall/src/md/unix/xptcstubs_linux_m68k.cpp,
+    xpcom/reflect/xptcall/src/md/unix/xptcstubs_mips.cpp: Add missing #include
+    in xptcstubs on m68k and mips. This should finally settle the FTBFSes on
+    these architectures. Closes: #479107.
+  * debian/xulrunner-1.9.postinst: Remove test for 'upgrade', it is not a
+    valid postinst argument.
+  * debian/xulrunner-dev-bin.install, debian/rules: Install mozilla-config.h
+    in arch-dependent xulrunner-dev-bin package.
+  * debian/pyversions: Removed. It is actually useless in our case.
+  * debian/rules:
+    + Fix mozilla-js.pc to provide the proper include directory.
+    + Add a test rule to try to detect xptc invoke/stubs breakages. An
+      xpcshell script should be enough for that purpose.
+    + Add -g to flags given to the assembler.
+    + Make DEB_BUILD_OPTIONS=noopt actually work.
+    + Use objdump -p instead of objdump -x.
+    + Bumped shlibs for libmozjs1d. Also add option for dh_makeshlibs to fail
+      when symbols file is not up-to-date.
+  * debian/libmozjs1d.symbols: Add symbols file for libmozjs1d.
+  * xpcom/reflect/xptcall/src/md/unix/Makefile.in, configure, configure.in:
+    Add -fPIC to flags given to the assembler, and clean-up the Makefile.
+    This will fix current xpcom brokenness on mips.
+  * debian/control:
+    + Added proper conflicts related to python-xpcom to xulrunner-1.9-dbg.
+      Closes:#482471.
+    + Build-Depend on libnspr4-dev >= 4.7.0 instead of wrong 3.7.0 (oops).
+    + Build-Depend on libstartup-notification0-dev.
+  * xpcom/build/nsXPComInit.cpp: Check for GRE_DIR/.autoreg to trigger
+    components auto-registration, so that we can have independent application
+    and xulrunner updates triggering it.
+  * debian/xulrunner-1.9.postinst, debian/postinstrm.in: Don't remove .autoreg
+    file, but create/refresh it.
+  * config/rules.mk: Avoid to remove source .s files on make clean, which
+    broke building again after make clean on architectures having .s source
+    files.
+  * xpcom/reflect/xptcall/src/md/unix/Makefile.in: Build xptcstubs with less
+    optimizations on hppa to avoid g++ outsmarting the assembly code.
+    Closes: #480905.
+  * debian/configure.in: disable mochitest.
+  * xulrunner/installer/Makefile.in, debian/rules: Revert previous change to
+    build as if we were version 1.9 instead of 1.9bn, since milestone is now
+    1.9.
+  * debian/postinstrm.in, debian/rules, debian/xulrunner-1.9.install,
+    debian/xulrunner-1.9.postinst: Don't ship regxpcom, as it is not supported
+    upstream anymore, and generate components registry by a void call to
+    xpcshell, which does the work.
+  * debian/control: Build depends on xvfb, xfonts-base and xauth to be able to
+    launch xulrunner tests.
+  * debian/rules, debian/test: Implement a test application and run it during
+    the test rule. Test both with and without libjemalloc, forcing memory
+    allocation libraries with LD_PRELOAD to avoid relying on what is linked
+    at build time, as it may change in the future. If we built against
+    libjemalloc and the test fails, automatically rebuild without.
+  * js/src/xpconnect/shell/xpcshell.cpp: Drop ancient code in xpcshell that
+    ended up making error messages not being included.
+  * debian/control, debian/rules: Insert carriage returns where lines are too
+    long. This will improve diff readability in the future.
+  * debian/mozconfig:
+    + Enable url-classifier component ; it is needed by iceweasel.
+    + Enable startup-notification.
+  * debian/xulrunner-1.9.install: Don't put nsXULAppInstall.js component in
+    the xulrunner-1.9 package.
+  * debian/control: Adapt conflicts accordingly.
+  * debian/xulrunner-1.9-common.install: Use wildcards to install typelibs
+    and javascript components, since we don't put any in another package.
+  * debian/python-xpcom.install: Add new pyabout.py component.
+  * docshell/base/nsAboutRedirector.cpp: Don't register about:about, which
+    doesn't exist, and register about:, giving it permission to run chrome
+    scripts.
+  * xpfe/appshell/src/Makefile.in, xpfe/appshell/src/nsAppShellFactory.cpp:
+    Remove nsAbout, from appshell, since we made nsAboutRedirector happily
+    replace it.
+  * debian/debAbout.js, debian/rules: Add a component to handle special
+    about:debian, about:bugs and about:readme.debian urls.
+  * modules/libjar/nsJAR.cpp: Apply suggestions from Christian Biesinger in
+    bz#368428. The patch will eventually be applied upstream.
+  * storage/src/mozStorageConnection.cpp,
+    storage/test/unit/test_storage_connection.js: Apply patch from bz#421482
+    to mitigate I/O issues with sqlite fsync()ing.
+  * toolkit/content/Makefile.in, toolkit/content/about.xhtml,
+    toolkit/content/jar.mn: Don't hardcode the XRE version number in the
+    about: page.
+  * toolkit/content/about.xhtml:
+    + Unhide release notes link, but only if app.releaseNotesURL is defined.
+    + Don't put an about:blank link when there is no vendorURL defined.
+    + Add links for about:bugs and about:README.Debian.
+  * toolkit/locales/en-US/chrome/global/about.dtd: Add corresponding en_US
+    strings.
+
+ -- Mike Hommey <glandium@debian.org>  Sat, 24 May 2008 19:24:54 +0200
+
+xulrunner (1.8.1.14-3) unstable; urgency=low
+
+  * debian/patches/38_mips_xpcom.dpatch: Add -fPIC to flags given to the
+    assembler, and clean-up the Makefile. This will fix current xpcom
+    brokenness on mips.
+  * debian/patches/99_configure.dpatch: Updated.
+
+ -- Mike Hommey <glandium@debian.org>  Mon, 12 May 2008 17:15:45 +0200
+
+xulrunner (1.9~b5-4) experimental; urgency=low
+
+  * js/src/jsfun.h: use struct JSArenaPool instead of undefined opaque
+    JSArenaPool type. bz#430955.
+  * content/html/document/src/nsHTMLFragmentContentSink.cpp,
+    embedding/browser/gtk/src/EmbedContextMenuInfo.cpp,
+    embedding/browser/gtk/src/EmbedPasswordMgr.cpp,
+    extensions/canvas3d/src/nsCanvas3DModule.cpp,
+    extensions/cck/browser/resources/content/cckwizard/srcfiles/cckService.js.in,
+    extensions/metrics/build/nsMetricsModule.cpp,
+    extensions/metrics/src/nsLoadCollector.cpp,
+    extensions/metrics/src/nsMetricsService.cpp,
+    extensions/metrics/test/TestMetricsConfig.cpp,
+    js/src/jsapi.h, parser/xml/src/nsSAXXMLReader.cpp,
+    toolkit/components/places/src/nsFaviconService.cpp,
+    toolkit/components/places/src/nsMaybeWeakPtr.h,
+    toolkit/components/places/src/nsNavHistory.cpp,
+    toolkit/components/places/src/nsNavHistoryQuery.h,
+    toolkit/components/satchel/src/nsStorageFormHistory.h,
+    toolkit/components/url-classifier/src/nsUrlClassifierDBService.h:
+    Remove MOZILLA_1_8_BRANCH ifdefs. bz#398810, bz#398811.
+  * debian/control, debian/xulrunner-dev-static.install: Rename
+    xulrunner-dev-static package to xulrunner-dev-bin.
+  * debian/xulrunner-dev-bin.install, debian/xulrunner-1.9.install: Move
+    xpidl, xpt_link and xpt_dump binaries to xulrunner-dev-bin.
+  * debian/control: Add shlibs:Depends to Depends list for xulrunner-dev-bin.
+  * debian/pycompat: Removed.
+  * debian/python-xpcom.postinst, debian/python-xpcom.prerm: Fix directory
+    used for component registration.
+  * debian/python-xpcom.install, debian/rules: Put python-xpcom files under
+    /usr/lib/pythonX.Y/site-packages. Closes: #478527.
+  * debian/mozconfig: Re-add default-mozilla-five-home, which appears to be
+    necessary for proper python-xpcom functionning.
+  * extensions/python/xpcom/src/module/Makefile.in: Add an rpath to _xpcom.so
+    so that libxpcom.so and libpyxpcom.so can be found when importing it from
+    python.
+  * extensions/python/xpcom/src/loader/Makefile.in: Add an rpath to
+    libpyloader.so xpcom component so that libpyxpcom.so can be found when
+    libxul loads the component.
+  * debian/control: Add a dependency on xulrunner-1.9 for python-xpcom.
+  * debian/rules:
+    + Don't use $(CURDIR) when not necessary.
+    + Symplify how we set PYTHON_SO.
+  * debian/xulrunner-1.9.install, debian/xulrunner-1.9-common.install: Move
+    /etc/gre.d/1.9.system.conf, /usr/lib/xulrunner-1.9/dependentlibs.list and
+    /usr/lib/xulrunner-1.9/platform.ini from xulrunner-1.9-common to
+    xulrunner-1.9. Closes: #478037.
+  * toolkit/content/jar.mn: Don't include content/global/buildconfig.html in
+    toolkit.jar.
+  * debian/rules: Install buildconfig.html under a subdirectory of the chrome,
+    and register it in toolkit.manifest.
+  * debian/xulrunner-1.9.install: Put this new buildconfig.html file in the
+    xulrunner-1.9 package so that build information is architecture dependent.
+  * debian/xulrunner-1.9-common.install: Put all chrome jars and manifests in
+    the package, instead of using fixed names followed by wildcards.
+  * debian/control: Make xulrunner-1.9 conflict with versions of
+    xulrunner-1.9-common containing moved files.
+  * debian/xulrunner-1.9.postinst: Do registration work on upgrade and
+    become trigger-aware. Also use regxpcom instead of relying on
+    autoregistration of components. Closes: #409049.
+  * debian/xulrunner-1.9.triggers: Add trigger to the xulrunner-1.9 package.
+  * debian/control: Build-depend on trigger-aware version of debhelper.
+  * debian/postinstrm.in: New postinst/postrm trigger-aware template for
+    python-xpcom and xulrunner-1.9-gnome-support, using the same registration
+    technique.
+  * debian/rules: Generate python-xpcom and xulrunner-1.9-gnome-support
+    maintainer scripts from debian/postinstrm.in
+  * debian/python-xpcom.postinst, debian/python-xpcom.prerm,
+    debian/xulrunner-1.9-gnome-support.postinst,
+    debian/xulrunner-1.9-gnome-support.prerm: Removed.
+  * debian/spidermonkey-bin.postinst: As versions 1.8 to 1.8.0.1-6 have long
+    been gone and were never in a stable release, we don't care about
+    upgrading properly from them anymore.
+  * xpcom/reflect/xptcall/src/md/unix/xptcstubs_linux_m68k.cpp,
+    xpcom/reflect/xptcall/src/md/unix/xptcstubs_mips.cpp: Implement more of
+    the new XPCOM ABI on m68k and mips. This fixes FTBFSes on these
+    architectures.
+  * xulrunner/stub/nsXULStub.cpp: Use application.ini in the executable dir
+    without following symlinks for the executable, if present. This will avoid
+    copying the stub in all xulrunner applications like upstream does.
+
+ -- Mike Hommey <glandium@debian.org>  Thu, 01 May 2008 14:41:15 +0200
+
+xulrunner (1.9~b5-3) experimental; urgency=low
+
+  * xpcom/reflect/xptcall/src/md/unix/xptcinvoke_linux_m68k.cpp,
+    xpcom/reflect/xptcall/src/md/unix/xptcinvoke_asm_mips.s,
+    xpcom/reflect/xptcall/src/md/unix/xptcinvoke_mips.cpp: Implement new XPCOM
+    API on m68k and mips. This fixes FTBFSes on these architectures.
+    Closes: #477068.
+  * configure, configure.in, xpcom/base/nscore.h, xpcom/glue/nsMemory.h,
+    xpcom/glue/nsProxyRelease.h, xpcom/glue/nsStringAPI.h,
+    xpcom/glue/standalone/Makefile.in, xpcom/glue/standalone/nsGlueLinking.h,
+    xpcom/glue/standalone/nsXPCOMGlue.h: Don't build the standalone glue as a
+    dynamic library. This is actually not maintenable without being a PITA.
+    Closes: #476920, #476921.
+  * debian/control:
+    + Invert xulrunner-dev and xulrunner-static-dev dependencies on each
+      other.
+    + xulrunner-dev doesn't need to conflict with libxul-dev now it doesn't
+      contain libxpcomglue.so.
+    + Modify xulrunner-dev-static description.
+  * (was: debian/patches/38_armel.dpatch)
+    configure.in, configure: Force to not use -fshort-wchar where it fails.
+    Closes: #476303.
+  * debian/xulrunner-dev-static.install, debian/xulrunner-dev.install: Move
+    all pkg-config files into xulrunner-dev.
+
+ -- Mike Hommey <glandium@debian.org>  Thu, 24 Apr 2008 21:12:31 +0200
+
+xulrunner (1.8.1.14-2) unstable; urgency=low
+
+  * xpcom/reflect/xptcall/src/md/unix/xptcinvoke_ipf64.cpp: Apply fix from
+    bz#419350 for FTBFS with g++-4.3 on ia64. Closes: #477168.
+
+ -- Mike Hommey <glandium@debian.org>  Tue, 22 Apr 2008 22:24:18 +0200
+
+xulrunner (1.8.1.14-1) unstable; urgency=low
+
+  * New security/stability upstream release (taken from upstream CVS)
+  * Fixes mfsa-2008-20, also known as CVE-2008-1380.
+  * debian/patches/38_armel.dpatch: Force to not use -fshort-wchar where it
+    fails. Closes: #476303.
+  * debian/patches/00list: Updated accordingly.
+  * debian/patches/99_configure.dpatch: Updated.
+
+ -- Mike Hommey <glandium@debian.org>  Thu, 17 Apr 2008 21:08:57 +0200
+
+xulrunner (1.9~b5-2) experimental; urgency=low
+
+  * debian/control: Don't make xulrunner-dev depend on xulrunner (the older
+    package).
+  * debian/rules:
+    + Don't add the debian release version in platform.ini. This can create
+      some problems.
+    + Fixed sdk/lib/libxpcomglue.so symlink. Closes: #475614.
+    + Add nspr include files in /usr/include/xulrunner-1.9/(un|)stable/.
+    + Bump shlibs for libxpcomglue0d, and fail when symbols file is not
+      up-to-date.
+  * debian/libxpcomglue0d.symbols: Add symbols file.
+  * xpcom/glue/nsGREGlue.cpp: Fix FTBFS on architectures not defining
+    TARGET_XPCOM_ABI. Closes: #476092.
+  * debian/xulrunner-dev-static.install, debian/xulrunner-dev.install: Move
+    mozilla-gtkmozembed.pc from xulrunner-dev to xulrunner-dev-static.
+    Closes: #475613.
+  * xpcom/base/nscore.h, xpcom/glue/nsMemory.h, xpcom/glue/nsProxyRelease.h,
+    xpcom/glue/nsStringAPI.h: Export standalone glue symbols instead of hiding
+    them. This will make nsAString::BeginReading and many other symbols
+    available.
+  * xpcom/glue/standalone/Makefile.in: Force even more symbols to be exported
+    from standalone glue by removing visibiliby flags.
+  * config/config.mk: Fix FTBFS with newer hunspell due to local hunspell.hxx
+    (from version 1.1) being chosen over system hunspell.hxx because of
+    include flags.
+
+ -- Mike Hommey <glandium@debian.org>  Sat, 19 Apr 2008 13:05:22 +0200
+
+xulrunner (1.9~b5-1) experimental; urgency=low
+
+  * New upstream beta release (taken from upstream CVS).
+  * debian/mozconfig:
+    + Don't enable native uconv. I'm tired of maintaining this broken piece
+      of code (especially considering there are still know broken things).
+    + Don't build with flat chrome. The original need for that was to allow to
+      override content from other packages, but in the end this happened to be
+      made possible with extensions and proper overlays.
+  * debian/xulrunner-1.9-common.install:
+    + Don't install ucnative.xpt, which is native uconv's xpt file.
+    + Add new components files: nsBadCertHandler.js and exthelper.xpt.
+  * intl/uconv/native/nsINativeUConvService.idl,
+    intl/uconv/native/nsNativeUConvService.cpp,
+    intl/uconv/src/charsetalias.properties,
+    intl/uconv/src/nsCharsetConverterManager.cpp: Revert fixes to the native
+    uconv.
+  * debian/control:
+    + Build-depend on zip for jar chrome. This has the side effect to make
+      nsIPref.java removal from MozillaInterfaces-src.jar work.
+    + Bump build dependency on libnss3-dev, since we require additions only
+      available in latest version.
+  * config/config.mk, config/make-jars.pl, configure.in: Revert changes to
+    avoid needing zip when not required.
+  * configure: Updated.
+  * debian/xulrunner-1.9-gnome-support.install, debian/xulrunner-1.9.install:
+    Moved libimgicon.so from xulrunner-1.9-gnome-support to xulrunner-1.9.
+    This component doesn't require gnome, only standard gtk and glib.
+  * memory/jemalloc/Makefile.in, toolkit/library/Makefile.in: Don't link
+    libjemalloc statically into libxul, which has a potential of breaking
+    embedding applications.
+  * netwerk/cookie/src/Makefile.in: Don't turn warnings into errors.
+    Closes: #474925. (Hoping it will not turn in a runtime failure)
+
+ -- Mike Hommey <glandium@debian.org>  Fri, 11 Apr 2008 21:07:40 +0200
+
+xulrunner (1.9~b4-1) experimental; urgency=low
+
+  * New upstream beta release (taken from upstream CVS). Closes: #449448.
+    + Don't crash when font file is unreadable. Closes: #425233.
+    + Better rendering of some extreme conditions. Closes: #391024.
+    + MOZILLA_1_8_BRANCH is not defined anymore: Closes: #441059.
+    + Don't jump when clicking out of the search bar. Closes: #404759.
+    + Ligatures don't overlap the following glyph. Closes: #363159.
+  * debian/patches/*: Remove patches.
+  * debian/rules: Remove patch rules.
+  * debian/control: Don't depend on dpatch.
+  * debian/mozconfig: Use the new default cairo-gtk toolkit.
+  * (was: debian/patches/31_system_bz2.dpatch)
+    config/Makefile.in, config/autoconf.mk.in, config/system-headers,
+    configure.in, extensions/metrics/build/Makefile.in
+    extensions/metrics/src/Makefile.in,
+    extensions/metrics/test/Makefile.in,
+    toolkit/mozapps/update/src/updater/Makefile.in,
+    toolkit/mozapps/update/src/updater/updater.cpp,
+    toolkit/toolkit-tiers.mk: Allow to use system libbz2. bz#305782.
+  * (was: debian/patches/35_zip_cache.dpatch)
+    modules/libjar/nsJAR.cpp, modules/libjar/nsJAR.h: Invalidate cache for
+    modified jar files. bz#368428.
+  * (was: debian/patches/38_gnu.dpatch and debian/patches/38_kbsd.dpatch)
+    config/rules.mk, configure.in, xpcom/glue/standalone/Makefile.in,
+    xpcom/reflect/xptcall/src/md/unix/Makefile.in,
+    xpcom/reflect/xptcall/src/md/unix/xptc_platforms_unixish_x86.h: Support
+    building on GNU/kFreeBSD and GNU/Hurd. bz#356011.
+  * (was: debian/patches/38_hppa_xpcom.dpatch)
+    Most of the patch was applied upstream, but need a small fix in
+    xpcom/reflect/xptcall/src/md/unix/Makefile.in.
+  * (was: debian/patches/38_mips_xpcom.dpatch)
+    xpcom/reflect/xptcall/src/md/unix/Makefile.in,
+    xpcom/reflect/xptcall/src/md/unix/xptcinvoke_asm_mips.s,
+    xpcom/reflect/xptcall/src/md/unix/xptcinvoke_mips.cpp,
+    xpcom/reflect/xptcall/src/md/unix/xptcstubs_asm_mips.s: Fix crashes on
+    mips. bz#258429.
+  * (was: debian/patches/60_js_binary.dpatch)
+    config/autoconf.mk.in, config/rules.mk, configure.in, js/src/Makefile.in:
+    Allow to build a standalone js binary. bz#331776.
+    js/src/xpconnect/shell/Makefile.in: Add readline support to xpcshell.
+    bz#331776.
+    js/src/js.c, js/src/xpconnect/shell/xpcshell.cpp: Avoid visibility hidden
+    issues with readline symbols. bz#331776.
+  * (was: debian/patches/60_pyxpcom.dpatch)
+    extensions/python/xpcom/src/Makefile.in: Allow to override the PYTHON_SO
+    variable.
+  * (was: debian/patches/65_native_uconv.dpatch)
+    intl/uconv/native/nsINativeUConvService.idl,
+    intl/uconv/native/nsNativeUConvService.cpp,
+    intl/uconv/src/nsCharsetConverterManager.cpp: Properly load invalid UTF-8
+    files with native uconv. bz#331748.
+    intl/uconv/src/charsetalias.properties: Fix aliases for gbk and euc-tw for
+    use with native uconv. bz#369403.
+  * (was: debian/patches/68_m68k_xpcom.dpatch)
+    xpcom/reflect/xptcall/src/md/unix/xptcinvoke_linux_m68k.cpp,
+    xpcom/reflect/xptcall/src/md/unix/xptcstubs_linux_m68k.cpp: Improve
+    assembly for m68k. bz#422337.
+  * (was: debian/patches/68_mips_performance.dpatch)
+    config/rules.mk, configure.in: Increase stability and performance on mips.
+    Reverted to Thiemo's original version for better followup with upstream
+    when it will happen (but already has to wait for bz#258429).
+  * (was: debian/patches/80_config.dpatch)
+    debian/rules: Use config.guess and config.sub from autotools-dev.
+  * (was: debian/patches/80_crmf.dpatch)
+    configure.in: Put the crmf library before the NSS libraries.
+  * (was: debian/patches/80_javaxpcom.dpatch)
+    extensions/java/xpcom/Makefile.in, toolkit/toolkit-makefiles.sh: Force
+    creation of Makefiles in extensions/java, even when javaxpcom is disabled.
+    Don't build the jars if DEB_NO_JAR is defined.
+  * (was: debian/patches/80_libxpcom_hack.dpatch)
+    js/src/xpconnect/shell/Makefile.in, xulrunner/app/Makefile.in: Force
+    libxpcom to be linked to xulrunner-bin and xpcshell so that it is loaded
+    in most cases.
+  * (was: debian/patches/80_no_examples.dpatch)
+    xulrunner/Makefile.in: Don't build example component.
+  * (was: debian/patches/80_no_sys_profile.dpatch)
+    xulrunner/app/Makefile.in: Don't install system profile.
+  * (was: debian/patches/80_system_libs.dpatch)
+    configure.in: Make sure we won't be bitten by upstream changing libjpeg,
+    libpng or zlib internal version, which makes system library not used even
+    though --with-system-* argument is given to configure.
+  * (was: debian/patches/80_xulrunner-config.dpatch)
+    build/unix/mozilla-config.in: Give more appropriate cflags and libs.
+  * (was: debian/patches/80_zip.dpatch)
+    config/config.mk, config/make-jars.pl, configure.in: Avoid needing zip if
+    not required. bz#331785.
+  * (was: debian/patches/81_soname.dpatch)
+    config/rules.mk, js/src/Makefile.in, toolkit/library/Makefile.in,
+    xpcom/stub/Makefile.in: Add soname to appropriate libraries. This is
+    a stripped down version, compared to the dpatch version, because we
+    actually are never going to use minor and micro version numbers. Also, we
+    now don't set a SO version on libxul and libxpcom because they will now
+    be dlloaded() by the standalone xpcomglue.
+  * (was: debian/patches/82_locale.dpatch)
+    xulrunner/app/xulrunner.js: Enable intl.locale.matchOS, and report the
+    locale correctly. bz#331779.
+  * (was: debian/patches/82_prefs.dpatch)
+    modules/libpref/src/init/all.js: Set javascript.options.showInConsole ;
+    Set DPI to system settings.
+  * (was: debian/patches/85_installer.dpatch)
+    xulrunner/setup/nsXULAppInstall.js: Install applications in /usr/local/lib
+    instead of /usr/lib.
+  * (was: debian/patches/85_no_register.dpatch)
+    xulrunner/app/nsXULRunnerApp.cpp: Remove (un|)registering system.
+  * (was: debian/patches/85_xpcomglue.dpatch)
+    configure.in, xpcom/base/nscore.h, xpcom/glue/standalone/Makefile.in,
+    xpcom/glue/standalone/nsGlueLinking.h,
+    xpcom/glue/standalone/nsXPCOMGlue.h: Build the xpcom glue as a shared
+    library. Now, also build the dependent xpcom glue.
+    xpcom/glue/standalone/nsGlueLinkingDlopen.cpp: Load DSOs from . when
+    directory is not given.
+  * Other patches have been removed either because incorporated or made
+    obsolete by this new upstream release.
+
+  * config/autoconf.mk.in, configure.in,
+    modules/libpr0n/decoders/png/nsPNGDecoder.cpp,
+    modules/libpr0n/decoders/png/nsPNGDecoder.h,
+    modules/libpr0n/encoders/png/nsPNGEncoder.cpp,
+    modules/libpr0n/encoders/png/nsPNGEncoder.h: Disable APNG support when
+    system libpng doesn't support it.
+  * Makefile.in, netwerk/dns/src/Makefile.in, xulrunner/build.mk: Make
+    distclean cleaner. While previous cleanups have been incorporated
+    upstream, some new files need to be removed. bz#333308.
+  * debian/control:
+    + Add new required build-dependency on libdbus-glib-1-dev.
+    + Build-Depend on libnspr4-dev >= 3.7.0.
+    + Build-Depend on libnss3-dev >= 3.12.0~beta2.
+    + Build-Depend on libcairo2-dev >= 1.5.
+    + Build-Depend on libgtk2.0-dev >= 2.10.
+  * debian/remove.nonfree: Updated for new binary blobs and removed
+    directory/c-sdk removals, since the directory is not here anymore.
+    Also, fixed removal of files with names containing spaces.
+  * debian/copyright: A whole lot of files have been either removed or
+    relicensed under MPL/GPL/LGPL tri-license. Some new external libraries
+    have been incorporated into the source tree, too.
+  * debian/mozconfig: Don't build crash reporter (Google Breakpad).
+  * debian/mozconfig, debian/control: Use system sqlite and lcms.
+  * configure.in: Don't check lcms version, for the same reason as libpng
+    and others.
+  * js/src/Makefile.in, debian/control, debian/libmozjs0d.install,
+    debian/rules: Bumped libmozjs SO version to 1d.
+  * debian/libmozjs0d.README.Debian: Removed, as it is not relevant anymore.
+  * intl/uconv/native/nsNativeUConvService.cpp: Fix native uconv so that
+    XmlHTTPRequest works properly. bz#342133.
+  * xulrunner/installer/Makefile.in, debian/rules: Build as if we were version
+    1.9 instead of 1.9b4. Also fix permissions for /etc/gre.d file.
+  * debian/control, debian/*: Change package names and installed files to fit
+    new upstream.
+  * debian/rules:
+    + Adapted to new upstream files and install method. There is unfortunately
+      only one install target now, and it must be run after build-jars when
+      building binary-indep. This is why we must set .NOTPARALLEL.
+    + Removed source target, which isn't appropriate anymore.
+    + Changed the way we set optimization flags so that we use upstream ones,
+      and arrange LDFLAGS so that -Wl,--as-needed appears before -lpthread
+      during builds.
+  * debian/mozconfig:
+    + Don't set mozilla default home, it's not useful anymore.
+    + Disable stripping of binaries during build.
+  * debian/xulrunner.conf: Removed. The equivalent is now provided by upstream
+    build system.
+  * xulrunner/app/Makefile.in: Link libjemalloc to the xulrunner binary.
+  * libxpcomglue0d.preinst, libxpcomglue0d.postrm: Divert libxpcomglue.so.0d
+    from libxul0d so that both packages can be installed at the same time.
+
+  * (was: debian/patches/99_configure.dpatch)
+    configure: Updated.
+
+ -- Mike Hommey <glandium@debian.org>  Sun, 06 Apr 2008 13:01:04 +0200
+
+xulrunner (1.8.1.13-1) unstable; urgency=low
+
+  * New security/stability upstream release (taken from upstream CVS)
+  * Fixes mfsa-2008-{13-19}, also known as
+    CVE-2007-4879, CVE-2008-0416, CVE-2008-1195, CVE-2008-1233,
+    CVE-2008-1234, CVE-2008-1235, CVE-2008-1236, CVE-2008-1237,
+    CVE-2008-1238, CVE-2008-1240, CVE-2008-1241.
+  * debian/patches/10_SECAlgorithmIDTemplate.dpatch: Removed, as applied
+    upstream.
+  * debian/patches/00list: Updated accordingly.
+
+ -- Mike Hommey <glandium@debian.org>  Wed, 26 Mar 2008 22:50:09 +0100
+
+xulrunner (1.8.1.12-5) unstable; urgency=low
+
+  * debian/patches/65_native_uconv.dpatch: Fixed BOM removal added in release
+    1.8.1.12-3. Closes: #465321.
+  * debian/patches/80_crmf.dpatch: Put the crmf library before the NSS
+    libraries. Closes: #470442.
+  * debian/patches/00list: Updated accordingly.
+  * debian/patches/99_configure.dpatch: Updated.
+
+ -- Mike Hommey <glandium@debian.org>  Tue, 11 Mar 2008 22:11:36 +0100
+
+xulrunner (1.8.1.12-4) unstable; urgency=low
+
+  * debian/patches/10_SECAlgorithmIDTemplate.dpatch: Move
+    SECAlgorithmIDTemplate around so that the lack of its definition in
+    secdert.h doesn't break the build. bz#399589. Closes: #470094.
+  * debian/patches/00list: Updated accordingly.
+
+ -- Mike Hommey <glandium@debian.org>  Sun, 09 Mar 2008 11:14:17 +0100
+
+xulrunner (1.8.1.12-3) unstable; urgency=low
+
+  * debian/patches/99_configure.dpatch: Forgot to update in previous release.
+    Closes: #408745.
+  * debian/patches/65_native_uconv.dpatch: Remove BOM from UTF-16 output.
+    Closes: #456338, #465321, #461450.
+  * debian/rules: Don't ignore $(MAKE) distclean errors.
+  * debian/control:
+    + Bumped Standards-Version to 3.7.3.0. No changes.
+    + Turned Homepage indications in descriptions into a control field.
+    + Fixed GNOME and GnomeVFS capitalization/spelling.
+    + Build depend on binutils >= 2.17 instead of 2.17-1 for mips and mipsel.
+  * debian/spidermonkey-bin.menu: Moved into the Applications/Programming
+    section.
+
+ -- Mike Hommey <glandium@debian.org>  Sat, 08 Mar 2008 20:47:27 +0100
+
+xulrunner (1.8.1.12-2) unstable; urgency=low
+
+  * debian/patches/01_gtkmozembed_change_toplevel.dpatch: Removed, as it is
+    useless (epiphany doesn't support to move tabs between windows), and
+    can lead to crashes. Closes: #461351.
+  * debian/patches/38_kbsd.dpatch, debian/patches/38_gnu.dpatch,
+    debian/patches/80_uname.dpatch: Support GNU/Hurd, and fix FTBFS on
+    GNU/kFreeBSD. Thanks Samuel Thibault. Closes: #408745, #433126.
+  * debian/patches/00list: Updated accordingly.
+
+ -- Mike Hommey <glandium@debian.org>  Sat, 23 Feb 2008 17:05:32 +0100
+
+xulrunner (1.8.1.12-1) unstable; urgency=low
+
+  * New security/stability upstream release (taken from upstream CVS)
+  * Fixes mfsa-2008-01 to mfsa-2008-06 and mfsa-2008-08 to mfsa-2008-11,
+    also known as CVE-2008-0412, CVE-2008-0413, CVE-2008-0414, CVE-2008-0415,
+    CVE-2008-0417, CVE-2008-0418, CVE-2008-0419, CVE-2008-0591,
+    CVE-2008-0592, CVE-2008-0593, CVE-2008-0594.
+  * debian/patches/99_configure.dpatch: Updated.
+
+ -- Mike Hommey <glandium@debian.org>  Sat, 09 Feb 2008 01:21:17 +0100
+
+xulrunner (1.8.1.11-1) unstable; urgency=low
+
+  * New security/stability upstream release (taken from upstream CVS)
+  * Fixes mfsa-2007-37 to mfsa-2007-39, also known as CVE-2007-5947,
+    CVE-2007-5959, CVE-2007-5960.
+  * debian/patches/99_configure.dpatch: Updated, and removed nsprpub/configure
+    changes: we've not been changing nsprpub/configure.in since we use system
+    nspr.
+
+ -- Mike Hommey <glandium@debian.org>  Sat, 01 Dec 2007 15:08:29 +0100
+
+xulrunner (1.8.1.9-2) unstable; urgency=low
+
+  * debian/patches/30_cairo_xlib.dpatch: Properly get cairo lib dependencies
+    and don't rely on GTK bringing them, which just don't happen anymore (see
+    #343711). Patch from bz#344818. Closes: #451464.
+  * debian/patches/00list: Updated accordingly.
+  * debian/patches/99_configure.dpatch: Updated.
+
+ -- Mike Hommey <glandium@debian.org>  Sat, 17 Nov 2007 15:02:22 +0100
+
+xulrunner (1.8.1.9-1) unstable; urgency=low
+
+  * New security/stability upstream release (taken from upstream CVS)
+    + xpidl produces proper java file names. Closes: #435689.
+  * Fixes mfsa-2007-29 to mfsa-2007-36, also known as CVE-2007-1095,
+    CVE-2007-2292, CVE-2006-2894, CVE-2007-3511, CVE-2007-4841,
+    CVE-2007-5334, CVE-2007-5337, CVE-2007-5338, CVE-2007-5339,
+    CVE-2007-5340. Closes: #447734.
+  * debian/remove.nonfree: Remove some more object files.
+  * debian/control: Remove build dependency on ecj-bootstrap, as it doesn't
+    exist anymore, and is not useful nowadays. Closes: #441511.
+  * debian/patches/99_configure.dpatch: Updated.
+  * debian/patches/35_python_2.5.dpatch: Fix FTBFS with python 2.5. Thanks
+    Alexander Sack. Closes: #431483.
+  * debian/patches/10_gdkpango_system_wrapper.dpatch: Create a system wrapper
+    for gdkpango.h to avoid FTBFS because of default visibility.
+  * debian/patches/00list: Updated accordingly.
+
+ -- Mike Hommey <glandium@debian.org>  Thu, 01 Nov 2007 12:52:17 +0100
+
+xulrunner (1.8.1.6-1) unstable; urgency=low
+
+  * New security/stability upstream release (taken from upstream CVS)
+  * Fixes mfsa-2007-{26,27}, also known as CVE-2007-3844, CVE-2007-3845.
+
+ -- Mike Hommey <glandium@debian.org>  Wed, 01 Aug 2007 23:11:08 +0200
+
+xulrunner (1.8.1.5-1) unstable; urgency=high
+
+  * New security/stability upstream release (taken from upstream CVS)
+  * Fixes mfsa-2007-{18-22}, mfsa-2007-{24-25}, also known as
+    CVE-2007-3089, CVE-2007-3285, CVE-2007-3656, CVE-2007-3734,
+    CVE-2007-3735, CVE-2007-3736, CVE-2007-3737, CVE-2007-3738.
+  * debian/remove.nonfree: add more binary files from tarball that don't
+    have sources (Thanks Alexander Sack).
+  * debian/patches/35_psm_wakeups.dpatch: Removed, as applied upstream.
+  * debian/patches/80_system_libs.dpatch: Make sure we won't be bitten by
+    upstream changing libjpeg, libpng or zlib internal version, which
+    makes system library not used even though --with-system-* argument
+    is given to configure. This time, it happened with libpng.
+  * debian/patches/99_configure.dpatch: Updated.
+  * debian/patches/00list: Updated accordingly.
+  * debian/rules: Bumped shlibs for libmozjs as this version introduced 2
+    new symbols.
+  * debian/control: Even laxer dependencies.
+
+ -- Mike Hommey <glandium@debian.org>  Sat, 21 Jul 2007 23:39:50 +0200
+
+xulrunner (1.8.1.4-3) unstable; urgency=low
+
+  * debian/patches/60_js_binary.dpatch: Avoid visibility hidden issues with
+    readline symbols.
+  * debian/patches/85_xpcomglue.dpatch: Fix so that visibility issues don't
+    raise with gcc 4.2.
+  * debian/patches/31_system_bz2.dpatch: Added system wrapper for bzlib.h.
+  * debian/patches/80_hunspell.dpatch: Added system wrapper for hunspell.hxx.
+    All these fix FTBFS with gcc 4.2. Closes: #429744.
+  * debian/control: Fixup some dependencies so that architectures that take
+    time to build can still install libxul-dev.
+
+ -- Mike Hommey <glandium@debian.org>  Sun, 01 Jul 2007 14:23:56 +0200
+
+xulrunner (1.8.1.4-2) unstable; urgency=low
+
+  * debian/patches/85_URI_fixup.dpatch: Enable keyword lookup by default in
+    URI fixup. Temporary until Galeon and Kazehakase are fixed. (bugs #428244
+    and #428245)
+  * debian/patches/00list: Updated accordingly.
+  * debian/patches/80_xulrunner-config.dpatch: Substitutions being done only
+    once a line, split component_includes fixup. Thanks Alexander Sack.
+    Closes: #427079.
+  * debian/libxul0d.postinst, debian/python-xpcom.postinst,
+    debian/python-xpcom.prerm, debian/xulrunner-gnome-support.postinst,
+    debian/xulrunner-gnome-support.prerm: Remove compreg.dat and xpti.dat
+    when installing/removing packages. This avoids problems with compreg.dat
+    files generated ages ago. Closes: #426569, #427569.
+  * debian/patches/82_prefs.dpatch: Set layout.css.dpi to 0 instead of -1.
+    libxul will use system DPI and avoid using huge fonts on systems where
+    DPI < 96. Closes: #426229
+  * debian/control: Improved spidermonkey-bin short description. Thanks CJ
+    Fearnley. Closes: #426614.
+
+ -- Mike Hommey <glandium@debian.org>  Sun, 10 Jun 2007 09:46:32 +0200
+
+xulrunner (1.8.1.4-1) unstable; urgency=high
+
+  * New upstream release (taken from upstream CVS)
+  * Fixes several security issues, including CVE-2007-1116. Closes: #415945.
+  * Acknowledge Steve Langasek's NMU.
+  * debian/patches/65_native_uconv.dpatch: Properly handle when UTF16
+    character can't be converted to the destination charset, avoiding
+    an infinite loop. Closes: #424042.
+  * debian/patches/10_dash_workaround.dpatch,
+    debian/patches/10_pangoxft.dpatch,
+    debian/patches/10_system_nss.dpatch,
+    debian/patches/15_atk_crash.dpatch,
+    debian/patches/15_gtk_dropdown.dpatch,
+    debian/patches/15_passwdmgr.dpatch,
+    debian/patches/20_visibility.dpatch,
+    debian/patches/82_ssl.dpatch: Removed, as being applied upstream.
+  * debian/patches/20_about:plugins.dpatch,
+    debian/patches/25_gnome_helpers_with_params.dpatch,
+    debian/patches/30_distclean.dpatch,
+    debian/patches/65_native_uconv.dpatch,
+    debian/patches/80_javaxpcom.dpatch,
+    debian/patches/81_sonames.dpatch,
+    debian/patches/85_sidebar.dpatch: Adapted to upstream changes.
+  * debian/patches/10_toolkit_library.dpatch: Add Freetype library to the
+    list of linked libraries. Stolen from bz#340795.
+  * debian/patches/61_javaxpcom.dpatch:
+    + Correctly build java files. This part is fixed on upstream trunk.
+    + Install jar file with appropriate permissions. bz#350886 comment #17.
+  * debian/libxul-common.install: Add new components, and remove
+    xmlextras.xpt, which disappeared.
+  * debian/patches/80_xulrunner-config.dpatch: Patch mozilla-config.in so that
+    the changes end up in xulrunner-config.
+  * debian/patches/00list: Updated accordingly.
+  * debian/xulrunner-config: Removed.
+  * debian/copyright: Fixed typo. Thanks to Sam Hocevar.
+  * debian/rules:
+    + Bumped shlibs for libmozjs0d and libxul0d.
+    + Removed shlibdeps tweaks.
+    + Removed dh_makeshlibs call for packages others than libmozjs0d and
+      libxul0d: there are no such packages anymore.
+    + Adapted rules to create javaxpcom jar files.
+    + Revert change from version 1.8.0.11-2 and 1.8.0.10-3 as gcj-4.1 and
+      pcmanx-gtk2 should be fixed now.
+  * debian/patches/80_hunspell.dpatch: Replace myspell support with hunspell,
+    and allow to build with system shared library. Stolen from iceape.
+  * debian/patches/99_configure.dpatch: Updated with autoconf.
+  * debian/mozconfig:
+    + Don't disable xpcom obsolete, it is needed for xpinstall.
+    + Enable spellchecker and use of the system hunspell library.
+      Closes: #404726.
+  * debian/control:
+    + Build depend on appropriate version of libhunspell.
+    + Remove libsmjs-dev and libsmjs1 transition packages.
+  * debian/libxul0d.install, debian/libxul-common.install: Install the
+    spellchecker components.
+  * debian/libxul0d.links: Create the /usr/lib/xulrunner/dictionaries link.
+  * debian/libsmjs-dev.links, debian/libsmjs1.links: Removed.
+  * debian/patches/65_mozjs_abi.dpatch:  Make 1.8.1 ABI compatible with
+    version 1.8.0.
+  * debian/libmozjs0d.README.Debian: Added a note about ABI compatibility.
+  * debian/patches/35_psm_wakeups.dpatch: Avoid some cpu wake ups in PSM.
+    bz#380558.
+  * debian/patches/00list: Updated accordingly.
+
+ -- Mike Hommey <glandium@debian.org>  Sat, 26 May 2007 20:28:00 +0200
+
+xulrunner (1.8.0.11-4.1) unstable; urgency=low
+
+  * Non-maintainer upload
+  * Build with -Wl,--no-relax on alpha, to work around a binutils bug
+    causing a build failure.
+
+ -- Steve Langasek <vorlon@debian.org>  Sun, 20 May 2007 18:14:00 -0700
+
+xulrunner (1.8.0.11-4) unstable; urgency=low
+
+  * debian/rules: Don't make shlibs for components (which happened to make one
+    for libsystem-pref.so, because of the -).
+  * debian/mozconfig: Disabled spell checker, it requires too much cherry
+    picking from 1.8.1 to be any useful for epiphany.
+  * debian/patches/35_system_myspell.dpatch: Removed.
+  * debian/patches/00list: Updated accordingly.
+  * debian/patches/99_configure.dpatch: Updated with autoconf.
+  * debian/control: Removed build dependency on libmyspell-dev.
+  * debian/libxul0d.install, debian/libxul-common.install: Don't install
+    spellchecker files.
+  * debian/libxul0d.links: Don't create the /usr/lib/xulrunner/dictionaries
+    link.
+  * debian/rules:
+    + Fixed the .pc files so that xpcom and js depend on xulrunner-nspr, so
+      that it can be taken from any existing version of libnspr, even the
+      one from older xulrunner releases, not only the one from the new
+      separate package.
+    + Removed shlib versioning for libxul0d, which was due to spellchecker
+      being added.
+
+ -- Mike Hommey <glandium@debian.org>  Mon, 09 Apr 2007 23:55:49 +0200
+
+xulrunner (1.8.0.11-3) experimental; urgency=low
+
+  * debian/control:
+    + Removed libnspr* and libnss* packages.
+    + Adapted dependencies accordingly.
+    + Build-Depend on libnspr4-dev.
+    + Build-Depend on libnss3-dev (>= 3.11.5-2) for nss-config and libcrmf.
+    + Build-Depend on libmyspell-dev.
+    + Bumped Standards-Version to 3.7.2.2. No changes.
+  * debian/libnspr*, debian/libnss*: Removed.
+  * debian/rules:
+    + Replaced some = with :=.
+    + Removed unused AUTOCONF_DIRS variable.
+    + Removed rules for libnspr and libnss.
+    + Added links to nspr include and lib files to sdk.
+  * debian/patches/18_kbsd_nspr.dpatch, debian/patches/60_nspr_m4.dpatch,
+    debian/patches/25_entropy.dpatch, debian/patches/28_ppc64_build.dpatch:
+    debian/patches/38_mips64_build.dpatch,
+    debian/patches/80_security_build.dpatch,
+    debian/patches/80_security_tools.dpatch,
+    debian/patches/38_unsupported_arch_build.dpatch: Removed.
+  * debian/patches/10_system_nss.dpatch: Build with system nss. bz#255408.
+  * debian/patches/35_system_myspell.dpatch: Build with system myspell.
+    Stolen from iceape.
+  * debian/patches/00list: Updated accordingly.
+  * debian/mozconfig:
+    + Use --with-system-nspr and the newly added --with-system-nss.
+    + Enable spellchecker.
+  * debian/patches/80_config.dpatch: Don't put the config.{guess|sub}
+    workaround in the nsprpub directory.
+  * debian/patches/38_kbsd.dpatch: Removed parts that apply to the nss
+    directories.
+  * debian/patches/81_sonames.dpatch: Removed parts that apply to both
+    nspr and nss directories.
+  * debian/patches/99_configure.dpatch: Removed part for the nspr configure
+    script and updated with autoconf.
+  * debian/rules: Set shlibs for libxul0d to versions higher than
+    1.8.0.11-3.
+  * debian/libxul0d.install: Install the spellchecker component.
+  * debian/libxul0d.links: Create the /usr/lib/xulrunner/dictionaries link.
+
+ -- Mike Hommey <glandium@debian.org>  Wed, 28 Mar 2007 21:24:21 +0200
+
+xulrunner (1.8.0.11-2) unstable; urgency=low
+
+  * debian/rules: Use real upstream version instead for xulrunner-plugin.pc
+    dependency on xulrunner-xpcom.pc. Closes: #416425.
+
+ -- Mike Hommey <glandium@debian.org>  Wed, 28 Mar 2007 08:05:04 +0200
+
+xulrunner (1.8.0.11-1) unstable; urgency=low
+
+  * New upstream release (taken from upstream CVS)
+  * Fixes mfsa-2007-11.
+  * debian/python-xpcom.postinst, debian/python-xpcom.prerm: Added missing
+    component registration/unregistration.
+  * debian/patches/25_gnome_helpers_with_params.dpatch: Make MIME registry
+    use system mime.types when it doesn't get extensions from the Gnome
+    registry. Closes: #414008.
+  * debian/rules: Add the debugging symbols from python-xpcom to the
+    libxul0d-dbg package.
+  * debian/control:
+    + Make python-xpcom conflict with epiphany-browser until epiphany
+      fixes its problems with python thread state. Closes: #416031.
+    + Add the fact that python-xpcom debugging symbols are in the
+      libxul0d-dbg package.
+
+ -- Mike Hommey <glandium@debian.org>  Sat, 24 Mar 2007 18:04:03 +0100
+
+xulrunner (1.8.0.10-3) unstable; urgency=low
+
+  * debian/rules: Re-add xulrunner-xpcom requirement in xulrunner-plugin.pc,
+    until classpath, gcj-4.1 and pcmanx-gtk2 get fixed. Closes: #413964.
+
+ -- Mike Hommey <glandium@debian.org>  Fri,  9 Mar 2007 08:14:35 +0100
+
+xulrunner (1.8.0.10-2) unstable; urgency=low
+
+  * debian/copyright: Added licensing terms for the content in the debian
+    directory.
+  * debian/patches/15_passwdmgr.dpatch: Restore parts that were actually
+    NOT applied upstream, and adapt them. Thanks Sam Hocevar for spotting
+    this. Closes: #413991.
+
+ -- Mike Hommey <glandium@debian.org>  Thu,  8 Mar 2007 19:08:10 +0100
+
+xulrunner (1.8.0.10-1) unstable; urgency=low
+
+  * New upstream release (taken from upstream CVS)
+  * Fixes mfsa-2007-{01-07}, also known as
+    CVE-2006-6077, CVE-2007-0008, CVE-2007-0009, CVE-2007-0045,
+    CVE-2007-0775, CVE-2007-0776, CVE-2007-0777, CVE-2007-0778,
+    CVE-2007-0779, CVE-2007-0780, CVE-2007-0800, CVE-2007-0981,
+    CVE-2007-0995.
+  * debian/patches/35_pango_null_char.dpatch: Avoid freeze/crash when null
+    characters are present in justified text by discarding NULL characters
+    before displaying. bz#366902. Closes: #406713.
+  * debian/patches/20_pangoxft.dpatch: Renamed to 10_pangoxft.dpatch and
+    updated with patch from bz#338446 (Stolen from iceape, actually)
+    Also added MOZ_PANGO_LIBS to build command line for the toolkit library.
+  * debian/patches/15_atk_crash.dpatch: Fix random crashed in GetMaiAtkType.
+    bz#302250. (Stolen from iceape, too)
+  * debian/control: Tighten dependency of libxul0d on libxul-common.
+  * debian/patches/15_pango_textarea_position.dpatch: Fix for cursor position
+    when moving in a textarea. bz#366796. Closes: #408914.
+  * debian/patches/35_zip_cache.dpatch: Invalidate cache for a zip file that
+    got modified. It will prevent corruption of the XUL FastLoad cache when
+    upgrade is performed while an instance of the application is running.
+    bz#368428.
+  * debian/patches/80_config.dpatch: Use config.guess and config.sub from
+    autotools-dev.
+  * debian/rules: Don't install config.{guess,sub}, since that was done as a
+    dpatch.
+  * debian/patches/15_nspr_setuid.dpatch,
+    debian/patches/25_passwdmgr_crash.dpatch,
+    debian/patches/20_broken_perl.dpatch: Removed, as being applied upstream.
+  * debian/patches/15_passwdmgr.dpatch,
+    debian/patches/30_distclean.dpatch: Removed parts that were applied
+    upstream.
+  * debian/patches/18_kbsd_nspr.dpatch, debian/patches/25_entropy.dpatch:
+    debian/patches/38_kbsd.dpatch, debian/patches/80_security_tools.dpatch:
+    debian/patches/80_security_build.dpatch,
+    debian/patches/60_xpcomstub.dpatch, debian/patches/61_javaxpcom.dpatch,
+    debian/patches/81_sonames.dpatch, debian/patches/85_installer.dpatch
+    debian/patches/15_passwdmgr.dpatch : Adapted to upstream changes.
+  * debian/patches/80_zip.dpatch: Removed part that is not needed anymore due
+    to changes upstream.
+  * debian/patches/99_configure.dpatch: Updated with autoconf.
+  * debian/control: Make libxul-dev and libmozjs-dev conflict with old
+    versions of mozilla-browser, not the current transition packages for
+    iceape-browser that don't contain conflicting files anymore.
+    Closes: #407966.
+  * debian/libnss3-0d.install: Install libfreebl files.
+  * debian/rules:
+    - Run shlibsign on libfreebl files.
+    - Bump shlibs for libnss3-0d and libnspr4-0d, as they introduced new
+      symbols.
+  * debian/patches/15_gtk_dropdown.dpatch: Fix for focus problem with drop
+    down lists. bz#281551. Closes: #409889.
+  * debian/patches/00list: Updated accordingly.
+  * debian/patches/80_security_build.dpatch: Also added a dirty hack to load
+    libfreebl from /usr/lib/xulrunner.
+  * debian/patches/80_security_tools.dpatch: Also disable rpath.
+
+ -- Mike Hommey <glandium@debian.org>  Thu,  1 Mar 2007 19:01:34 +0100
+
+xulrunner (1.8.0.9-1) unstable; urgency=low
+
+  * New upstream release (taken from upstream CVS)
+  * Fixes mfsa-2006-{68-73} also known as
+    CVE-2006-6497, CVE-2006-6498, CVE-2006-6499, CVE-2006-6500,
+    CVE-2006-6501, CVE-2006-6502, CVE-2006-6503, CVE-2006-6504.
+  * Removed non-free and sourceless binaries from source package
+    with the script from the gnuzilla project, with 2 additional removals of
+    IETF files. Closes: #393422.
+    You can find this modified script for reference in debian/remove.nonfree.
+    Note this script also removes useless CVS files.
+  * debian/patches/80_uname.dpatch: Fix OS_TARGET so that it is correctly set
+    to Linux for things that expect this value instead of linux-gnu (such as
+    the extensions manager)
+  * debian/libxul0d.links: Added a link for libgtkembedmoz in
+    /usr/lib/xulrunner. Closes: #393440.
+  * debian/patches/15_passwdmgr.dpatch: Adapted to changes in upstream. Thanks
+    to Andreas Metzler.
+  * debian/patches/35_crash_focus.dpatch: Removed: applied upstream.
+  * debian/patches/15_nspr_setuid.dpatch: Patches from bz#351470 and bz#365703
+    to fix privilege escalation issues with setuid/setgid program linked
+    against libnspr and some other boundaries issue. Closes: #405062.
+  * debian/patches/18_m68k_xpcom.dpatch: Apply changes provided by Roman
+    Zippel to fix FTBFS of third party software on m68k. Closes: #402011.
+    Renamed as 68_m68k_xpcom.dpatch, since it needs to be sent upstream.
+  * debian/libnss3-dev.links: Add nss.pc symlink to xulrunner-nss.pc.
+    Closes: #402846.
+  * debian/patches/38_kbsd.dpatch, debian/patches/38_mips64_build.dpatch,
+    debian/patches/80_uname.dpatch, debian/patches/18_kbsd_nspr.dpatch:
+    Applied patch from Petr Salinger to build on GNU/kFreeBSD.
+    Closes: #388475.
+  * debian/patches/00list: Updated accordingly.
+  * debian/patches/99_configure.dpatch: Updated with autoconf.
+  * debian/patches/81_soname.dpatch: Updated to fit changes to Linux2.6.mk in
+    38_kbsd.dpatch.
+  * debian/patches/65_native_uconv.dpatch:
+    - Reworked so that UTF-16 is used internally instead of UCS-2, and
+      improved to better handle corner cases.
+    - Allow claimed iso-8859-1 actually encoded as windows-1252 to be
+      converted flawlessly. Closes: #368779, #401784, #405681
+
+ -- Mike Hommey <glandium@debian.org>  Sat,  6 Jan 2007 17:51:16 +0100
+
+xulrunner (1.8.0.8-1) unstable; urgency=high
+
+  * New upstream release (taken from upstream CVS)
+  * Fixes several security issues, CVE-2006-5464, CVE-2006-5748,
+    CVE-2006-5462, CVE-2006-5463, CVE-2006-4310 being some of these.
+  * debian/patches/15_print_fontconfig.dpatch,
+    debian/patches/15_embed_initial_visibility.dpatch: Removed:
+    Applied upstream.
+  * debian/patches/00list: Updated accordingly.
+  * debian/rules: Changed the way we use uptodate config.guess and config.sub.
+    If will make the .diff.gz file lighter.
+
+ -- Mike Hommey <glandium@debian.org>  Sat, 18 Nov 2006 23:04:54 +0100
+
+xulrunner (1.8.0.7-2) unstable; urgency=low
+
+  * debian/patches/65_nativeuconv.dpatch: Reimplement most of the native
+    uconv service so that it works as proper nsUnicode(En|De)coder
+    implementations and don't break things when a multibyte character is
+    split between two buffers. Also add a workaround so that backslash is not
+    turned into Yen in shift-jis, which breaks javascript code using escaping.
+    The layout code turns it back to Yen anyways.
+  * debian/control: Changed dependency versions of arch-indep packages on
+    arch-dependent packages. Closes: #385793.
+  * debian/patches/15_print_fontconfig.dpatch: Patch from bz#294879 to avoid
+    crash with fontconfig when printing. Thanks Alexander Sack.
+    Closes: #390140, #390472, #391119.
+  * debian/patches/00list: Updated accordingly.
+
+ -- Mike Hommey <glandium@debian.org>  Fri,  6 Oct 2006 19:13:56 +0200
+
+xulrunner (1.8.0.7-1) unstable; urgency=low
+
+  * New upstream release (taken from the MOZILLA_1_8_0_7_RELEASE tag in
+    upstream CVS)
+
+  * Fixes the following security vulnerabilities:
+    CVE-2006-4340, CVE-2006-4253, CVE-2006-4565, CVE-2006-4566,
+    CVE-2006-4568, CVE-2006-4569, CVE-2006-4571.
+
+  * Removed patches from NMUs by Matthias Klose, because work done on java
+    build in this release makes them unnecessary.
+  * debian/patches/15_nodataprotocolcontentpolicy_fix.dpatch,
+    debian/patches/15_overthespot.dpatch: Removed, since they've been applied
+    upstream.
+  * debian/patches/35_embed_initial_visibility.dpatch: Renamed as
+    debian/patches/15_embed_initial_visibility.dpatch, since it got applied in
+    an upstream branch.
+  * debian/patches/80_security_tools.dpatch: Added missing backslash.
+    Closes: #385847.
+  * debian/patches/15_jni.dpatch: Patch from bz#333738 to update java stubs.
+  * debian/patches/80_javaxpcom.dpatch: Force creation of Makefiles in
+    extensions/java, even when javaxpcom is disabled. Don't build the jars if
+    DEB_NO_JAR is defined.
+  * debian/patches/00list: Updated accordingly.
+  * debian/mozconfig: Disable javaxpcom.
+  * debian/rules:
+    + Added rules to build the java class files only for binary
+      independent build. This way, no more waiting on java on buildds
+      (especially on arm).
+    + Build the javaxpcomglue from the bundled jni headers instead of the gcj
+      headers.
+  * debian/control: Adapted build dependencies so that the minimum is taken to
+    build the architecture dependant part, and added adequate
+    Build-Depends-Indep field.
+  * debian/patches/80_uname.dpatch: Don't use the ppc_linux stuff for ppc64.
+
+ -- Mike Hommey <glandium@debian.org>  Thu, 28 Sep 2006 20:20:59 +0200
+
+xulrunner (1.8.0.5-4.2) unstable; urgency=low
+
+  * Relax the dependencies even more, so that the -dev packages can be
+    installed with the arm binaries currently in the archive (1.8.0.4).
+
+ -- Matthias Klose <doko@debian.org>  Sun,  3 Sep 2006 13:39:45 +0200
+
+xulrunner (1.8.0.5-4.1) unstable; urgency=medium
+
+  * NMU
+  * Relax dependencies of the -dev packages on the libraries. Closes: #385793.
+
+ -- Matthias Klose <doko@debian.org>  Sun,  3 Sep 2006 10:41:10 +0200
+
+xulrunner (1.8.0.5-4) unstable; urgency=low
+
+  * debian/patches/*: Moved around after some triage.
+    Some changed names, some changed only ordering number.
+    One got split.
+    One, that was disabled because it has been applied upstream, got removed.
+    Two, who were depending on each other, being reordered, have been updated.
+  * debian/patches/30_distclean.dpatch: Added a bit more clean-up, not
+    necessary for xulrunner, but still better to have around. One of the added
+    bits will actually be useful for the 1.8.1 branch, when we'll remove
+    debian/patches/20_visibility.dpatch.
+  * debian/patches/00list: Added a nomenclature for the patches naming.
+
+  * debian/patches/80_security_tools.dpatch: Enable building of some NSS
+    tools.
+  * debian/patches/00list: Updated accordingly.
+  * debian/control:
+    + Added a libnss3-tools package to contain these NSS tools.
+    + Added proper conflicts to libnss3-tools.
+  * debian/libnss3-tools.install: Install the binary files in the newly
+    created package.
+  * debian/rules: Strip files from the libnss3-tools package and put the
+    debugging symbols into libnss3-dbg.
+    Closes: #377269.
+  * debian/control: Use the suggestion from lintian for binNMU safety instead
+    of our previous own. And really add binNMU safety to libnss3-dev.
+
+ -- Mike Hommey <glandium@debian.org>  Fri,  1 Sep 2006 07:38:05 +0200
+
+xulrunner (1.8.0.5-3) unstable; urgency=low
+
+  * The ${host_cpu} is not uname -m release.
+
+  * debian/patches/90_xpcom_hppa.dpatch: Added support for 'hppa' instead of
+    'parisc' and 'parisc64' since we changed from using `uname -m` to using
+    ${host_cpu}. I'm not putting hppa64 because I don't think the code works
+    on parisc64.
+  * debian/patches/01_uname.dpatch: Fixed
+    xpcom/reflect/xptcall/src/md/unix/Makefile.in so that it recognizes
+    powerpc instead of ppc, since we now use ${host_cpu}. Thanks a lot to
+    Michel Dänzer for the big hint. Closes: #383053, #383056, #383313.
+
+ -- Mike Hommey <glandium@debian.org>  Fri, 25 Aug 2006 20:37:55 +0200
+
+xulrunner (1.8.0.5-2) unstable; urgency=low
+
+  * The Fix-ups release.
+
+  * debian/patches/01_libxpcom_hack.dpatch: Force libxpcom to be linked to
+    xulrunner-bin, xpcshell and libgtkmozembed so that it is loaded in most
+    of the cases.
+  * debian/patches/01_passwdmgr_crash.dpatch: Avoid crash of the password
+    manager when embedding applications don't set a profile directory. Patch
+    from bz#294075. Closes: #376323.
+  * debian/patches/01_gnome_helpers_with_params.dpatch: Make helper
+    applications with parameters work. Adapted patch from bz#273524.
+    Closes: #381291.
+  * debian/patches/01_nspr_m4.dpatch: Avoid aclocal warnings about
+    underquoted definition of AM_PATH_NSPR". Closes: #382539.
+  * debian/patches/01_gtkmozembed_change_toplevel.dpatch: Fix drop-down menus
+    when gtkmozembed is moved from different toplevel. Patch from bz#296002.
+    Closes: #367106.
+  * debian/patches/01_overthespot.dpatch: Apply patch from bz#271815 for GTK2
+    IM Over-The-Spot support.
+  * debian/patches/00list: Updated accordingly.
+  * debian/control:
+    + Make the controls more BinNMU compliant. Closes: #384200, #384203.
+    + Bumped Standards-Version to 3.7.2.1. No changes.
+
+ -- Mike Hommey <glandium@debian.org>  Tue, 22 Aug 2006 23:15:16 +0200
+
+xulrunner (1.8.0.5-1) unstable; urgency=high
+
+  * The "upstream doesn't, so I do" release: Checked out the
+    XULRUNNER_1_8_0_5_RELEASE tagged code from upstream CVS.
+
+  * Fixes the following security vulnerabilities:
+    CVE-2006-3113, CVE-2006-3677, CVE-2006-3801, CVE-2006-3802,
+    CVE-2006-3803, CVE-2006-3805, CVE-2006-3806, CVE-2006-3807,
+    CVE-2006-3808, CVE-2006-3809, CVE-2006-3810, CVE-2006-3811,
+    CVE-2006-3812.
+
+  * debian/patches/01_pyxpcom_deadcode.dpatch: Remove pyxpcom dead code and
+    fix FTBFS on alpha this way. Closes: #381662.
+  * debian/patches/01_nodataprotocolcontentpolicy_fix.dpatch: Fix from
+    Firefox 1.5.0.6 to allow urls like mms:// in <object/>s
+  * debian/patches/01_uname.dpatch: Use ${host_*} variables instead of
+    uname in configure.in. Closes: #377418.
+    This is a minimalist patch to solve the particular bad assembler choice
+    issue. It would need a much greater work to actually do something totally
+    clean, but the current patch should be enough for Linux builds.
+  * debian/patches/00list: Updated accordingly.
+  * debian/patches/99_configure.dpatch: Updated with autoconf.
+  * debian/libxul-dev.install: Install files from SDK independently and don't
+    install the jar files from sdk/lib, since they are in the
+    libmozillainterfaces-java package.
+  * debian/control: Fixed typo in libxul-common description.
+  * debian/rules: Bumped shlibs for libmozjs as this version introduced 2
+    new symbols.
+
+ -- Mike Hommey <glandium@debian.org>  Wed,  9 Aug 2006 21:01:47 +0200
+
+xulrunner (1.8.0.4-2) unstable; urgency=low
+
+  * The "finally enabling these stuff" release.
+
+  * debian/watch: Stole the watch file from firefox.
+  * debian/rules, debian/control, debian/mozconfig,
+    debian/libmozillainterfaces-java.install,
+    debian/libmozillainterfaces-java.links, debian/*.conf: Enable pyxpcom
+    and javaxpcom again, with some changes on the python part, to fit the
+    new python policy. Closes: #173264, #277120, #373906.
+  * debian/python-xpcom.dirs, debian/python-xpcom.install: Replace the
+    previous .in files, and replace PYVERS by a wildcard.
+  * debian/control:
+    + Added build dependency on python-support and python-dev.
+    + Only create a python-xpcom package instead of pythonX.Y-xpcom.
+    + Added XB-Python-Version field to python-xpcom.
+    + Bumped debhelper dependency.
+  * debian/pyversions, debian/pycompat: Files necessary for dh_pysupport and
+    dh_python.
+
+  * debian/libxul-common.*, debian/libxul0d.*, debian/control: Create a new
+    libxul-common package for most architecture independent files.
+
+  * debian/control: Add a build dependency on binutils >= 2.17-1 for mips and
+    mipsel, where #274738 is fixed.
+  * debian/patches/90_mips_performance.dpatch: Remove the xgot hack.
+    Closes: #374389. Thanks Thiemo Seufer.
+    Also remove the specific setting of MOZ_DEBUG_FLAGS="-g" for mips, it's
+    built with -g anyways.
+  * debian/rules:
+    + Bump shlib for libmozjs0d because of a new symbol. Other libraries were
+      not subject to symbol additions, so we can keep them as they are.
+      Closes: #376374.
+    + Removed an extra parenthesis to really build with minimal toc on ppc64.
+      Dammit. Closes: #361188.
+  * debian/patches/01_crash_focus: Fix a crasher and several similar potential
+    crashers.
+  * debian/patches/00list: Updated accordingly.
+
+ -- Mike Hommey <glandium@debian.org>  Sat,  8 Jul 2006 14:22:43 +0200
+
+xulrunner (1.8.0.4-1) unstable; urgency=high
+
+  * The "finally a new upstream" release.
+  * Fixes the following security vulnerabilities:
+    CVE-2006-2775, CVE-2006-2776, CVE-2006-2778, CVE-2006-2780,
+    CVE-2006-2782, CVE-2006-2783, CVE-2006-2784, CVE-2006-2785,
+    CVE-2006-2786, CVE-2006-2787.
+
+  * debian/patches/00_securityfix.dpatch: Removed, since this release includes
+    all the security changes we brought from CVS in this patch.
+  * debian/patches/90_js_mipsel_endianness.dpatch: Removed, since it was
+    applied upstream.
+  * debian/patches/01_installer.dpatch,
+    debian/patches/01_javaxpcom.dpatch: Removed parts that were applied
+  * debian/patches/00list: Updated accordingly.
+  * debian/patches/01_distclean.dpatch,
+    debian/patches/01_xpcomglue.dpatch: Adapted to upstream changes.
+    upstream.
+  * debian/patches/99_configure.dpatch: Updated.
+
+  * debian/patches/01_pyxpcom.dpatch: Use a make variable for PYTHON_SO.
+  * debian/patches/90_unichar_alignment.dpatch.
+  * debian/patches/00list: Added 90_unichar_alignment.
+  * debian/rules:
+    + Set this PYTHON_SO variable when building python modules.
+    + Disabled strict aliasing from optimized builds.
+    + Build with minimal toc on ppc64. Closes: #361188.
+    + Fix for Gecko date extraction from client.mk.
+  * debian/mozconfig: Set default mozilla home.
+  * debian/control: Replaced some Conflicts with Replaces, which should be fine.
+
+  * debian/rules, debian/control, debian/mozconfig, debian/python-xpcom.dirs.in,
+    debian/python-xpcom.install.in, debian/libmozillainterfaces-java.install,
+    debian/libmozillainterfaces-java.links, debian/*.conf: Remove pyxpcom and
+    javaxpcom (again) packages and build. We want this release not to go through
+    NEW (again).
+
+ -- Mike Hommey <glandium@debian.org>  Thu, 15 Jun 2006 01:05:34 +0200
+
+xulrunner (1.8.0.1-12) unstable; urgency=low
+
+  * The release of the Beast.
+  * debian/control:
+    + Added dependency upon libnss3-dev to libxul-dev.
+    + Fixed dependencies and conflicts so that the package should be binNMU
+      safe.
+    + Depends upon dpkg-dev >= 1.13.19 accordingly.
+  * debian/control, debian/rules: xulrunner must depend on libxul0d
+    versions >= 1.8.0.1-9. Closes: #370152.
+
+  * Add support for PyXPCOM:
+    + debian/mozconfig: Added the python/xpcom extension.
+    + debian/control: Added build dependency on python-dev. Added
+      python2.3-xpcom and python2.4-xpcom packages.
+    + debian/python-xpcom.install.in: Install template for python XPCOM files.
+    + debian/python-xpcom.dirs.in: Directories to create in python XPCOM
+      packages.
+    + debian/rules:
+      - Add rules to build the python xpcom packages.
+      - Add a shlibs.local hack to have python xpcom packages correctly depend
+        on libxul0d >= 1.8.0.1-12.
+    + debian/patches/01_no_examples.dpatch: Don't install the pyxpcom sample
+      component.
+    Closes: #173264, #277120.
+
+  * Add support for JavaXPCOM again:
+    + debian/mozconfig: --enable-javaxpcom.
+    + debian/*.conf: Set javaxpcom=1.
+    + debian/control: Added a build dependency on java-gcj-compat-dev
+      >= 1.0.56 to avoid #365934, and force build dependency on ecj-bootstrap
+      >= 3.1.2-6 to avoid #361608.
+    + debian/rules: Uncommented the javaxpcom related rules. Removed the
+      workarounds for #365934 and #361608. Install all MozillaInterfaces jar
+      files in the sdk directory.
+    + debian/libxul0d.install: Uncommented the javaxpcom files. Removed
+      installation of MozillaInterfaces.jar.
+    + debian/control: Added a libmozillainterfaces-java package for the public
+      java interfaces.
+    + debian/libmozillainterfaces-java.(install|links): Install
+      MozillaInterfaces.jar in /usr/share/java, and install the -src.jar file
+      in the sdk directory.
+    + debian/patches/01_pyxpcom.dpatch: Fix installation directory.
+    + debian/patches/00list: Updated to include this new patch.
+
+ -- Mike Hommey <glandium@debian.org>  Tue,  6 Jun 2006 23:26:09 +0200
+
+xulrunner (1.8.0.1-11) unstable; urgency=low
+
+  * The "Let's get migrated" release.
+  * debian/control: Don't build-depend on java-gcj-compat-dev.
+  * debian/libxul0d.install: Comment out the javaxpcom files installation.
+  * debian/rules: Comment out javaxpcom related rules, but put the fix for
+    jni.h detection nevertheless. Closes: #367863.
+  * debian/*.conf: Set javaxpcom=0.
+  * debian/mozconfig: --disable-javaxpcom.
+
+  * debian/rules:
+    + Remove extra parenthesis in the productComment.
+    + Generate the .chk file from the stripped libsoftokn3.so.0d.
+  * debian/patches/01_security.dpatch: Build the shlibsign utility again, so
+    that we can generate the .chk that can be useful for FIPS mode, but don't
+    build the .chk file automatically since we are going to strip the library,
+    making the .chk file obsolete.
+  * debian/patches/01_ssl.dpatch: Disable SSLv2 and SSLv3 40-bit ciphers.
+    Closes: #308334.
+  * debian/patches/01_soname.dpatch: Change the way libnss tries to find the
+    .chk file for FIPS mode so that the .chk file name needn't contain ".so"
+    when using a full SONAME.
+  * debian/patches/00list: Apply 01_security after 01_soname ; Added 01_ssl.
+  * debian/libxul0d.README.Debian: Add a note about SSLv2 and SSLv3 40-bit
+    ciphers.
+
+ -- Mike Hommey <glandium@debian.org>  Sat, 20 May 2006 21:23:00 +0200
+
+xulrunner (1.8.0.1-10) unstable; urgency=critical
+
+  * The "how dumb can I be ?" release.
+  * debian/rules: Don't use x86 specific directory to find jni.h.
+
+ -- Mike Hommey <glandium@debian.org>  Sun, 14 May 2006 01:25:10 +0200
+
+xulrunner (1.8.0.1-9) unstable; urgency=critical
+
+  * The "I wish they had a distribution-friendly security policy" release.
+  * Fixes the following security vulnerabilities:
+    CVE-2006-0297, CVE-2006-0748, CVE-2006-1530, CVE-2006-1531,
+    CVE-2006-1723, CVE-2006-1724, CVE-2006-1725, CVE-2006-1726,
+    CVE-2006-1727, CVE-2006-1728, CVE-2006-1729, CVE-2006-1730,
+    CVE-2006-1732, CVE-2006-1742.
+  * Should fix the following security vulnerabilities:
+    CVE-2006-0884, CVE-2006-1045, CVE-2006-1529, CVE-2005-2353.
+  * debian/patches/00_securityfix.dpatch: All security patches for the issues
+    above. I hope none has been forgotten, it has been a real PITA to go
+    through all the patches in upstream CVS to find those commits that *might*
+    be related to fixing the flaws.
+
+  * debian/patches/01_native_uconv.dpatch:
+    + Add the scriptableunicodeconverter component. Will make chatzilla work.
+    + Fix GBK and EUC-TW charset names so that iconv recognizes them.
+      Closes: #365886.
+  * debian/patches/01_killAll.dpatch, debian/xulrunner.install: Correctly
+    install the killAll component.
+  * debian/patches/01_js_binary.dpatch: Add readline support to xpcshell.
+  * debian/patches/01_no_register.dpatch: Remove (un|)registering system. We
+    don't need it since we register ourselves.
+  * debian/patches/01_broken_perl.dpatch: Apply patch from bz#325148 instead
+    of removing the broken perl code.
+  * debian/patches/01_no_chromelist.dpatch: Also correctly call make-jars.pl
+    to avoid creation of unexpected chrome in dist/bin instead of
+    dist/bin/chrome.
+  * debian/mozconfig:
+    + Disable elf-dynstr-gc, which is pretty useless nowadays.
+    + Enable javaxpcom support.
+  * debian/rules:
+    + Added a check between dist/bin and $DESTDIR/usr/lib/xulrunner to see if
+      upstream correctly installs everything...
+    + Set JAVA_HOME for configure to find the java compiler.
+    + Work around bug #361806 by setting JAVAC at build time.
+    + Work around bug #365934 by using --with-java-include-path configure
+      option, and work around a feature of cpp by creating a symlink to the
+      real location of jni.h in the debian directory.
+    + Don't install dependentlibs.list (see debian/patches/01_xpcomstub.dpatch
+      below).
+    + Changed the way we move libraries to /usr/lib.
+    + Changed the User-Agent string again, it seems too many dumb scripts use
+      the useless date from the product string.
+  * debian/control: Added java-gcj-compat-dev to build dependencies.
+  * debian/patches/01_javaxpcom.dpatch:
+    + Apply patch from bz#327654 to be able to actually build the javaxpcom
+      stuff.
+    + Allow to build with gcj headers.
+    + Don't install GenerateJavaInterfaces.
+    + Correctly install javaxpcom.jar.
+    + Don't use visibility flags so that symbols are exported.
+  * debian/*.conf: Set jaxaxpcom to 1.
+  * debian/patches/01_icons.dpatch: Apply patch from  bz#314927 to install
+    default.xpm in the right place
+  * debian/xulrunner.install: Install chrome/icons, where default.xpm is
+    sitting.
+  * debian/patches/01_installer.dpatch: Apply patch from bz#328505 to allow
+    to install without a vendor name.
+  * debian/patches/01_mouse_buttons.dpatch: Extended mouse buttons support
+    taken from #244305. Thanks Peter Colberg.
+  * debian/patches/01_xpcomstub.dpatch: Correctly install dependentlibs.list
+    and apply patch from bz#332262 for it to contain NSS libraries.
+  * debian/patches/01_distclean.dpatch: Make distclean cleaner.
+  * debian/patches/01_target_xpcom_abi.dpatch: Apply patch from bz#322450 plus
+    the OS_TEST fix that got landed at the same time so that TARGET_XPCOM_ABI
+    is correctly set on sparc.
+  * debian/patches/01_embed_initial_visibility.dpatch: Apply patch from
+    bz#312998 to fix gtkmozembed's EmbedWindow::GetVisibility. Closes: #365868.
+  * debian/patches/01_config_install.dpatch: Correct installation of all the
+    headers files from the config/ directory.
+  * debian/patches/00list: Updated to include all the new patches.
+  * debian/patches/99_configure.dpatch: Updated.
+  * debian/control:
+    + Bumped Standards-Version to 3.7.2.0. No changes.
+    + Add small text about the SDK to libxul-dev's description.
+    + Make libxul-dev depend on xulrunner for the development tools (xpt_link,
+      xpt_dump, xpidl, regxpchrome)
+  * debian/rules, debian/libxul-dev.install: Install the SDK files.
+  * debian/libxul0d.install: Install MozillaInterfaces.jar in
+    /usr/lib/xulrunner instead of inside the SDK (but put a symlink there),
+    since it is useful to embed javaxpcom.
+  * debian/libxul0d.install, debian/xulrunner.install: Move the PSM files
+    from xulrunner to libxul0d. Closes: #359220, #359226.
+  * debian/control: Make libxul0d conflict with those older versions of
+    xulrunner that included the PSM files.
+
+ -- Mike Hommey <glandium@debian.org>  Sat, 13 May 2006 23:22:35 +0200
+
+xulrunner (1.8.0.1-8) unstable; urgency=low
+
+  * debian/libxul0d.install:
+    + Install xpt files one by one instead of glob, so that we:
+      - put mozgnome.xpt in xulrunner-gnome-support
+        (debian/xulrunner-gnome-support.install)
+      - don't install the sample simple.xpt
+    + Don't install the sample component libsimpletest.so.
+  * debian/rules:
+    + Don't remove the .chk file, since we don't install it anymore.
+    + Use -Wl,--as-needed as LDFLAGS. That will work around upstream linking
+      strategy to limit useless linkage.
+    + Use a specific LD_LIBRARY_PATH at link time so that we don't need to
+      link against indirect dependencies. This is a temporary workaround until
+      this is workaround some better other way.
+    + Added some install checks after binary packages build, so that we can
+      know if we forgot anything.
+    + Fixed the way we get the DEBIAN_VERSION.
+  * debian/patches/01_native_uconv.dpatch:
+    + Don't build intl/uconv/ucvja and friends, since this is supported by
+      the native uconv implementation and not even linked into something we
+      ship.
+    + Properly load invalid UTF-8 files and more generally malformed files
+      as to their (supposed) encoding. Closes: #358815, #359049, #358599.
+  * debian/patches/01_prefs.dpatch: set javascript.options.showInConsole.
+  * debian/patches/01_security_build.dpatch:
+    + Don't build the stuff we don't need, and dynamically link libnssckbi to
+      both libplc4 and libplds4 instead of linking statically.
+    + Build with debugging symbols.
+  * debian/patches/01_no_chromelist.dpatch: Don't build chromelist.txt files.
+  * debian/patches/01_no_sys_profile.dpatch: Don't install system profile.
+  * debian/patches/01_no_examples.dpatch: Don't build the examples.
+  * debian/patches/01_xpcomglue.dpatch:
+    + Build the xpcom glue as a shared library.
+    + Load DSOs from . when directory is not given. That makes regxpcom work
+      as "expected".
+  * debian/patches/80_xpidl.dpatch: Added an error message when no file is
+    given, to sync with the patch against trunk I sent upstream.
+  * debian/patches/01_about:plugins.dpatch: Install the files for
+    about:plugins. Closes: #354037, #356082.
+  * debian/patches/01_installer.dpatch: Install applications in /usr/local/lib
+    instead of /usr/lib.
+  * debian/patches/00list: Updated accordingly.
+  * debian/patches/99_configure.dpatch: Updated.
+  * debian/rules, debian/spidermonkey-bin.install: Move out some files from
+    the install target instead of the binary target. Install them with
+    dh_install.
+  * debian/control: Bumped to Standards-Version: 3.6.2.2. No changes required.
+  * debian/libxul0d.postinst, debian/libxul0d.preinst: Instead of removing
+    compreg.dat and xpti.dat to solve #357589, create a .autoreg file. That
+    will trigger components registration in all cases, even in cases where the
+    component registry was stored in a profile directory.
+    Do it on postinst at configure time instead of preinst.
+  * debian/xulrunner-gnome-support.{postinst|prerm}: Also do it when
+    configuring or removing xulrunner-gnome-support.
+  * debian/libxul0d.prerm: Remove all files that could be generated by running
+    xulrunner or programs using libxul as root, plus the .autoreg file we
+    create in case it's still there.
+  * debian/libxul0d.install, debian/libxul-dev.install: Install the
+    libxpcomglue files.
+  * debian/control, debian/rules: Added debugging symbols in separated
+    packages.
+  * debian/control, debian/compat: Bumped debhelper compatibility to 5.
+  * debian/libxul0d.links: Add links to the libraries in /usr/lib/xulrunner.
+    That will allow some (but not all, because of C++ ABI differences)
+    components from mozilla and/or upstream to work with xulrunner. It also
+    allows the XPCOM Glue to kinda work without deep modifications.
+  * debian/libxul0d.conf, debian/xulrunner.conf, debian/libxul0d.install,
+    debian/xulrunner.install, debian/rules: Install GRE "configurations" into
+    /etc/gre.d. That is used by the XPCOM Glue (thus, by the xulrunner stub).
+  * debian/rules, debian/libxul0d.install: Install the dependentlibs.list file.
+
+ -- Mike Hommey <glandium@debian.org>  Sat,  1 Apr 2006 16:09:27 +0200
+
+xulrunner (1.8.0.1-7) unstable; urgency=low
+
+  * debian/rules: Add -g to the build flags when building with
+    DEB_BUILD_OPTIONS=nostrip. If we ask for nostrip, we want the debugging
+    symbols, right? ;)
+  * debian/libxul0d.preinst, debian/libxul0d.prerm: Remove
+    /usr/lib/xulrunner/components/{compreg|xpti}.dat files on upgrade and
+    removal. Closes: #357589. That will also avoid gnome-support components to
+    be ignored if they were created when the components were not yet
+    installed.
+
+ -- Mike Hommey <glandium@debian.org>  Thu, 23 Mar 2006 23:02:29 +0100
+
+xulrunner (1.8.0.1-6) unstable; urgency=low
+
+  * debian/copyright: Fixed typo.
+  * debian/patches/90_mips64_build.dpatch: Patch from Martin Michlmayr for
+    mips64 builds.
+  * debian/patches/90_unsupported_arch_build.dpatch: Don't use x86 as CPU_ARCH
+    when building on an unsupported architectures. Closes: #357035.
+  * Put back some stuff that used to be in spidermonkey-bin:
+    + debian/rules, debian/smjs.1: Add the manual page.
+    + debian/rules, debian/spidermonkey-bin.menu: Add the menu item.
+    + debian/spidermonkey-bin.postinst, debian/spidermonkey-bin.prerm:
+      Add the /usr/bin/js alternative. Closes: #355729.
+  * debian/mozconfig: Enable iconv support.
+  * debian/patches/01_native_uconv.dpatch: Fix for the build to succeed when
+    iconv support is enabled.
+  * debian/patches/00list: Updated accordingly.
+
+ -- Mike Hommey <glandium@debian.org>  Fri, 17 Mar 2006 07:16:10 +0100
+
+xulrunner (1.8.0.1-5) unstable; urgency=low
+
+  * debian/mozconfig: DON'T build the typeaheadfind module. It will cause
+    problems with firefox as stated before AND with the newer Galeons. I guess
+    it will also be problematic with newer Epiphanies.
+  * debian/rules: Changed the Gecko/Debian/x.y.z.t-r string to
+    Gecko/Debian-x.y.z.t-r for RFC2616 compliance. Thanks Josh Triplett and
+    Matthew Wilcox.
+  * debian/rules, debian/xulrunner-config: Provide a version of
+    xulrunner-config that gives more appropriate cflags and libs.
+
+ -- Mike Hommey <glandium@debian.org>  Mon, 27 Feb 2006 19:44:59 +0100
+
+xulrunner (1.8.0.1-4) unstable; urgency=low
+
+  * debian/mozconfig:
+    + Build the typeaheadfind module. It will enable it in Galeon and
+      Epiphany, but might cause problems with future firefoxes built on top on
+      xulrunner. That will need to be investigated further.
+    + Build with a flat chrome instead of jar files.
+  * debian/libxul0d.install, debian/xulrunner.install: Changed chrome
+    wildcards accordingly.
+  * debian/patches/01_zip.dpatch: Don't need zip if not needed (not building
+    jar files)
+  * debian/patches/01_broken_perl.dpatch: Remove useless broken perl code.
+  * debian/patches/01_useragent.dpatch: Remove useless useragent setter at
+    startup so that general.useragent.product and general.useragent.productSub
+    set in our vendor.js preference file work at startup time.
+  * debian/patches/99_configure.dpatch: Updated.
+  * debian/patches/00list: Updated accordingly.
+  * debian/control: Removed build dependency upon zip.
+
+ -- Mike Hommey <glandium@debian.org>  Tue, 21 Feb 2006 18:36:26 +0100
+
+xulrunner (1.8.0.1-3) unstable; urgency=low
+
+  * debian/control:
+    + Added a conflict against mozilla-browser on libxul-dev. Closes: #353600.
+    + Renamed libsmjs1-dev to libsmjs-dev, since that what is the name of the
+      dev package provided by the old spidermonkey package.
+    + Sync sections with override for spidermonkey-bin, libsmjs1 and
+      libsmjs-dev.
+  * debian/libsmjs1-dev.links: Renamed to libsmjs-dev.links.
+  * debian/patches/90_xpcom_hppa.dpatch: Somehow, the assembler files got
+    their content twice. Fixing that should make it build properly on HPPA.
+  * debian/xulrunner.*, debian/libxul0d.*:
+    + Moved /usr/share/xulrunner/defaults from xulrunner to libxul0d ; leave
+      out profile and preferences. They will be reintroduced if they appear to
+      be really useful. As for now, they just seem to be vestiges of Mozilla,
+      Firefox or Thunderbird.
+    + Moved /usr/share/xulrunner/res from xulrunner to libxul0d.
+    + Moved /usr/share/xulrunner/chrome/classic.*, en-US.* and toolkit.* from
+      xulrunner to libxul0d. If the other chrome files appear to be required
+      for something else, we might consider moving them as well.
+  * debian/control: Add a conflict on older xulrunner to libxul0d according to
+    the moving around of files.
+  * debian/rules: Changed the way we identificate ourselves in
+    /usr/share/xulrunner/defaults/pref/vendor.js, and move it in libxul0d.
+    We will using be Gecko/Debian/<debian_release> instead of Gecko/yyyymmdd,
+    which was pointless anyway, because it was giving the date of the build,
+    not the date of the API...
+  * debian/patches/01_prefs.dpatch: Fix some printer and font configuration.
+  * debian/patches/00list: Updated accordingly.
+
+ -- Mike Hommey <glandium@debian.org>  Mon, 20 Feb 2006 23:11:39 +0100
+
+xulrunner (1.8.0.1-2) unstable; urgency=low
+
+  * debian/rules:
+    + copy LICENSE instead of creating a link.
+    + add -A to dh_installdocs.
+    + don't install README.txt.
+    + don't change xulrunner-gtkmozembed.pc, xulrunner-plugin.pc
+      and xulrunner-xpcom.pc. Some applications that build against gecko
+      seem to make bad assumptions, at least with gtkmozembed. It is safest
+      this way, until things change upstream.
+  * debian/patches/01_sonames.dpatch: Fix the dirname complain.
+  * debian/xulrunner.install, debian/xulrunner.links, debian/libxul0d.install,
+    debian/libxul0d.links: Moved greprefs from xulrunner to libxul0d.
+    The usually necessary changes to dependencies and conflicts have not been
+    made because 1.8.0.1-1 never reached the archive.
+  * debian/patches/90_js_mipsel_endianness.dpatch: Patch to fix little
+    endianness of mipsel. Thanks Ian Jackson and Thiemo Seufer.
+  * debian/patches/80_passwdmgr.dpatch: Take patch from bz#235336 as suggested
+    by Ian Jackson to allow password manager to work with sites that only have
+    a password field, no username.
+  * debian/patches/01_gfx_cairo.dpatch, debian/patches/01_gfx_thebes.dpatch,
+    debian/patches/01_canvas_cairo.dpatch: Removed. They were for the 1.9
+    branch.
+  * debian/patches/00list: Updated accordingly.
+
+ -- Mike Hommey <glandium@debian.org>  Wed,  8 Feb 2006 18:53:28 +0100
+
+xulrunner (1.8.0.1-1) unstable; urgency=low
+
+  * Initial release. Closes: #284189.
+  * First upstream release: 1.8.0.1, synched with Firefox 1.5.0.1.
+  * debian/patches/99_configure.dpatch: Updated.
+  * debian/rules:
+    + Removed package names from the dh_makeshlibs call. It just works fine
+      with the -a option.
+    + Removed useless dh_shlibdeps call when building arch-independent
+      packages.
+    + Removed the -l option to the dh_shlibdeps call, it works fine without.
+    + Move libnssckbi.so back in /usr/lib/xulrunner.
+    + Add a MPL file to the docs installed, taken from the upstream LICENSE
+      file.
+  * debian/control:
+    + Added a xulrunner-gnome-support package for a separate gnome support.
+    + Made the xulrunner package suggest this new package.
+    + Typos corrections.
+    + Add sections to packages.
+  * debian/xulrunner-gnome-support.install: Install the gnome related
+    components.
+  * debian/libxul0d.install, debian/xulrunner.install: Moved some components
+    from libxul0d to xulrunner.
+  * debian/patches/01_ckbi_location: Removed.
+  * debian/patches/00list: Updated accordingly.
+  * debian/copyright: Updated.
+
+ -- Mike Hommey <glandium@debian.org>  Tue,  7 Feb 2006 19:52:24 +0100
+
+xulrunner (1.7.99+cvs20060113-1) experimental; urgency=low
+
+  * New CVS checkout.
+  * debian/mozconfig: Disable Java-XPCOM bridge.
+  * debian/control: Added | libreadline-dev to build dependencies.
+  * debian/patches/01_pangoxft.dpatch: force linking against pangoxft with
+    newer versions of pango.
+  * debian/patches/80_dash_workaround.dpatch,
+    debian/patches/80_entropy.dpatch,
+    debian/patches/80_xpidl.dpatch,
+    debian/patches/80_xrender_bug.dpatch,
+    debian/patches/90_ia64_align.dpatch,
+    debian/patches/90_mips_performance.dpatch,
+    debian/patches/90_ppc64_build.dpatch,
+    debian/patches/90_xpcom_arm_optim.dpatch,
+    debian/patches/90_xpcom_arm_unused_attribute.dpatch,
+    debian/patches/90_xpcom_hppa.dpatch,
+    debian/patches/90_xpcom_m68k.dpatch,
+    debian/patches/90_xpcom_mips.dpatch: Patches stolen from Firefox.
+  * debian/patches/00list: Updated accordingly.
+  * debian/patches/99_configure.dpatch: Updated.
+
+ -- Mike Hommey <glandium@debian.org>  Thu, 19 Jan 2006 17:08:58 +0100
+
+xulrunner (1.7.99+cvs20051212-1) experimental; urgency=low
+
+  * New CVS checkout.
+  * debian/control: Moved -dev packages from arch: any to arch: all.
+  * debian/rules:
+    + Properly copy nss includes.
+    + Properly call dh_shlibdeps with the changed package names.
+    + Add a vendor.js file adding debian version in user-agent string.
+    + Modify *.pc files to fit modified include and library directories
+      and install them.
+  * debian/lib*-dev.install: Removed pkgconfig files.
+  * debian/*-dev.dirs: Create usr/lib/pkgconfig in the dev packages.
+  * debian/xulrunner.dirs: Create the prefs dir for the vendor.js file.
+  * debian/patches/01_locale.dpatch: Correctly set locale.
+  * debian/patches/00list: Updated accordingly.
+
+ -- Mike Hommey <glandium@debian.org>  Sun, 18 Dec 2005 13:44:17 +0100
+
+xulrunner (1.7.99+cvs20051130-1) experimental; urgency=low
+
+  * New CVS checkout.
+  * debian/mozconfig:
+    + Added cookie and permissions extensions.
+    + Disabled building of the installer.
+  * debian/patches/01_sidebar.dpatch: Added the sidebar extension.
+  * debian/rules:
+    + Copy config.guess and config.sub files to the right places.
+    + Remove the .chk files.
+    + Add a debug DEB_BUILD_OPTIONS to add --enable-debug to configure.
+  * debian/patches/01_sonames.dpatch: Added soname support.
+  * debian/patches/01_js_binary.dpatch: Add dependency for js on libmozjs.so.
+  * debian/patches/99_configure.dpatch: Updated and added nsprpub/configure.in
+    in the scope.
+  * debian/patches/00list: Updated accordingly.
+  * debian/libmozjs-dev.install, debian/libmozjs.install,
+    debian/libnspr4.6-dev.install, debian/libnspr4.6.install,
+    debian/libnss3.10-dev.install, debian/libnss3.10.install,
+    debian/libxul-dev.install, debian/libxul.install:
+    + Moved .so files in -dev packages and put .so.* files in non -dev
+      packages.
+    + put usr/lib/xulrunner/components in libxul instead of xulrunner.
+  * debian/*.preinst, debian/*.postrm: Removed, since we remove the
+    diversions.
+  * debian/control:
+    + Add proper conflicts with mozilla's packages.
+    + Renamed packages to reflect the sonames.
+    + Removed xulrunner-dev package.
+  * debian/lib*.install: Renamed accordingly.
+  * debian/patches/01_system_bz2.dpatch: Changes to better fit upstream build
+    system.
+  * debian/xulrunner-dev.install: Removed, as we removed the package.
+  * debian/libxul-dev.install: Added the xulrunner-config file that used to be
+    in xulrunner-dev.
+  * debian/xulrunner.install: Added xulrunner-stub.
+  * debian/libxul0d.dirs: Create /usr/lib/xulrunner/extensions, that the
+    extensions manager insists on having existing, even if empty.
+  * debian/libsmjs1.links: Changed link for the versioned library.
+
+ -- Mike Hommey <glandium@debian.org>  Mon, 12 Dec 2005 11:12:47 +0100
+
+xulrunner (1.7.99+cvs20051002-1) experimental; urgency=low
+
+  * New CVS checkout.
+  * debian/patches/01_visibility.dpatch: Use -fvisibility=hidden instead of
+    the system wrappers, since because of bug #331460, with the system
+    wrappers, the resulting binary is not PIC.
+  * debian/patches/99_configure.dpatch: Updated.
+  * debian/patches/00list: Updated accordingly.
+
+ -- Mike Hommey <glandium@debian.org>  Sun,  2 Oct 2005 12:48:41 +0200
+
+xulrunner (1.7.99+cvs20050915-1) experimental; urgency=low
+
+  * New CVS checkout of the less experimental 1.8 branch.
+  * debian/mozconfig: Use gtk2 gfx instead of cairo-gtk2 since it is not
+    developped in 1.8 branch.
+  * debian/patches/01_canvas_cairo.dpatch: Removed: been applied upstream.
+  * debian/patches/01_ckbi_location.dpatch: Allow libnssckbi to be loaded from
+    /usr/lib. (quite dirty, but, well...)
+  * debian/patches/01_gfx_cairo.dpatch, 01_gfx_thebes.dpatch: Removed.
+  * debian/patches/01_system_bz2.dpatch: Updated following upstream advices.
+  * debian/patches/99_configure.dpatch: Updated.
+  * debian/patches/00list: Updated accordingly.
+
+ -- Mike Hommey <glandium@debian.org>  Thu, 15 Sep 2005 15:42:40 +0200
+
+xulrunner (1.8.99+cvs20050816-0) experimental; urgency=low
+
+  * Initial package.
+  * debian/mozconfig: Enabled build with system cairo and cairo-gtk2 gfx.
+  * debian/patches/01_canvas_cairo.dpatch: Correctly build with system cairo.
+  * debian/patches/01_embedding_tests.dpatch: Don't build embedding tests when
+    using --disable-tests.
+  * debian/patches/01_install_path.dpatch: Install in the xulrunner directory
+    instead of xulrunner-1.8.
+  * debian/patches/01_gfx_cairo.dpatch, 01_gfx_thebes.dpatch: Patches for
+    correct building of gfx with system cairo.
+  * debian/patches/01_js_binary.dpatch: Allow to build the js binary to
+    provide a more up-to-date spidermonkey.
+  * debian/patches/01_system_bz2.dpatch: Allow to build with the system bzip2
+    library.
+  * debian/patches/99_configure.dpatch: Changes to configure resulted from
+    changes to configure.in.
+  * debian/patches/00list: Built list accordingly.
+
+ -- Mike Hommey <glandium@debian.org>  Tue, 16 Aug 2005 13:45:47 +0200

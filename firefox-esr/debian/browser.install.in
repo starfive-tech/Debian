@@ -1,0 +1,81 @@
+usr/lib/@browser@/platform.ini
+
+usr/lib/@browser@/libxul.so
+usr/lib/@browser@/dependentlibs.list
+
+usr/lib/@browser@/plugin-container
+
+usr/lib/@browser@/omni.ja
+
+usr/lib/@browser@/libmozsqlite3.so
+%ifndef USE_SYSTEM_NSPR
+usr/lib/@browser@/libnspr4.so
+usr/lib/@browser@/libplc4.so
+usr/lib/@browser@/libplds4.so
+%endif
+%ifndef USE_SYSTEM_NSS
+usr/lib/@browser@/libfreeblpriv3.so
+usr/lib/@browser@/libnss3.so
+usr/lib/@browser@/libnssckbi.so
+usr/lib/@browser@/libnssutil3.so
+usr/lib/@browser@/libsmime3.so
+usr/lib/@browser@/libsoftokn3.so
+usr/lib/@browser@/libssl3.so
+%endif
+usr/lib/@browser@/libipcclientcerts.so
+
+%if SHORT_SOURCE_CHANNEL == central
+usr/lib/@browser@/libreplace_jemalloc.so
+%endif
+
+usr/lib/@browser@/libmozgtk.so
+usr/lib/@browser@/libmozwayland.so
+usr/lib/@browser@/liblgpllibs.so
+%if MOZ_FFVPX
+usr/lib/@browser@/libmozavcodec.so
+usr/lib/@browser@/libmozavutil.so
+%endif
+%if DEB_HOST_ARCH == i386 || DEB_HOST_ARCH == amd64 || DEB_HOST_ARCH == arm64 || DEB_HOST_ARCH == armhf || DEB_HOST_ARCH == armel
+usr/lib/@browser@/libmozsandbox.so
+%endif
+
+usr/lib/@browser@/defaults/pref/channel-prefs.js
+
+usr/lib/@browser@/@browser@ usr/lib/@browser@
+
+usr/lib/@browser@/browser/defaults/preferences usr/share/@browser@/browser/defaults
+usr/lib/@browser@/browser/chrome usr/share/@browser@/browser
+
+usr/lib/@browser@/application.ini usr/lib/@browser@
+usr/lib/@browser@/browser/omni.ja usr/lib/@browser@/browser
+
+debian/@browser@.desktop usr/share/applications
+
+debian/@browser@.js etc/@browser@
+debian/vendor.js usr/share/@browser@/browser/defaults/preferences
+
+debian/debsearch.xml usr/share/@browser@/distribution/searchplugins/common
+
+usr/lib/@browser@/browser/features usr/lib/@browser@/browser
+
+%if browser != firefox
+debian/firefox usr/bin
+%endif
+
+usr/lib/@browser@/gmp-clearkey/0.1/manifest.json
+usr/lib/@browser@/gmp-clearkey/0.1/libclearkey.so
+
+%if CRASH_REPORTER
+usr/lib/@browser@/crashreporter
+usr/lib/@browser@/minidump-analyzer
+usr/lib/@browser@/Throbber-small.gif
+usr/lib/@browser@/crashreporter.ini
+usr/lib/@browser@/browser/crashreporter-override.ini
+%endif
+
+usr/lib/@browser@/fonts/TwemojiMozilla.ttf
+usr/lib/@browser@/pingsender
+usr/lib/@browser@/glxtest
+usr/lib/@browser@/vaapitest
+
+debian/@browser@-symbolic.svg usr/share/icons/hicolor/symbolic/apps

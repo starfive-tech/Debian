@@ -1,0 +1,600 @@
+
+%define L10N_LANG ach
+%define L10N_LANGUAGE Acoli
+%undef L10N_RECOMMENDS
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG af
+%define L10N_LANGUAGE Afrikaans
+%define L10N_RECOMMENDS hunspell-af
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG an
+%define L10N_LANGUAGE Aragonese
+%define L10N_RECOMMENDS hunspell-an
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG ar
+%define L10N_LANGUAGE Arabic
+%define L10N_RECOMMENDS hunspell-ar
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG ast
+%define L10N_LANGUAGE Asturian
+%undef L10N_RECOMMENDS
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG az
+%define L10N_LANGUAGE Azerbaijani
+%undef L10N_RECOMMENDS
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG be
+%define L10N_LANGUAGE Belarusian
+%define L10N_RECOMMENDS hunspell-be
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG bg
+%define L10N_LANGUAGE Bulgarian
+%define L10N_RECOMMENDS hunspell-bg | myspell-bg
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG bn
+%define L10N_LANGUAGE Bengali
+%undef L10N_RECOMMENDS
+%undef L10N_TRANSITION
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG br
+%define L10N_LANGUAGE Breton
+%define L10N_RECOMMENDS hunspell-br
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG bs
+%define L10N_LANGUAGE Bosnian
+%define L10N_RECOMMENDS hunspell-bs
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG ca
+%define L10N_LANGUAGE Catalan
+%define L10N_RECOMMENDS hunspell-ca
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG ca-valencia
+%define L10N_LANGUAGE Catalan (Valencia)
+%undef L10N_RECOMMENDS
+%undef L10N_TRANSITION
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG cak
+%define L10N_LANGUAGE Kaqchikel
+%undef L10N_RECOMMENDS
+%undef L10N_TRANSITION
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG cs
+%define L10N_LANGUAGE Czech
+%define L10N_RECOMMENDS hunspell-cs
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG cy
+%define L10N_LANGUAGE Welsh
+%undef L10N_RECOMMENDS
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG da
+%define L10N_LANGUAGE Danish
+%define L10N_RECOMMENDS hunspell-da | myspell-da
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG de
+%define L10N_LANGUAGE German
+%define L10N_RECOMMENDS hunspell-de-de | hunspell-de-at | hunspell-de-ch
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG dsb
+%define L10N_LANGUAGE Lower Sorbian
+%undef L10N_RECOMMENDS
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG el
+%define L10N_LANGUAGE Modern Greek
+%define L10N_RECOMMENDS hunspell-el | myspell-el-gr
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG en-ca
+%define L10N_LANGUAGE English (Canada)
+%define L10N_RECOMMENDS hunspell-en-gb | hunspell-en-us
+%undef L10N_TRANSITION
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG en-gb
+%define L10N_LANGUAGE English (United Kingdom)
+%define L10N_RECOMMENDS hunspell-en-gb | hunspell-en-us
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG eo
+%define L10N_LANGUAGE Esperanto
+%define L10N_RECOMMENDS myspell-eo
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG es-ar
+%define L10N_LANGUAGE Spanish (Argentina)
+%define L10N_RECOMMENDS hunspell-es | myspell-es
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG es-cl
+%define L10N_LANGUAGE Spanish (Chile)
+%define L10N_RECOMMENDS hunspell-es | myspell-es
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG es-es
+%define L10N_LANGUAGE Spanish (Spain)
+%define L10N_RECOMMENDS hunspell-es | myspell-es
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG es-mx
+%define L10N_LANGUAGE Spanish (Mexico)
+%define L10N_RECOMMENDS hunspell-es | myspell-es
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG et
+%define L10N_LANGUAGE Estonian
+%define L10N_RECOMMENDS myspell-et
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG eu
+%define L10N_LANGUAGE Basque
+%define L10N_RECOMMENDS hunspell-eu
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG fa
+%define L10N_LANGUAGE Persian
+%define L10N_RECOMMENDS myspell-fa
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG ff
+%define L10N_LANGUAGE Fulah
+%undef L10N_RECOMMENDS
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG fi
+%define L10N_LANGUAGE Finnish
+%define L10N_RECOMMENDS xul-ext-mozvoikko
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG fr
+%define L10N_LANGUAGE French
+%define L10N_RECOMMENDS hunspell-fr | myspell-fr | myspell-fr-gut
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG fur
+%define L10N_LANGUAGE Friulian
+%undef L10N_RECOMMENDS
+%undef L10N_TRANSITION
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG fy-nl
+%define L10N_LANGUAGE Western Frisian (Netherlands)
+%undef L10N_RECOMMENDS
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG ga-ie
+%define L10N_LANGUAGE Irish (Ireland)
+%define L10N_RECOMMENDS myspell-ga
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG gd
+%define L10N_LANGUAGE Scottish Gaelic
+%define L10N_RECOMMENDS hunspell-gd | myspell-gd
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG gl
+%define L10N_LANGUAGE Galician
+%define L10N_RECOMMENDS hunspell-gl-es | hunspell-gl
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG gn
+%define L10N_LANGUAGE Guarani
+%undef L10N_RECOMMENDS
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG gu-in
+%define L10N_LANGUAGE Gujarati (India)
+%define L10N_RECOMMENDS hunspell-gu
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG he
+%define L10N_LANGUAGE Hebrew
+%define L10N_RECOMMENDS hunspell-he | myspell-he
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG hi-in
+%define L10N_LANGUAGE Hindi (India)
+%define L10N_RECOMMENDS hunspell-hi
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG hr
+%define L10N_LANGUAGE Croatian
+%define L10N_RECOMMENDS hunspell-hr
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG hsb
+%define L10N_LANGUAGE Upper Sorbian
+%undef L10N_RECOMMENDS
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG hu
+%define L10N_LANGUAGE Hungarian
+%define L10N_RECOMMENDS hunspell-hu | myspell-hu
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG hy-am
+%define L10N_LANGUAGE Armenian (Armenia)
+%define L10N_RECOMMENDS myspell-hy
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG ia
+%define L10N_LANGUAGE Interlingua
+%undef L10N_RECOMMENDS
+%undef L10N_TRANSITION
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG id
+%define L10N_LANGUAGE Indonesian
+%define L10N_RECOMMENDS hunspell-id
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG is
+%define L10N_LANGUAGE Icelandic
+%define L10N_RECOMMENDS hunspell-is
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG it
+%define L10N_LANGUAGE Italian
+%define L10N_RECOMMENDS hunspell-it
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG ja
+%define L10N_LANGUAGE Japanese
+%undef L10N_RECOMMENDS
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG ka
+%define L10N_LANGUAGE Georgian
+%undef L10N_RECOMMENDS
+%undef L10N_TRANSITION
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG kab
+%define L10N_LANGUAGE Kabyle
+%undef L10N_RECOMMENDS
+%undef L10N_TRANSITION
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG kk
+%define L10N_LANGUAGE Kazakh
+%define L10N_RECOMMENDS hunspell-kk
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG km
+%define L10N_LANGUAGE Central Khmer
+%undef L10N_RECOMMENDS
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG kn
+%define L10N_LANGUAGE Kannada
+%undef L10N_RECOMMENDS
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG ko
+%define L10N_LANGUAGE Korean
+%define L10N_RECOMMENDS hunspell-ko
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG lij
+%define L10N_LANGUAGE Ligurian
+%undef L10N_RECOMMENDS
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG lt
+%define L10N_LANGUAGE Lithuanian
+%define L10N_RECOMMENDS hunspell-lt
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG lv
+%define L10N_LANGUAGE Latvian
+%define L10N_RECOMMENDS hunspell-lv | myspell-lv
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG mk
+%define L10N_LANGUAGE Macedonian
+%undef L10N_RECOMMENDS
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG mr
+%define L10N_LANGUAGE Marathi
+%undef L10N_RECOMMENDS
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG ms
+%define L10N_LANGUAGE Malay
+%undef L10N_RECOMMENDS
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG my
+%define L10N_LANGUAGE Burmese
+%undef L10N_RECOMMENDS
+%undef L10N_TRANSITION
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG nb-no
+%define L10N_LANGUAGE Norwegian Bokmål (Norway)
+%define L10N_RECOMMENDS myspell-nb
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG ne-np
+%define L10N_LANGUAGE Nepali (Nepal)
+%define L10N_RECOMMENDS hunspell-ne
+%undef L10N_TRANSITION
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG nl
+%define L10N_LANGUAGE Dutch
+%define L10N_RECOMMENDS hunspell-nl
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG nn-no
+%define L10N_LANGUAGE Norwegian Nynorsk (Norway)
+%define L10N_RECOMMENDS myspell-nn
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG oc
+%define L10N_LANGUAGE Occitan
+%define L10N_RECOMMENDS hunspell-oc
+%undef L10N_TRANSITION
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG pa-in
+%define L10N_LANGUAGE Panjabi (India)
+%undef L10N_RECOMMENDS
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG pl
+%define L10N_LANGUAGE Polish
+%define L10N_RECOMMENDS hunspell-pl | myspell-pl
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG pt-br
+%define L10N_LANGUAGE Portuguese (Brazil)
+%define L10N_RECOMMENDS hunspell-pt-br | myspell-pt-br
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG pt-pt
+%define L10N_LANGUAGE Portuguese (Portugal)
+%define L10N_RECOMMENDS hunspell-pt-pt | myspell-pt-pt
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG rm
+%define L10N_LANGUAGE Romansh
+%undef L10N_RECOMMENDS
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG ro
+%define L10N_LANGUAGE Romanian
+%define L10N_RECOMMENDS hunspell-ro
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG ru
+%define L10N_LANGUAGE Russian
+%define L10N_RECOMMENDS hunspell-ru | myspell-ru
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG sc
+%define L10N_LANGUAGE Sardinian
+%undef L10N_RECOMMENDS
+%undef L10N_TRANSITION
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG sco
+%define L10N_LANGUAGE Scots
+%undef L10N_RECOMMENDS
+%undef L10N_TRANSITION
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG si
+%define L10N_LANGUAGE Sinhala
+%define L10N_RECOMMENDS hunspell-si
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG sk
+%define L10N_LANGUAGE Slovak
+%define L10N_RECOMMENDS hunspell-sk | myspell-sk
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG sl
+%define L10N_LANGUAGE Slovenian
+%define L10N_RECOMMENDS hunspell-sl
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG son
+%define L10N_LANGUAGE Songhai languages
+%undef L10N_RECOMMENDS
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG sq
+%define L10N_LANGUAGE Albanian
+%define L10N_RECOMMENDS myspell-sq
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG sr
+%define L10N_LANGUAGE Serbian
+%define L10N_RECOMMENDS hunspell-sr
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG sv-se
+%define L10N_LANGUAGE Swedish (Sweden)
+%define L10N_RECOMMENDS hunspell-sv-se
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG szl
+%define L10N_LANGUAGE Silesian
+%undef L10N_RECOMMENDS
+%undef L10N_TRANSITION
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG ta
+%define L10N_LANGUAGE Tamil
+%undef L10N_RECOMMENDS
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG te
+%define L10N_LANGUAGE Telugu
+%define L10N_RECOMMENDS hunspell-te
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG tg
+%define L10N_LANGUAGE Tajik
+%undef L10N_RECOMMENDS
+%undef L10N_TRANSITION
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG th
+%define L10N_LANGUAGE Thai
+%define L10N_RECOMMENDS hunspell-th
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG tl
+%define L10N_LANGUAGE Tagalog
+%undef L10N_RECOMMENDS
+%undef L10N_TRANSITION
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG tr
+%define L10N_LANGUAGE Turkish
+%undef L10N_RECOMMENDS
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG trs
+%define L10N_LANGUAGE Chicahuaxtla Triqui
+%undef L10N_RECOMMENDS
+%undef L10N_TRANSITION
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG uk
+%define L10N_LANGUAGE Ukrainian
+%define L10N_RECOMMENDS hunspell-uk | myspell-uk
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG ur
+%define L10N_LANGUAGE Urdu
+%undef L10N_RECOMMENDS
+%undef L10N_TRANSITION
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG uz
+%define L10N_LANGUAGE Uzbek
+%define L10N_RECOMMENDS hunspell-uz
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG vi
+%define L10N_LANGUAGE Vietnamese
+%define L10N_RECOMMENDS hunspell-vi
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG xh
+%define L10N_LANGUAGE Xhosa
+%undef L10N_RECOMMENDS
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG zh-cn
+%define L10N_LANGUAGE Chinese (China)
+%undef L10N_RECOMMENDS
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in
+
+%define L10N_LANG zh-tw
+%define L10N_LANGUAGE Chinese (Taiwan)
+%undef L10N_RECOMMENDS
+%define L10N_TRANSITION 1
+%include @PRODUCT@-l10n.control.in

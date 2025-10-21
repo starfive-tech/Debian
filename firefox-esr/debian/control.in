@@ -1,0 +1,154 @@
+Source: @browser@
+Section: web
+Priority: optional
+Maintainer: Maintainers of Mozilla-related packages <team+pkg-mozilla@tracker.debian.org>
+Uploaders: Mike Hommey <glandium@debian.org>
+Build-Depends: autotools-dev,
+               debhelper-compat (= 12),
+               libx11-dev,
+               libx11-xcb-dev,
+               libxt-dev,
+               libgtk-3-dev,
+               libglib2.0-dev,
+               libdrm-dev,
+               libstartup-notification0-dev,
+               libjpeg-dev,
+%if USE_SYSTEM_ZLIB
+               zlib1g-dev,
+%endif
+               libreadline-dev,
+               python3 (>= 3.6),
+               dpkg-dev,
+%if USE_SYSTEM_NSPR
+%define NSPR_VERSION 4.32
+               libnspr4-dev (>= 2:@NSPR_VERSION@~),
+%endif
+%if USE_SYSTEM_NSS
+%define NSS_VERSION 3.89
+               libnss3-dev (>= 2:@NSS_VERSION@~),
+%endif
+%if USE_SYSTEM_VPX
+               libvpx-dev (>= 1.10.0),
+%endif
+               libdbus-glib-1-dev,
+%if USE_SYSTEM_FFI
+               libffi-dev,
+%endif
+%if USE_SYSTEM_LIBEVENT
+               libevent-dev,
+%endif
+               libpulse-dev,
+               libasound2-dev,
+               yasm,
+               nasm (>= 2.14) [amd64 i386],
+%if DIST == bullseye || DIST == buster
+               rustc-mozilla (>= 1.63),
+%else
+               rustc (>= 1.63),
+%endif
+%if DIST == bullseye || DIST == buster
+               cargo-mozilla (>= 0.66),
+%else
+               cargo (>= 0.66),
+%endif
+               llvm-dev,
+               libclang-dev,
+               clang,
+%if DIST != bullseye && DIST != buster
+               libc++-dev-wasm32,
+               libclang-rt-dev-wasm32,
+               lld,
+%endif
+               cbindgen (>= 0.24.3),
+               nodejs (>= 12.22.1),
+               zip,
+               unzip,
+               locales,
+               xvfb,
+               xfonts-base,
+               xauth,
+               ttf-bitstream-vera,
+               fonts-freefont-ttf,
+               fonts-dejima-mincho,
+               iso-codes
+Build-Conflicts: graphicsmagick-imagemagick-compat,
+                 liboss4-salsa-dev,
+                 libhildonmime-dev,
+                 libosso-dev
+Standards-Version: 3.9.8.0
+Vcs-Git: https://salsa.debian.org/mozilla-team/firefox.git -b @SHORT_SOURCE_CHANNEL@/master
+Vcs-Browser: https://salsa.debian.org/mozilla-team/firefox/commits/@SHORT_SOURCE_CHANNEL@/master
+
+Package: @browser@
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         fontconfig,
+         procps,
+         debianutils (>= 1.16),
+%if USE_SYSTEM_NSPR
+         libnspr4 (>= 2:@NSPR_VERSION@~),
+%endif
+%if USE_SYSTEM_NSS
+         libnss3 (>= 2:@NSS_VERSION@~)
+%endif
+Recommends: @LIBAVCODEC@
+Suggests: fonts-stix | otf-stix,
+          fonts-lmodern,
+          libgssapi-krb5-2 | libkrb53,
+          libcanberra0,
+          pulseaudio
+%if TRANSITION
+Conflicts: iceweasel (<< 45)
+%endif
+Breaks: xul-ext-torbutton
+Provides: www-browser,
+          gnome-www-browser
+%define RAW_DESCRIPTION Mozilla Firefox web browser
+%define LONGDESC1 @Browser@ is a powerful, extensible web browser with support for modern
+%define LONGDESC2 web application technologies.
+%define firefox_esr firefox-esr
+%if browser == firefox_esr
+%define DESCRIPTION @RAW_DESCRIPTION@ - Extended Support Release (ESR)
+%else
+%define DESCRIPTION @RAW_DESCRIPTION@
+%endif
+Description: @DESCRIPTION@
+ @LONGDESC1@
+ @LONGDESC2@
+%if TRANSITION
+
+Package: iceweasel
+Architecture: all
+Priority: extra
+Section: oldlibs
+Depends: @browser@, ${misc:Depends}
+Description: Web browser based on Firefox - Transitional package
+ This is a transitional package, it can be safely removed.
+%endif
+
+Package: @browser@-l10n-all
+Architecture: all
+Section: metapackages
+Depends: ${misc:Depends}, @L10N_PACKAGES_DEPS@
+%if TRANSITION
+Breaks: iceweasel-l10n-all (<< 45)
+Replaces: iceweasel-l10n-all (<< 45)
+Provides: iceweasel-l10n-all
+%endif
+Description: All language packages for @Browser@ (meta)
+ @LONGDESC1@
+ @LONGDESC2@
+ .
+ This is a metapackage depending on all available localizations of @Browser@.
+%if TRANSITION
+
+Package: iceweasel-l10n-all
+Architecture: all
+Priority: extra
+Section: oldlibs
+Depends: @browser@-l10n-all, ${misc:Depends}
+Description: All language packages for Iceweasel - Transitional package
+ This is a transitional package, it can be safely removed.
+%endif
+%include l10n/browser-l10n.control

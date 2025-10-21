@@ -1,0 +1,20 @@
+From: Mike Hommey <mh@glandium.org>
+Date: Mon, 16 Dec 2013 10:53:58 +0900
+Subject: Add debian/extra-stuff to upstream build system directory traversal
+
+---
+ moz.build | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/moz.build b/moz.build
+index e33ad8e..e14428c 100644
+--- a/moz.build
++++ b/moz.build
+@@ -213,4 +213,7 @@ SPHINX_TREES["mots"] = "docs/mots"
+ 
+ SPHINX_TREES["update-infrastructure"] = "docs/update-infrastructure"
+ 
++if not CONFIG["LIBXUL_SDK"]:
++    DIRS += ["debian/extra-stuff"]
++
+ include("build/templates.mozbuild")

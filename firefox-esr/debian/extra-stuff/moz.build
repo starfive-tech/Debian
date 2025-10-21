@@ -1,0 +1,7 @@
+XPCOM_MANIFESTS += [
+    'addonsInfo.conf',
+]
+
+EXTRA_JS_MODULES += [
+    'addonsInfo.jsm',
+]

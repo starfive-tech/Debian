@@ -1,0 +1,122 @@
+#!/usr/bin/env python2.7
+
+import json
+import os
+import re
+import sys
+import codecs
+from xml import sax
+
+class Iso3166(sax.handler.ContentHandler, dict):
+  def startElement(self, name, attrs):
+    if 'alpha_2_code' in attrs:
+      self[attrs['alpha_2_code'].lower()] = attrs['name']
+
+class Iso639(sax.handler.ContentHandler, dict):
+  def startElement(self, name, attrs):
+    if 'iso_639_1_code' in attrs:
+      self[attrs['iso_639_1_code']] = attrs['name']
+    if 'iso_639_2B_code' in attrs:
+      self[attrs['iso_639_2B_code']] = attrs['name']
+
+class Iso639_3(sax.handler.ContentHandler, dict):
+  def startElement(self, name, attrs):
+    if 'id' in attrs:
+      self[attrs['id']] = attrs['name']
+    if 'part1_code' in attrs:
+      self[attrs['part1_code']] = attrs['name']
+    if 'part2_code' in attrs and not attrs['part2_code'] in self:
+      self[attrs['part2_code']] = attrs['name']
+
+if os.path.exists('/usr/share/iso-codes/json/iso_639-2.json'):
+    with open('/usr/share/iso-codes/json/iso_639-2.json') as fh:
+        iso639 = {}
+        for data in json.load(fh)['639-2']:
+            for k in ('alpha_2', 'alpha_3', 'bibliographic'):
+                if k in data:
+                    iso639[data[k]] = data['name']
+
+    with open('/usr/share/iso-codes/json/iso_639-3.json') as fh:
+        iso639_3 = {}
+        for data in json.load(fh)['639-3']:
+            for k in ('alpha_2', 'alpha_3', 'bibliographic'):
+                if k in data:
+                    iso639_3[data[k]] = \
+                        data.get('inverted_name') or data['name']
+
+    with open('/usr/share/iso-codes/json/iso_3166-1.json') as fh:
+        iso3166 = {}
+        for data in json.load(fh)['3166-1']:
+            if 'alpha_2' in data:
+                iso3166[data['alpha_2'].lower()] = data['name']
+else:
+    parser = sax.make_parser()
+    iso639_3 = Iso639_3()
+    parser.setContentHandler(iso639_3)
+    parser.parse('/usr/share/xml/iso-codes/iso_639_3.xml')
+
+    iso639 = Iso639()
+    parser.setContentHandler(iso639)
+    parser.parse('/usr/share/xml/iso-codes/iso_639.xml')
+
+    iso3166 = Iso3166()
+    parser.setContentHandler(iso3166)
+    parser.parse('/usr/share/xml/iso-codes/iso_3166.xml')
+
+recommends = {}
+with open('debian/l10n/recommends') as f:
+  for line in f.readlines():
+    lang, value = line.split(':')
+    recommends[lang.strip()] = value.strip()
+
+RE = re.compile(r'^([^,\(]+)(?:, *([^\(]+) *)?(?: *\(.*\))?$')
+ICEWEASEL_L10N = set((
+    'ach', 'af', 'an', 'ar', 'as', 'ast', 'az', 'be', 'bg', 'bn-bd', 'bn-in', 'br',
+    'bs', 'ca', 'cs', 'cy', 'da', 'de', 'dsb', 'el', 'en-gb', 'en-za', 'eo',
+    'es-ar', 'es-cl', 'es-es', 'es-mx', 'et', 'eu', 'fa', 'ff', 'fi', 'fr',
+    'fy-nl', 'ga-ie', 'gd', 'gl', 'gn', 'gu-in', 'he', 'hi-in', 'hr', 'hsb', 'hu',
+    'hy-am', 'id', 'is', 'it', 'ja', 'kk', 'km', 'kn', 'ko', 'lij', 'lt', 'lv',
+    'mai', 'mk', 'ml', 'mr', 'ms', 'nb-no', 'nl', 'nn-no', 'or', 'pa-in', 'pl',
+    'pt-br', 'pt-pt', 'rm', 'ro', 'ru', 'si', 'sk', 'sl', 'son', 'sq', 'sr',
+    'sv-se', 'ta', 'te', 'th', 'tr', 'uk', 'uz', 'vi', 'xh', 'zh-cn', 'zh-tw',
+))
+
+for code in sys.argv[1:]:
+  if '-' in code:
+    lang, country = code.split('-')
+  else:
+    lang = code
+    country = None
+
+  if lang in iso639_3:
+    str = iso639_3[lang.lower()]
+  else:
+    str = iso639[lang.lower()]
+  m = RE.match(str)
+  if m.group(2):
+    str = ' '.join([m.group(2).strip(), m.group(1).strip()])
+  else:
+    str = m.group(1).strip()
+  if country:
+    country_ = iso3166.get(country.lower())
+    if country_:
+        country = country_
+    else:
+        country = {
+            'valencia': 'Valencia',
+        }[country.lower()]
+    if ',' in country:
+      country = country[:country.index(',')]
+    str += ' (' + country + ')'
+  print()
+  print('%define L10N_LANG', code.lower())
+  print('%define L10N_LANGUAGE', str)
+  if code.lower() in recommends:
+    print('%define L10N_RECOMMENDS', recommends[code.lower()])
+  else:
+    print('%undef L10N_RECOMMENDS')
+  if code.lower() in ICEWEASEL_L10N:
+    print('%define L10N_TRANSITION 1')
+  else:
+    print('%undef L10N_TRANSITION')
+  print('%include @PRODUCT@-l10n.control.in')

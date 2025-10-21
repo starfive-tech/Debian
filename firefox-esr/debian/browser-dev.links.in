@@ -1,0 +1,3 @@
+%if USE_SYSTEM_NSPR
+usr/bin/nspr-config usr/lib/@browser@-devel-@GRE_VERSION@/sdk/bin/nspr-config
+%endif

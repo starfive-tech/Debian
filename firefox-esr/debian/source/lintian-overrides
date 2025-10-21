@@ -1,0 +1,50 @@
+# BSD* licenses have slight variations, and giving each one of them a
+# different name is not very useful.
+ source: dep5-copyright-license-name-not-unique *
+
+# Ignore JSON "do no evil" license in a test file for a subsystem that
+# is not part of the browser.
+ source: license-problem-json-evil dom/system/gonk/tests/marionette/ril_jshint/jshint.js
+
+# Ignore missing sources errors for test files (some of which are bogus,
+# even).
+ source: source-is-missing */tests/*
+ source: source-is-missing */test/*
+ source: source-is-missing js/src/jit-test/*
+ source: source-is-missing js/src/octane/*
+ source: source-is-missing testing/*
+ source: source-is-missing dom/html/reftests/toblob-todataurl/sample.js *
+ source: source-is-missing layout/generic/crashtests/simple_blank.swf
+ source: source-is-missing layout/reftests/svg/nesting-invalid-01.js *
+ source: source-is-missing addon-sdk/source/examples/actor-repl/data/codemirror-compressed.js
+
+# Real source files with really long lines
+ source: source-is-missing browser/app/profile/firefox.js *
+ source: source-is-missing modules/libpref/init/all.js *
+ source: source-is-missing devtools/client/sourceeditor/tern/ecma5.js *
+ source: source-is-missing devtools/shared/acorn/acorn.js *
+ source: source-is-missing devtools/server/actors/utils/automation-timeline.js *
+ source: source-is-missing browser/extensions/loop/chrome/content/preferences/prefs.js *
+ source: source-is-missing browser/extensions/loop/chrome/content/shared/js/linkifiedTextView.js *
+ source: source-is-missing browser/extensions/loop/chrome/content/shared/js/textChatView.js *
+ source: source-is-missing browser/extensions/loop/chrome/content/shared/js/views.js *
+
+# The source for these is in browser/components/translation/cld2 with
+# an accompanying Makefile. It requires emscripten to build, which is
+# not available on all architectures, so this would require packaging
+# circumvolutions.
+ source: source-is-missing browser/components/translation/cld2/cld-worker.js *
+
+# The source for these is in python/psutil/psutil. They are not shipped,
+# and, in fact, are even actually unused during the build (they depend
+# on libpython2.7.so.1, which is not installed as a dependency).
+ source: source-is-missing python/psutil/build/*
+
+# Those are part of the inline documentation from python mock. Python
+# mock is only used for some python tests during e.g. `make check`.
+ source: source-is-missing python/mock-1.0.0/html/_static/*
+
+# The file is not shipped, neither is the source code next to it built,
+# but the contents of the chm are entirely generated from the source
+# code.
+ source: source-contains-prebuilt-ms-help-file third_party/rust/libz-sys/src/zlib/contrib/dotzlib/DotZLib.chm

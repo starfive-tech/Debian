@@ -1,0 +1,19 @@
+#!/bin/sh -e
+
+if [ "$1" = "configure" ] || [ "$1" = "abort-upgrade" ] ; then
+    update-alternatives --install /usr/bin/x-www-browser \
+        x-www-browser /usr/bin/@browser@ 70 \
+        --slave /usr/share/man/man1/x-www-browser.1.gz \
+        x-www-browser.1.gz /usr/share/man/man1/@browser@.1.gz
+    update-alternatives --remove mozilla /usr/bin/@browser@
+    update-alternatives --install /usr/bin/gnome-www-browser \
+        gnome-www-browser /usr/bin/@browser@ 70 \
+        --slave /usr/share/man/man1/gnome-www-browser.1.gz \
+        gnome-www-browser.1.gz /usr/share/man/man1/@browser@.1.gz
+fi
+
+if [ "$1" = "configure" ] ; then
+    rm -rf /usr/lib/@browser@/updates
+fi
+
+#DEBHELPER#

@@ -1,0 +1,9 @@
+%define firefox_esr firefox-esr
+%if browser == firefox_esr
+%define suffix esr
+%else
+%define suffix
+%endif
+version=3
+opts=dversionmangle=s/^(\d\.[\d\.]+)\+dfsg$/$1/ \
+https://archive.mozilla.org/pub/@PRODUCT_DOWNLOAD_NAME@/releases/([\d\.]+@suffix@)/source/@PRODUCT_DOWNLOAD_NAME@-([\d\.]+@suffix@)[\.-]source\.tar\.xz debian python3 debian/repack.py

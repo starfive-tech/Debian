@@ -1,0 +1,17 @@
+other-licenses/7zstub/firefox/7zSD.sfx
+toolkit/mozapps/update/updater/macbuild/Contents/Resources/English.lproj/MainMenu.nib/keyedobjects.nib
+toolkit/mozapps/update/updater/macbuild/Contents/PkgInfo
+config/makedep.exe
+intl/unicharutil/tools/data/case.dat
+intl/unicharutil/tools/data/cmbcl.dat
+intl/unicharutil/tools/data/ctype.dat
+intl/unicharutil/tools/data/decomp.dat
+intl/unicharutil/tools/data/num.dat
+netwerk/protocol/ftp/doc/rfc959.txt
+layout/doc
+content/xml/tests
+image/test/reftest/pngsuite-transparency
+image/test/reftest/reftest.list /pngsuite-transparency/d
+build/pgo/blueprint/valid.png
+addon-sdk/source/examples/annotator/data/jquery-1.4.2.min.js
+addon-sdk/source/examples/reddit-panel/data/jquery-1.4.4.min.js

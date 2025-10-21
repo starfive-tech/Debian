@@ -1,0 +1,35 @@
+# Please don't use this mozconfig unless you are planning to build
+# packages for Debian or a derivative.
+ac_add_options --with-app-name=@browser@
+ac_add_options --enable-release
+ac_add_options --enable-default-toolkit=cairo-gtk3-wayland
+ac_add_options --with-google-location-service-api-keyfile=$topsrcdir/debian/google.key
+ac_add_options --with-google-safebrowsing-api-keyfile=$topsrcdir/debian/google.key
+ac_add_options --with-mozilla-api-keyfile=$topsrcdir/debian/mls.key
+%if USE_SYSTEM_ZLIB
+ac_add_options --with-system-zlib # MOZ_SYSTEM_ZLIB=1
+%endif
+ac_add_options --disable-strip
+ac_add_options --disable-install-strip
+%if USE_SYSTEM_FFI
+ac_add_options --enable-system-ffi # MOZ_SYSTEM_FFI=1
+%endif
+%if USE_SYSTEM_LIBEVENT
+ac_add_options --with-system-libevent # MOZ_SYSTEM_LIBEVENT=1
+%endif
+%if USE_SYSTEM_NSPR
+ac_add_options --with-system-nspr # MOZ_SYSTEM_NSPR=1
+%endif
+%if USE_SYSTEM_NSS
+ac_add_options --with-system-nss # MOZ_SYSTEM_NSS=1
+%endif
+%if USE_SYSTEM_VPX
+ac_add_options --with-system-libvpx # MOZ_SYSTEM_LIBVPX=1
+%endif
+ac_add_options --disable-updater
+ac_add_options --with-unsigned-addon-scopes=app,system
+ac_add_options --allow-addon-sideload
+ac_add_options --enable-alsa
+%if DIST == bullseye || DIST == buster || DEB_HOST_ARCH == s390x
+ac_add_options --without-wasm-sandboxed-libraries
+%endif

@@ -1,0 +1,3 @@
+version=3
+opts=dversionmangle=s/^(\d\.[\d\.]+)\+dfsg$/$1/ \
+https://archive.mozilla.org/pub/firefox/releases/([\d\.]+esr)/source/firefox-([\d\.]+esr)[\.-]source\.tar\.xz debian python3 debian/repack.py

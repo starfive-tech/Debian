@@ -1,0 +1,29 @@
+From: Mike Hommey <mh@glandium.org>
+Date: Tue, 11 Jul 2023 06:34:59 +0900
+Subject: Work around GCC ICE on ppc64el
+
+---
+ gfx/skia/moz.build | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/gfx/skia/moz.build b/gfx/skia/moz.build
+index 1d92936..ac0e0b2 100644
+--- a/gfx/skia/moz.build
++++ b/gfx/skia/moz.build
+@@ -359,7 +359,15 @@ UNIFIED_SOURCES += [
+     'skia/src/sksl/SkSLConstantFolder.cpp',
+     'skia/src/sksl/SkSLContext.cpp',
+     'skia/src/sksl/SkSLErrorReporter.cpp',
+-    'skia/src/sksl/SkSLInliner.cpp',
++]
++
++# Work around https://gcc.gnu.org/bugzilla/show_bug.cgi?id=110606
++if CONFIG['CC_TYPE'] == 'gcc' and CONFIG['CPU_ARCH'] == 'ppc64':
++    SOURCES += ['skia/src/sksl/SkSLInliner.cpp']
++else:
++    UNIFIED_SOURCES += ['skia/src/sksl/SkSLInliner.cpp']
++
++UNIFIED_SOURCES += [
+     'skia/src/sksl/SkSLIntrinsicList.cpp',
+     'skia/src/sksl/SkSLMangler.cpp',
+     'skia/src/sksl/SkSLModuleLoader.cpp',

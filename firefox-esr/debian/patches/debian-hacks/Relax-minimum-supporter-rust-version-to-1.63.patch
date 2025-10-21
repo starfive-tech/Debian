@@ -1,0 +1,376 @@
+From: Mike Hommey <mh@glandium.org>
+Date: Wed, 1 Mar 2023 07:19:18 +0900
+Subject: Relax minimum supporter rust version to 1.63
+
+This reverts:
+- https://phabricator.services.mozilla.com/D165236
+- https://phabricator.services.mozilla.com/D165332
+---
+ Cargo.lock                                       |  4 ++--
+ python/mozboot/mozboot/util.py                   |  2 +-
+ servo/components/selectors/context.rs            |  2 +-
+ servo/components/selectors/parser.rs             |  4 ++--
+ servo/components/style/gecko/selector_parser.rs  |  7 ++++---
+ servo/components/style/properties/gecko.mako.rs  | 13 ++-----------
+ servo/components/style/style_resolver.rs         |  5 +++--
+ .../style/stylesheets/container_rule.rs          | 16 ++++++++--------
+ servo/components/style/stylist.rs                | 12 +++++++-----
+ third_party/rust/cstr/.cargo-checksum.json       |  2 +-
+ third_party/rust/cstr/Cargo.toml                 | 11 ++---------
+ third_party/rust/cstr/README.md                  |  2 +-
+ third_party/rust/cstr/src/lib.rs                 |  4 ++--
+ 13 files changed, 36 insertions(+), 48 deletions(-)
+
+diff --git a/Cargo.lock b/Cargo.lock
+index 8f0a879..5a907c3 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -1040,9 +1040,9 @@ dependencies = [
+ 
+ [[package]]
+ name = "cstr"
+-version = "0.2.11"
++version = "0.2.10"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "8aa998c33a6d3271e3678950a22134cd7dd27cef86dee1b611b5b14207d1d90b"
++checksum = "a60f0dd132e4b67f20fd764d4835d968f666ff1a2f59e432983d168b98424deb"
+ dependencies = [
+  "proc-macro2",
+  "quote",
+diff --git a/python/mozboot/mozboot/util.py b/python/mozboot/mozboot/util.py
+index 583c08b..a15cae2 100644
+--- a/python/mozboot/mozboot/util.py
++++ b/python/mozboot/mozboot/util.py
+@@ -11,7 +11,7 @@ import certifi
+ from mach.site import PythonVirtualenv
+ from mach.util import get_state_dir
+ 
+-MINIMUM_RUST_VERSION = "1.66.0"
++MINIMUM_RUST_VERSION = "1.63.0"
+ 
+ 
+ def get_tools_dir(srcdir=False):
+diff --git a/servo/components/selectors/context.rs b/servo/components/selectors/context.rs
+index fc620ba..bc1a68d 100644
+--- a/servo/components/selectors/context.rs
++++ b/servo/components/selectors/context.rs
+@@ -142,7 +142,7 @@ where
+     pub pseudo_element_matching_fn: Option<&'a dyn Fn(&Impl::PseudoElement) -> bool>,
+ 
+     /// Extra implementation-dependent matching data.
+-    pub extra_data: Impl::ExtraMatchingData<'a>,
++    pub extra_data: Impl::ExtraMatchingData,
+ 
+     /// The current element we're anchoring on for evaluating the relative selector.
+     current_relative_selector_anchor: Option<OpaqueElement>,
+diff --git a/servo/components/selectors/parser.rs b/servo/components/selectors/parser.rs
+index ca587e9..a15362f 100644
+--- a/servo/components/selectors/parser.rs
++++ b/servo/components/selectors/parser.rs
+@@ -202,7 +202,7 @@ macro_rules! with_all_bounds {
+         /// are parameterized on SelectorImpl. See
+         /// <https://github.com/rust-lang/rust/issues/26925>
+         pub trait SelectorImpl: Clone + Debug + Sized + 'static {
+-            type ExtraMatchingData<'a>: Sized + Default;
++            type ExtraMatchingData: Sized + Default + 'static;
+             type AttrValue: $($InSelector)*;
+             type Identifier: $($InSelector)*;
+             type LocalName: $($InSelector)* + Borrow<Self::BorrowedLocalName>;
+@@ -3344,7 +3344,7 @@ pub mod tests {
+     }
+ 
+     impl SelectorImpl for DummySelectorImpl {
+-        type ExtraMatchingData<'a> = std::marker::PhantomData<&'a ()>;
++        type ExtraMatchingData = ();
+         type AttrValue = DummyAttrValue;
+         type Identifier = DummyAtom;
+         type LocalName = DummyAtom;
+diff --git a/servo/components/style/gecko/selector_parser.rs b/servo/components/style/gecko/selector_parser.rs
+index 6bf527b..08018fd 100644
+--- a/servo/components/style/gecko/selector_parser.rs
++++ b/servo/components/style/gecko/selector_parser.rs
+@@ -15,6 +15,7 @@ use cssparser::{BasicParseError, BasicParseErrorKind, Parser};
+ use cssparser::{CowRcStr, SourceLocation, ToCss, Token};
+ use dom::{DocumentState, ElementState};
+ use selectors::parser::SelectorParseErrorKind;
++use servo_arc::Arc;
+ use std::fmt;
+ use style_traits::{CssWriter, ParseError, StyleParseErrorKind, ToCss as ToCss_};
+ use thin_vec::ThinVec;
+@@ -239,7 +240,7 @@ pub struct SelectorImpl;
+ /// A set of extra data to carry along with the matching context, either for
+ /// selector-matching or invalidation.
+ #[derive(Default)]
+-pub struct ExtraMatchingData<'a> {
++pub struct ExtraMatchingData {
+     /// The invalidation data to invalidate doc-state pseudo-classes correctly.
+     pub invalidation_data: InvalidationMatchingData,
+ 
+@@ -249,11 +250,11 @@ pub struct ExtraMatchingData<'a> {
+ 
+     /// The style of the originating element in order to evaluate @container
+     /// size queries affecting pseudo-elements.
+-    pub originating_element_style: Option<&'a ComputedValues>,
++    pub originating_element_style: Option<Arc<ComputedValues>>,
+ }
+ 
+ impl ::selectors::SelectorImpl for SelectorImpl {
+-    type ExtraMatchingData<'a> = ExtraMatchingData<'a>;
++    type ExtraMatchingData = ExtraMatchingData;
+     type AttrValue = AtomString;
+     type Identifier = AtomIdent;
+     type LocalName = AtomIdent;
+diff --git a/servo/components/style/properties/gecko.mako.rs b/servo/components/style/properties/gecko.mako.rs
+index 4fe29098..01f41bb 100644
+--- a/servo/components/style/properties/gecko.mako.rs
++++ b/servo/components/style/properties/gecko.mako.rs
+@@ -99,15 +99,6 @@ impl ComputedValues {
+         ).to_outer(None)
+     }
+ 
+-    /// Converts the computed values to an Arc<> from a reference.
+-    pub fn to_arc(&self) -> Arc<Self> {
+-        // SAFETY: We're guaranteed to be allocated as an Arc<> since the
+-        // functions above are the only ones that create ComputedValues
+-        // instances in Gecko (and that must be the case since ComputedValues'
+-        // member is private).
+-        unsafe { Arc::from_raw_addrefed(self) }
+-    }
+-
+     #[inline]
+     pub fn is_pseudo_style(&self) -> bool {
+         self.0.mPseudoType != PseudoStyleType::NotPseudo
+@@ -228,8 +219,8 @@ impl ComputedValuesInner {
+                 &self,
+                 pseudo_ty,
+             );
+-            // We're simulating move semantics by having C++ do a memcpy and
+-            // then forgetting it on this end.
++            // We're simulating move semantics by having C++ do a memcpy and then forgetting
++            // it on this end.
+             forget(self);
+             UniqueArc::assume_init(arc).shareable()
+         }
+diff --git a/servo/components/style/style_resolver.rs b/servo/components/style/style_resolver.rs
+index a082b2c..bc96fb7 100644
+--- a/servo/components/style/style_resolver.rs
++++ b/servo/components/style/style_resolver.rs
+@@ -522,7 +522,7 @@ where
+ 
+     fn match_pseudo(
+         &mut self,
+-        originating_element_style: &ComputedValues,
++        originating_element_style: &Arc<ComputedValues>,
+         pseudo_element: &PseudoElement,
+         visited_handling: VisitedHandlingMode,
+     ) -> Option<MatchingResults> {
+@@ -558,7 +558,8 @@ where
+             self.context.shared.quirks_mode(),
+             NeedsSelectorFlags::Yes,
+         );
+-        matching_context.extra_data.originating_element_style = Some(originating_element_style);
++        matching_context.extra_data.originating_element_style =
++            Some(originating_element_style.clone());
+ 
+         // NB: We handle animation rules for ::before and ::after when
+         // traversing them.
+diff --git a/servo/components/style/stylesheets/container_rule.rs b/servo/components/style/stylesheets/container_rule.rs
+index f9d488b..74ea7c5 100644
+--- a/servo/components/style/stylesheets/container_rule.rs
++++ b/servo/components/style/stylesheets/container_rule.rs
+@@ -135,14 +135,14 @@ enum TraversalResult<T> {
+     Done(T),
+ }
+ 
+-fn traverse_container<E, F, R>(
++fn traverse_container<E, S, F, R>(
+     mut e: E,
+-    originating_element_style: Option<&ComputedValues>,
++    originating_element_style: Option<&S>,
+     evaluator: F,
+ ) -> Option<(E, R)>
+ where
+     E: TElement,
+-    F: Fn(E, Option<&ComputedValues>) -> TraversalResult<R>,
++    F: Fn(E, Option<&S>) -> TraversalResult<R>,
+ {
+     if originating_element_style.is_some() {
+         match evaluator(e, originating_element_style) {
+@@ -185,7 +185,7 @@ impl ContainerCondition {
+     fn valid_container_info<E>(
+         &self,
+         potential_container: E,
+-        originating_element_style: Option<&ComputedValues>,
++        originating_element_style: Option<&Arc<ComputedValues>>,
+     ) -> TraversalResult<ContainerLookupResult<E>>
+     where
+         E: TElement,
+@@ -198,7 +198,7 @@ impl ContainerCondition {
+                     Some(d) => d,
+                     None => return TraversalResult::InProgress,
+                 };
+-                &**data.styles.primary()
++                data.styles.primary()
+             },
+         };
+         let wm = style.writing_mode;
+@@ -220,7 +220,7 @@ impl ContainerCondition {
+         }
+ 
+         let size = potential_container.query_container_size(&box_style.clone_display());
+-        let style = style.to_arc();
++        let style = style.clone();
+         TraversalResult::Done(ContainerLookupResult {
+             element: potential_container,
+             info: ContainerInfo { size, wm },
+@@ -232,7 +232,7 @@ impl ContainerCondition {
+     pub fn find_container<E>(
+         &self,
+         e: E,
+-        originating_element_style: Option<&ComputedValues>,
++        originating_element_style: Option<&Arc<ComputedValues>>,
+     ) -> Option<ContainerLookupResult<E>>
+     where
+         E: TElement,
+@@ -254,7 +254,7 @@ impl ContainerCondition {
+         &self,
+         device: &Device,
+         element: E,
+-        originating_element_style: Option<&ComputedValues>,
++        originating_element_style: Option<&Arc<ComputedValues>>,
+         invalidation_flags: &mut ComputedValueFlags,
+     ) -> KleeneValue
+     where
+diff --git a/servo/components/style/stylist.rs b/servo/components/style/stylist.rs
+index 81f30ee..bbb80e9 100644
+--- a/servo/components/style/stylist.rs
++++ b/servo/components/style/stylist.rs
+@@ -979,7 +979,7 @@ impl Stylist {
+         element: E,
+         pseudo: &PseudoElement,
+         rule_inclusion: RuleInclusion,
+-        originating_element_style: &ComputedValues,
++        originating_element_style: &Arc<ComputedValues>,
+         parent_style: &Arc<ComputedValues>,
+         is_probe: bool,
+         matching_fn: Option<&dyn Fn(&PseudoElement) -> bool>,
+@@ -1125,7 +1125,7 @@ impl Stylist {
+         &self,
+         guards: &StylesheetGuards,
+         element: E,
+-        originating_element_style: &ComputedValues,
++        originating_element_style: &Arc<ComputedValues>,
+         parent_style: &Arc<ComputedValues>,
+         pseudo: &PseudoElement,
+         is_probe: bool,
+@@ -1156,7 +1156,8 @@ impl Stylist {
+         );
+ 
+         matching_context.pseudo_element_matching_fn = matching_fn;
+-        matching_context.extra_data.originating_element_style = Some(originating_element_style);
++        matching_context.extra_data.originating_element_style =
++            Some(originating_element_style.clone());
+ 
+         self.push_applicable_declarations(
+             element,
+@@ -1189,7 +1190,8 @@ impl Stylist {
+                 needs_selector_flags,
+             );
+             matching_context.pseudo_element_matching_fn = matching_fn;
+-            matching_context.extra_data.originating_element_style = Some(originating_element_style);
++            matching_context.extra_data.originating_element_style =
++                Some(originating_element_style.clone());
+ 
+             self.push_applicable_declarations(
+                 element,
+@@ -2502,7 +2504,7 @@ impl CascadeData {
+                 .matches(
+                     stylist.device(),
+                     element,
+-                    context.extra_data.originating_element_style,
++                    context.extra_data.originating_element_style.as_ref(),
+                     &mut context.extra_data.cascade_input_flags,
+                 )
+                 .to_bool(/* unknown = */ false);
+diff --git a/third_party/rust/cstr/.cargo-checksum.json b/third_party/rust/cstr/.cargo-checksum.json
+index 9d9ca8a..d6c4e0e 100644
+--- a/third_party/rust/cstr/.cargo-checksum.json
++++ b/third_party/rust/cstr/.cargo-checksum.json
+@@ -1 +1 @@
+-{"files":{"Cargo.toml":"9766da0dcd235f8d0d4ebdc925050558710adfd4495c123b1f4997666869d524","LICENSE":"5a9bf0e7661617253ca7c12313f51a96aa62dec0bcd15a59c533c88b8093d124","README.md":"8fdfa924e95d7a83f3c032dcc103cb411743c404e7e080b985c97b5db90eea24","src/lib.rs":"ad266f1d5c682943741344d84dba39c516c3b8b26b34a4ff2c858de9934cdfe5","src/parse.rs":"19214fac49af5852b93a37d43af6ee93e62a1e95e3a629f8d5da254925b7d294","tests/clippy_lints.rs":"4398124cd5bc3a7f295f6203d543fc7d99abfd945eb7418ccfa60535586d7e37","tests/compile_fail/empty.rs":"52dc3c0d4d6ee0bd6d89a34d1caf38d159830401f24ba30f5655f9de92697903","tests/compile_fail/empty.stderr":"dbcf3dab8a8638b833df9089d9bc9ff7494f39dbb91e94bdd769912678ccf7f8","tests/compile_fail/interior-nul.rs":"ecc09440020287377ca18e4b8308d1d516620a87612a5381bafc01fe48734d34","tests/compile_fail/interior-nul.stderr":"8bd003a7dfff248411403bdf666f8a0631307f468d589cf01e475b062db4b101","tests/compile_fail/non-str.rs":"e08be18a524a4482fb7f34cbc6e8448a878b41cf2c26dea99268aaabab6c3f3f","tests/compile_fail/non-str.stderr":"8dff245264d9c69dc151f742542a72400d7422f2a0f2b133a9f4d4fc96a4016a","tests/compile_fail/trash-after.rs":"7dff7a301c9087984c5acda183e34492f3d0f2ebec14b8dc0d2b11aab972a111","tests/compile_fail/trash-after.stderr":"487b5d6b687c52b80f9d9cba691a8654067a88f7d03d2d952d7e97d610ab70f3","tests/compile_test.rs":"13e3e0d22ec0dffa4d0be0c4db6381a03feff50cc25aa65c4950cc7e865d122d","tests/pass/byte_str_lit.rs":"9085e1f1e67dae193d33ff59c253cac23c9e23e9d8c7f92f0aba99097ade132e","tests/pass/const.rs":"777aeb93c3030349529a41ac62b3577b36badc4bada4ec46e45b5055d3676dbd","tests/pass/ident.rs":"5116ee71578d479d899345e039e5955b5dee442234dc504e1a9bfb9260cf8f15","tests/pass/macro.rs":"9596c936ed4d963fb40459ecd98b60610d3d90e41918f350ff45b6129b1aa0b7","tests/pass/str_lit.rs":"955fb887ebc01538bafe10fa810381eb53aebaafb8b36053e8712c081862fe7a"},"package":"8aa998c33a6d3271e3678950a22134cd7dd27cef86dee1b611b5b14207d1d90b"}
+\ No newline at end of file
++{"files":{"Cargo.toml":"efcf30ffc92f8247fde5ac01eb17820b53de43d8407fdab0e6ba226e0538e0f2","LICENSE":"5a9bf0e7661617253ca7c12313f51a96aa62dec0bcd15a59c533c88b8093d124","README.md":"6dd83f5c2d0f29317921e2c1050740cb24e273d5d83409f21d5b955026934804","src/lib.rs":"a54a9c9b3ea2346a2b82f4a66f9614f5596278cd20857a502d272a9ce5c4da4e","src/parse.rs":"19214fac49af5852b93a37d43af6ee93e62a1e95e3a629f8d5da254925b7d294","tests/clippy_lints.rs":"4398124cd5bc3a7f295f6203d543fc7d99abfd945eb7418ccfa60535586d7e37","tests/compile_fail/empty.rs":"52dc3c0d4d6ee0bd6d89a34d1caf38d159830401f24ba30f5655f9de92697903","tests/compile_fail/empty.stderr":"dbcf3dab8a8638b833df9089d9bc9ff7494f39dbb91e94bdd769912678ccf7f8","tests/compile_fail/interior-nul.rs":"ecc09440020287377ca18e4b8308d1d516620a87612a5381bafc01fe48734d34","tests/compile_fail/interior-nul.stderr":"8bd003a7dfff248411403bdf666f8a0631307f468d589cf01e475b062db4b101","tests/compile_fail/non-str.rs":"e08be18a524a4482fb7f34cbc6e8448a878b41cf2c26dea99268aaabab6c3f3f","tests/compile_fail/non-str.stderr":"8dff245264d9c69dc151f742542a72400d7422f2a0f2b133a9f4d4fc96a4016a","tests/compile_fail/trash-after.rs":"7dff7a301c9087984c5acda183e34492f3d0f2ebec14b8dc0d2b11aab972a111","tests/compile_fail/trash-after.stderr":"487b5d6b687c52b80f9d9cba691a8654067a88f7d03d2d952d7e97d610ab70f3","tests/compile_test.rs":"13e3e0d22ec0dffa4d0be0c4db6381a03feff50cc25aa65c4950cc7e865d122d","tests/pass/byte_str_lit.rs":"9085e1f1e67dae193d33ff59c253cac23c9e23e9d8c7f92f0aba99097ade132e","tests/pass/const.rs":"777aeb93c3030349529a41ac62b3577b36badc4bada4ec46e45b5055d3676dbd","tests/pass/ident.rs":"5116ee71578d479d899345e039e5955b5dee442234dc504e1a9bfb9260cf8f15","tests/pass/macro.rs":"9596c936ed4d963fb40459ecd98b60610d3d90e41918f350ff45b6129b1aa0b7","tests/pass/str_lit.rs":"955fb887ebc01538bafe10fa810381eb53aebaafb8b36053e8712c081862fe7a"},"package":"a60f0dd132e4b67f20fd764d4835d968f666ff1a2f59e432983d168b98424deb"}
+\ No newline at end of file
+diff --git a/third_party/rust/cstr/Cargo.toml b/third_party/rust/cstr/Cargo.toml
+index 712f393..046519f 100644
+--- a/third_party/rust/cstr/Cargo.toml
++++ b/third_party/rust/cstr/Cargo.toml
+@@ -11,31 +11,24 @@
+ 
+ [package]
+ edition = "2018"
+-rust-version = "1.64"
+ name = "cstr"
+-version = "0.2.11"
++version = "0.2.10"
+ authors = ["Xidorn Quan <me@upsuper.org>"]
+ description = "Macro for building static CStr reference"
+ readme = "README.md"
+-keywords = [
+-    "macro",
+-    "cstr",
+-]
++keywords = ["macro", "cstr"]
+ license = "MIT"
+ repository = "https://github.com/upsuper/cstr"
+ 
+ [lib]
+ proc-macro = true
+-
+ [dependencies.proc-macro2]
+ version = "1"
+ 
+ [dependencies.quote]
+ version = "1"
+-
+ [dev-dependencies.trybuild]
+ version = "1.0.30"
+-
+ [badges.travis-ci]
+ branch = "master"
+ repository = "upsuper/cstr"
+diff --git a/third_party/rust/cstr/README.md b/third_party/rust/cstr/README.md
+index 7ee3ba2..9ebda24 100644
+--- a/third_party/rust/cstr/README.md
++++ b/third_party/rust/cstr/README.md
+@@ -11,7 +11,7 @@ A macro for getting `&'static CStr` from literal or identifier.
+ This macro checks whether the given literal is valid for `CStr`
+ at compile time, and returns a static reference of `CStr`.
+ 
+-This macro can be used to to initialize constants on Rust 1.64 and above.
++This macro can be used to to initialize constants on Rust 1.59 and above.
+ 
+ ## Example
+ 
+diff --git a/third_party/rust/cstr/src/lib.rs b/third_party/rust/cstr/src/lib.rs
+index c9e69d9..91d83ae 100644
+--- a/third_party/rust/cstr/src/lib.rs
++++ b/third_party/rust/cstr/src/lib.rs
+@@ -3,7 +3,7 @@
+ //! This macro checks whether the given literal is valid for `CStr`
+ //! at compile time, and returns a static reference of `CStr`.
+ //!
+-//! This macro can be used to to initialize constants on Rust 1.64 and above.
++//! This macro can be used to to initialize constants on Rust 1.59 and above.
+ //!
+ //! ## Example
+ //!
+@@ -37,7 +37,7 @@ struct Error(Span, &'static str);
+ #[proc_macro]
+ pub fn cstr(input: RawTokenStream) -> RawTokenStream {
+     let tokens = match build_byte_str(input.into()) {
+-        Ok(s) => quote!(unsafe { ::core::ffi::CStr::from_bytes_with_nul_unchecked(#s) }),
++        Ok(s) => quote!(unsafe { ::std::ffi::CStr::from_bytes_with_nul_unchecked(#s) }),
+         Err(Error(span, msg)) => quote_spanned!(span => compile_error!(#msg)),
+     };
+     tokens.into()

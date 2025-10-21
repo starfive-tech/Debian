@@ -1,0 +1,21 @@
+%define firefox_esr firefox-esr
+%if browser == firefox_esr
+%define esr esr
+%else
+%define esr
+%endif
+@browser@ (60.0@esr@-1) unstable; urgency=medium
+
+  * The use of `lockPref` in preferences under /etc/@browser@ is deprecated.
+    Please use `pref("name", value, locked)` instead. `lockPref` will still
+    be supported for compatibility purpose until version 67.
+
+ -- Mike Hommey <glandium@debian.org>  Thu, 10 May 2018 09:36:46 +0900
+
+%if browser == firefox_esr
+@browser@ (45.0esr-1) unstable; urgency=medium
+
+  * The iceweasel package was replaced with the firefox-esr package.
+
+ -- Mike Hommey <glandium@debian.org>  Mon, 7 Mar 2016 07:45:02 +0900
+%endif

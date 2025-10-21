@@ -1,0 +1,2 @@
+# This is a transitional desktop file that launches the binary from a package we depend on.
+iceweasel: desktop-command-not-in-package usr/share/applications/iceweasel.desktop firefox-esr
