@@ -1,7 +1,7 @@
 # SymbolsHelper-Confirmed: 7:5.0 amd64
 libpostproc.so.56 libpostproc56 #MINVER#
 * Build-Depends-Package: libpostproc-dev
- LIBPOSTPROC_56@LIBPOSTPROC_56 7:5.1
+ LIBPOSTPROC_56@LIBPOSTPROC_56 @DEB_VERSION_EPOCH_UPSTREAM@
  postproc_configuration@LIBPOSTPROC_56 7:5.0
  postproc_ffversion@LIBPOSTPROC_56 7:5.0
  postproc_license@LIBPOSTPROC_56 7:5.0

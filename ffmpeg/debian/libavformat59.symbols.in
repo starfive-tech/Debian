@@ -1,8 +1,9 @@
 # SymbolsHelper-Confirmed: 7:5.0 amd64
 libavformat.so.59 libavformat59 #MINVER#
+| libavformat59 (= @DEB_VERSION@)
 * Build-Depends-Package: libavformat-dev
- (optional|regex)^avpriv_ 0
- LIBAVFORMAT_59@LIBAVFORMAT_59 7:5.1
+ (regex)^avpriv_ 0 1
+ LIBAVFORMAT_59@LIBAVFORMAT_59 @DEB_VERSION_EPOCH_UPSTREAM@
  av_add_index_entry@LIBAVFORMAT_59 7:5.0
  av_append_packet@LIBAVFORMAT_59 7:5.0
  av_codec_get_id@LIBAVFORMAT_59 7:5.0

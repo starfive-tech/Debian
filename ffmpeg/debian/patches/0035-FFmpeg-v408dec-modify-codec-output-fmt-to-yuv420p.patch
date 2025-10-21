@@ -1,0 +1,105 @@
+Description: V408dec: modify codec output fmt to yuv420p
+ .
+ ffmpeg (7:5.1.2-1) UNRELEASED; urgency=medium
+ .
+   * libavcodec/omxdec:	Optimize copy for omxdec plugins.
+Author: Som Qin <som.qin@starfivetech.com>
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout https://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: (upstream|backport|vendor|other), (<patch-url>|commit:<commit-id>)
+Bug: <upstream-bugtracker-url>
+Bug-Debian: https://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: (no|not-needed|<patch-forwarded-url>)
+Applied-Upstream: <version>, (<commit-url>|commit:<commid-id>)
+Reviewed-By: <name and email of someone who approved/reviewed the patch>
+Last-Update: 2024-12-18
+
+--- ffmpeg-5.1.2.orig/libavcodec/v408dec.c
++++ ffmpeg-5.1.2/libavcodec/v408dec.c
+@@ -24,10 +24,9 @@
+ #include "avcodec.h"
+ #include "codec_internal.h"
+ #include "internal.h"
+-
+ static av_cold int v408_decode_init(AVCodecContext *avctx)
+ {
+-    avctx->pix_fmt = AV_PIX_FMT_YUVA444P;
++    avctx->pix_fmt = AV_PIX_FMT_YUV420P;
+ 
+     return 0;
+ }
+@@ -36,7 +35,7 @@ static int v408_decode_frame(AVCodecCont
+                              int *got_frame, AVPacket *avpkt)
+ {
+     const uint8_t *src = avpkt->data;
+-    uint8_t *y, *u, *v, *a;
++    uint8_t *y, *u, *v;
+     int i, j, ret;
+ 
+     if (avpkt->size < 4 * avctx->height * avctx->width) {
+@@ -53,27 +52,43 @@ static int v408_decode_frame(AVCodecCont
+     y = pic->data[0];
+     u = pic->data[1];
+     v = pic->data[2];
+-    a = pic->data[3];
+ 
+-    for (i = 0; i < avctx->height; i++) {
+-        for (j = 0; j < avctx->width; j++) {
+-            if (avctx->codec_id==AV_CODEC_ID_AYUV) {
+-                v[j] = *src++;
+-                u[j] = *src++;
+-                y[j] = *src++;
+-                a[j] = *src++;
++    if (avctx->codec_id==AV_CODEC_ID_AYUV) {
++        for (i = 0; i < avctx->height; i++) {
++            if (i % 2) {
++                for (j = 0; j < avctx->width; j+=2) {
++                    *y++ = src[2];
++                    *y++ = src[6];
++                    src += 8;
++                }
+             } else {
+-                u[j] = *src++;
+-                y[j] = *src++;
+-                v[j] = *src++;
+-                a[j] = *src++;
++                for (j = 0; j < avctx->width; j+=2) {
++                    *v++ = src[0];
++                    *u++ = src[1];
++                    *y++ = src[2];
++                    *y++ = src[6];
++                    src += 8;
++                }
++            }
++        }
++    } else {
++        for (i = 0; i < avctx->height; i++) {
++            if (i % 2) {
++                for (j = 0; j < avctx->width; j+=2) {
++                    *y++ = src[1];
++                    *y++ = src[5];
++                    src += 8;
++                }
++            } else {
++                for (j = 0; j < avctx->width; j+=2) {
++                    *u++ = src[0];
++                    *y++ = src[1];
++                    *v++ = src[2];
++                    *y++ = src[5];
++                    src += 8;
++                }
+             }
+         }
+-
+-        y += pic->linesize[0];
+-        u += pic->linesize[1];
+-        v += pic->linesize[2];
+-        a += pic->linesize[3];
+     }
+ 
+     *got_frame = 1;

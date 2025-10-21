@@ -1,1 +1,1 @@
-debian/shlibs.local
+debian/lib*.symbols

@@ -1,7 +1,7 @@
 # SymbolsHelper-Confirmed: 7:5.0 amd64
 libswresample.so.4 libswresample4 #MINVER#
 * Build-Depends-Package: libswresample-dev
- LIBSWRESAMPLE_4@LIBSWRESAMPLE_4 7:5.1
+ LIBSWRESAMPLE_4@LIBSWRESAMPLE_4 @DEB_VERSION_EPOCH_UPSTREAM@
  swr_alloc@LIBSWRESAMPLE_4 7:5.0
  swr_alloc_set_opts2@LIBSWRESAMPLE_4 7:5.1
  swr_alloc_set_opts@LIBSWRESAMPLE_4 7:5.0

@@ -9,7 +9,7 @@ Uploaders:
  Sebastian Ramacher <sramacher@debian.org>,
 Rules-Requires-Root: no
 Homepage: https://ffmpeg.org/
-Standards-Version: 4.6.1
+Standards-Version: 4.6.2
 Vcs-Git: https://salsa.debian.org/multimedia-team/ffmpeg.git
 Vcs-Browser: https://salsa.debian.org/multimedia-team/ffmpeg
 Build-Depends-Indep:
@@ -81,6 +81,8 @@ Build-Depends:
  libavc1394-dev [linux-any],
 # --enable-libjack
  libjack-jackd2-dev,
+# --enable-libjxl
+ libjxl-dev [!alpha],
 # --enable-lv2
  liblilv-dev,
 # autodetected for the tiff decoder

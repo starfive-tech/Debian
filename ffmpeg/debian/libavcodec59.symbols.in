@@ -1,8 +1,9 @@
 # SymbolsHelper-Confirmed: 7:5.0 amd64
 libavcodec.so.59 libavcodec59 #MINVER#
+| libavcodec59 (= @DEB_VERSION@)
 * Build-Depends-Package: libavcodec-dev
- LIBAVCODEC_59@LIBAVCODEC_59 7:5.1
- (optional|regex)^avpriv_ 0
+ LIBAVCODEC_59@LIBAVCODEC_59 @DEB_VERSION_EPOCH_UPSTREAM@
+ (regex)^avpriv_ 0 1
  av_ac3_parse_header@LIBAVCODEC_59 7:5.0
  av_adts_header_parse@LIBAVCODEC_59 7:5.0
  av_alloc_vdpaucontext@LIBAVCODEC_59 7:5.0

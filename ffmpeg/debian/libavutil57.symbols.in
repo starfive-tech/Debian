@@ -1,8 +1,9 @@
 # SymbolsHelper-Confirmed: 7:5.0 amd64
 libavutil.so.57 libavutil57 #MINVER#
+| libavutil57 (= @DEB_VERSION@)
 * Build-Depends-Package: libavutil-dev
- LIBAVUTIL_57@LIBAVUTIL_57 7:5.1
- (optional|regex)^avpriv_ 0
+ LIBAVUTIL_57@LIBAVUTIL_57 @DEB_VERSION_EPOCH_UPSTREAM@
+ (regex)^avpriv_ 0 1
  av_add_i@LIBAVUTIL_57 7:5.0
  av_add_q@LIBAVUTIL_57 7:5.0
  av_add_stable@LIBAVUTIL_57 7:5.0

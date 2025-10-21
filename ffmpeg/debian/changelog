@@ -1,3 +1,33 @@
+ffmpeg (7:5.1.3-1) unstable; urgency=medium
+
+  * New upstream version 5.1.3
+  * debian/patches: Drop patches from upstream
+  * debian/: Produce tight dependencies only for internal use of avpriv
+    symbols.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 13 Apr 2023 01:09:42 +0200
+
+ffmpeg (7:5.1.2-3) unstable; urgency=medium
+
+  * debian/rules: Disable more tests on ppc64 (Closes: #1022764)
+  * debian/patches: Add upstream patch to fix FTBFS after vulkan changes
+    (Closes: #1031447)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Fri, 17 Feb 2023 08:26:22 +0100
+
+ffmpeg (7:5.1.2-2) unstable; urgency=medium
+
+  [ Mathieu Malaterre ]
+  * d/control: Add support for JPEG-XL. (Closes: #1023646)
+
+  [ Diederik de Haas ]
+  * ci: Enable Salsa's CI
+
+  [ Sebastian Ramacher ]
+  * debian/control: Bump Standards-Version
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 22 Jan 2023 13:07:50 +0100
+
 ffmpeg (7:5.1.2-1) UNRELEASED; urgency=medium
 
   * libavcodec/omxdec:	Optimize copy for omxdec plugins.
