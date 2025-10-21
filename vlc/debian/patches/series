@@ -5,3 +5,4 @@
 0005-fix-EGL-wayland-resize-issue.patch
 0006-fix-main-window-resize-width-height-with-null-value.patch
 0007-workaround-the-issue-that-vlc-not-terminate-after-closing-main-window.patch
+0008-v4l2-access-demux-add-AYUV-input-support.patch
